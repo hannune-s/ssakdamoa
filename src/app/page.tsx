@@ -14,7 +14,7 @@ const LINKS = [
   { id: 11, title: '경기지역화폐 가맹 신청', category: '페이·가맹', keywords: ['경기지역화폐', '경기', '경기도', '지역화폐'], url: 'https://www.gmoney.or.kr/' },
   { id: 3, title: '인천이음카드 가맹 신청', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음', '인천이음카드', '인천'], url: 'https://with.konacard.co.kr/8-1' },
   { id: 12, title: '부산 동백전 가맹 신청', category: '페이·가맹', keywords: ['동백전', '부산', '지역화폐'], url: 'https://busandong100.kr/' },
-  { id: 13, title: '대구로페이 가맹 신청', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://www.imbank.co.kr/' },
+  { id: 13, title: '대구로페이 가맹 신청', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://www.daegu.go.kr/index.do?menu_id=00000854' },
   { id: 9, title: '김포페이 가맹 신청', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
   
   // 필수 행정 서식
