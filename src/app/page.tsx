@@ -19,7 +19,7 @@ const LINKS = [
   { id: 9, title: '김포페이 가맹 신청', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
   
   // 필수 행정 서식
-  { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수행정서식', keywords: ['보건증', '건강진단', '건강진단결과서'], url: '#' },
+  { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수행정서식', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
   { id: 5, title: '축산물 이력제 양식 다운로드', category: '필수행정서식', keywords: ['축산물', '이력제', '양식'], url: '#' },
   { id: 6, title: '영업신고증 서식', category: '필수행정서식', keywords: ['영업신고증', '신고', '서식'], url: '#' },
   
