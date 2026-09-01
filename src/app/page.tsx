@@ -5,13 +5,24 @@ import { useState } from 'react';
 const CATEGORIES = ['전체', '페이·가맹', '필수행정서식', '지원금·세무'];
 
 const LINKS = [
+  // 전국 단위
   { id: 1, title: '제로페이 가맹 신청', category: '페이·가맹', keywords: ['제로페이', '페이', '가맹'], url: 'https://www.zeropay.or.kr/UI_HP_001.act' },
   { id: 2, title: '온누리 가맹 신청', category: '페이·가맹', keywords: ['온누리', '가맹', '신청', '온누리상품권'], url: 'https://frc.sbiz.or.kr/afms/afm/SMMDL0001M01/page.do' },
-  { id: 3, title: '인천이음카드 가맹신청', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음', '인천이음카드'], url: 'https://with.konacard.co.kr/8-1' },
-  { id: 9, title: '김포페이 가맹신청', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
+  
+  // 핵심 인구 밀집 지역화폐
+  { id: 10, title: '서울페이+ 가맹 신청', category: '페이·가맹', keywords: ['서울페이', '서울페이플러스', '서울', '지역화폐'], url: 'https://seoulpay.shinhancard.com/' },
+  { id: 11, title: '경기지역화폐 가맹 신청', category: '페이·가맹', keywords: ['경기지역화폐', '경기', '경기도', '지역화폐'], url: 'https://www.gmoney.or.kr/' },
+  { id: 3, title: '인천이음카드 가맹 신청', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음', '인천이음카드', '인천'], url: 'https://with.konacard.co.kr/8-1' },
+  { id: 12, title: '부산 동백전 가맹 신청', category: '페이·가맹', keywords: ['동백전', '부산', '지역화폐'], url: 'https://busandong100.kr/' },
+  { id: 13, title: '대구로페이 가맹 신청', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://www.imbank.co.kr/' },
+  { id: 9, title: '김포페이 가맹 신청', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
+  
+  // 필수 행정 서식
   { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수행정서식', keywords: ['보건증', '건강진단', '건강진단결과서'], url: '#' },
   { id: 5, title: '축산물 이력제 양식 다운로드', category: '필수행정서식', keywords: ['축산물', '이력제', '양식'], url: '#' },
   { id: 6, title: '영업신고증 서식', category: '필수행정서식', keywords: ['영업신고증', '신고', '서식'], url: '#' },
+  
+  // 지원금 / 세무
   { id: 7, title: '소상공인 정책자금 (대출 지원)', category: '지원금·세무', keywords: ['지원금', '정책자금', '소상공인', '대출'], url: '#' },
   { id: 8, title: '종합소득세 / 부가세 신고 가이드', category: '지원금·세무', keywords: ['세무', '세금', '종소세', '종합소득세', '부가세'], url: '#' },
 ];
@@ -20,17 +31,20 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('전체');
 
-  // 검색어 및 카테고리 필터링 로직
+  // 향상된 검색 및 필터링 로직
   const filteredLinks = LINKS.filter(link => {
-    const matchCategory = selectedCategory === '전체' || link.category === selectedCategory;
+    // 검색어에서 공백 제거 (예: '제로 페이' -> '제로페이'도 검색되도록)
+    const term = searchTerm.trim().toLowerCase().replace(/\s+/g, '');
     
-    // 검색어가 없으면 통과, 있으면 제목이나 키워드에 포함되어야 함
-    if (!searchTerm.trim()) return matchCategory;
+    // 1. 검색어가 있을 때는 현재 카테고리 탭을 무시하고 "전체"에서 실시간으로 찾아줍니다.
+    if (term) {
+      const title = link.title.toLowerCase().replace(/\s+/g, '');
+      const matchSearch = title.includes(term) || link.keywords.some(kw => kw.toLowerCase().replace(/\s+/g, '').includes(term));
+      return matchSearch;
+    }
     
-    const term = searchTerm.trim().toLowerCase();
-    const matchSearch = link.title.toLowerCase().includes(term) || link.keywords.some(kw => kw.includes(term));
-    
-    return matchCategory && matchSearch;
+    // 2. 검색어가 없을 때는 선택된 카테고리 탭에 맞는 것만 보여줍니다.
+    return selectedCategory === '전체' || link.category === selectedCategory;
   });
 
   return (
@@ -60,9 +74,12 @@ export default function Home() {
           {CATEGORIES.map(category => (
             <button
               key={category}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => {
+                setSelectedCategory(category);
+                setSearchTerm(''); // 탭 이동 시 검색어 초기화
+              }}
               className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                selectedCategory === category 
+                selectedCategory === category && !searchTerm
                   ? 'bg-blue-600 text-white shadow-md' 
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
