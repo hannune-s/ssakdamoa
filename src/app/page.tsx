@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-const CATEGORIES = ['전체', '페이·가맹', '필수행정서식', '지원금·세무'];
+const CATEGORIES = ['전체', '페이·가맹', '필수 실무 링크', '필수행정서식', '지원금·세무'];
 
 const LINKS = [
   // 전국 단위
@@ -18,10 +18,13 @@ const LINKS = [
   { id: 13, title: '대구로페이 가맹 신청', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://minwon.daegu.go.kr/cvpl/AUTN-009/info' },
   { id: 9, title: '김포페이 가맹 신청', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
   
-  // 필수 행정 서식
-  { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수행정서식', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
-  { id: 5, title: '축산물 이력제 양식 다운로드', category: '필수행정서식', keywords: ['축산물', '이력제', '양식'], url: '#' },
-  { id: 6, title: '영업신고증 서식', category: '필수행정서식', keywords: ['영업신고증', '신고', '서식'], url: '#' },
+  // 필수 실무 링크 (안내/접수용 사이트 연결)
+  { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
+  
+  // 필수행정서식 (실제 양식/파일 다운로드용)
+  { id: 5, title: '축산물 이력제 양식 다운로드', category: '필수행정서식', keywords: ['축산물', '이력제', '양식', '서식'], url: '#' },
+  { id: 6, title: '영업신고증 위임장 등 서식 다운로드', category: '필수행정서식', keywords: ['영업신고증', '신고', '서식', '위임장'], url: '#' },
+  { id: 15, title: '표준근로계약서 양식 다운로드 (알바/직원)', category: '필수행정서식', keywords: ['근로계약서', '알바', '직원', '계약서', '서식'], url: '#' },
   
   // 지원금 / 세무
   { id: 7, title: '소상공인 정책자금 (대출 지원)', category: '지원금·세무', keywords: ['지원금', '정책자금', '소상공인', '대출'], url: '#' },
@@ -62,7 +65,7 @@ export default function Home() {
         <div className="relative mb-4">
           <input 
             type="text" 
-            placeholder="'보건증', '제로페이' 등 키워드 검색" 
+            placeholder="'보건증', '제로페이', '계약서' 등 키워드 검색" 
             className="w-full bg-gray-100 text-gray-800 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-gray-400 text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -106,7 +109,9 @@ export default function Home() {
                 <span className="text-[15px]">{link.title}</span>
                 <span className="text-xs text-blue-500 font-semibold">{link.category}</span>
               </div>
-              <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl">→</span>
+              <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl">
+                {link.category === '필수행정서식' ? '↓' : '→'}
+              </span>
             </a>
           ))
         ) : (
