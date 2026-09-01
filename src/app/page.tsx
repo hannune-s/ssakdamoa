@@ -5,7 +5,7 @@ import { useState } from 'react';
 const CATEGORIES = ['전체', '페이·가맹', '필수행정서식', '지원금·세무'];
 
 const LINKS = [
-  { id: 1, title: '제로페이 가맹 신청', category: '페이·가맹', keywords: ['제로페이', '페이', '가맹'], url: '#' },
+  { id: 1, title: '제로페이 가맹 신청', category: '페이·가맹', keywords: ['제로페이', '페이', '가맹'], url: 'https://www.zeropay.or.kr/UI_HP_001.act' },
   { id: 2, title: '온누리 가맹 신청', category: '페이·가맹', keywords: ['온누리', '가맹', '신청', '온누리상품권'], url: 'https://frc.sbiz.or.kr/afms/afm/SMMDL0001M01/page.do' },
   { id: 3, title: '인천이음 신청', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음'], url: '#' },
   { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수행정서식', keywords: ['보건증', '건강진단', '건강진단결과서'], url: '#' },
