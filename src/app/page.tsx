@@ -20,6 +20,7 @@ const LINKS = [
   
   // 필수 실무 링크 (안내/접수용 사이트 연결)
   { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
+  { id: 16, title: '4대보험통합징수포털', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
   
   // 필수행정서식 (실제 양식/파일 다운로드용)
   { id: 5, title: '축산물 이력제 양식 다운로드', category: '필수행정서식', keywords: ['축산물', '이력제', '양식', '서식'], url: '#' },
