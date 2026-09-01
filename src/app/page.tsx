@@ -6,7 +6,7 @@ const CATEGORIES = ['전체', '페이·가맹', '필수행정서식', '지원금
 
 const LINKS = [
   { id: 1, title: '제로페이 가맹 신청', category: '페이·가맹', keywords: ['제로페이', '페이', '가맹'], url: '#' },
-  { id: 2, title: '온누리상품권 안내', category: '페이·가맹', keywords: ['온누리', '상품권', '온누리상품권'], url: '#' },
+  { id: 2, title: '온누리 가맹 신청', category: '페이·가맹', keywords: ['온누리', '가맹', '신청', '온누리상품권'], url: 'https://frc.sbiz.or.kr/afms/afm/SMMDL0001M01/page.do' },
   { id: 3, title: '인천이음 신청', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음'], url: '#' },
   { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수행정서식', keywords: ['보건증', '건강진단', '건강진단결과서'], url: '#' },
   { id: 5, title: '축산물 이력제 양식 다운로드', category: '필수행정서식', keywords: ['축산물', '이력제', '양식'], url: '#' },
@@ -76,8 +76,11 @@ export default function Home() {
       <div className="w-full max-w-2xl flex flex-col gap-2.5">
         {filteredLinks.length > 0 ? (
           filteredLinks.map(link => (
-            <button 
+            <a 
               key={link.id} 
+              href={link.url}
+              target={link.url === '#' ? '_self' : '_blank'}
+              rel="noopener noreferrer"
               className="w-full bg-white hover:bg-gray-50 text-gray-800 py-3.5 px-5 rounded-xl border border-gray-200 font-medium transition-all text-left flex justify-between items-center group shadow-sm hover:shadow"
             >
               <div className="flex flex-col gap-0.5">
@@ -85,7 +88,7 @@ export default function Home() {
                 <span className="text-xs text-blue-500 font-semibold">{link.category}</span>
               </div>
               <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl">→</span>
-            </button>
+            </a>
           ))
         ) : (
           <div className="text-center text-gray-500 py-12 bg-white rounded-2xl border border-gray-200">
