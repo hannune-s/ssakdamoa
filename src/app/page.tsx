@@ -66,6 +66,11 @@ export default function Home() {
 
   // PWA 앱 설치 프롬프트 및 모바일(iOS/Android) 감지
   useEffect(() => {
+    // Service Worker 등록 (PWA 설치 필수 조건)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW err:', err));
+    }
+
     const ua = window.navigator.userAgent.toLowerCase();
     setIsIOS(/iphone|ipad|ipod/.test(ua));
 

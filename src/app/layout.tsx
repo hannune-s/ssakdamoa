@@ -17,6 +17,7 @@ import BottomNav from "@/components/BottomNav";
 export const metadata: Metadata = {
   title: "싹다모아 - 자영업자 필수 링크 & 서식 종합 허브",
   description: "복잡한 매장 관리, 배달 입점, 필수 서식을 한곳에 모았습니다.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
