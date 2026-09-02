@@ -2,15 +2,15 @@
 
 import { useState } from 'react';
 
-const CATEGORIES = ['전체', '페이·가맹', '필수 실무 링크', '필수행정서식', '지원금·세무', '디자인·제작 툴'];
+const CATEGORIES = ['전체', '페이·가맹', '디자인·제작 툴', '필수 실무 링크', '필수행정서식'];
 
 const LINKS = [
-  // 전국 단위
+  // 전국 단위 (페이·가맹)
   { id: 1, title: '제로페이 가맹 신청', category: '페이·가맹', keywords: ['제로페이', '페이', '가맹'], url: 'https://www.zeropay.or.kr/UI_HP_001.act' },
   { id: 2, title: '온누리 가맹 신청', category: '페이·가맹', keywords: ['온누리', '가맹', '신청', '온누리상품권'], url: 'https://frc.sbiz.or.kr/afms/afm/SMMDL0001M01/page.do' },
   { id: 14, title: '농할상품권 가맹 신청', category: '페이·가맹', keywords: ['농할상품권', '농할', '가맹', '신청'], url: 'https://app.catchsecu.com/projects/2816edfa3b5d25f/form' },
   
-  // 핵심 인구 밀집 지역화폐
+  // 핵심 인구 밀집 지역화폐 (페이·가맹)
   { id: 10, title: '서울페이+ 가맹 신청', category: '페이·가맹', keywords: ['서울페이', '서울페이플러스', '서울', '지역화폐'], url: 'https://seoulpay.shinhancard.com/' },
   { id: 11, title: '경기지역화폐 가맹 신청', category: '페이·가맹', keywords: ['경기지역화폐', '경기', '경기도', '지역화폐'], url: 'https://www.gmoney.or.kr/' },
   { id: 3, title: '인천이음카드 가맹 신청', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음', '인천이음카드', '인천'], url: 'https://with.konacard.co.kr/8-1' },
@@ -18,6 +18,13 @@ const LINKS = [
   { id: 13, title: '대구로페이 가맹 신청', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://minwon.daegu.go.kr/cvpl/AUTN-009/info' },
   { id: 9, title: '김포페이 가맹 신청', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
   
+  // 디자인·제작 툴
+  { id: 17, title: '미리캔버스 (포스터/메뉴판 등)', category: '디자인·제작 툴', keywords: ['미리캔버스', '디자인', '포스터', '메뉴판', '배너', '제작'], url: 'https://www.miricanvas.com/' },
+  { id: 18, title: '망고보드 (카드뉴스/홍보물 등)', category: '디자인·제작 툴', keywords: ['망고보드', '디자인', '카드뉴스', '홍보물', '배너', '제작'], url: 'https://www.mangoboard.net/' },
+  { id: 19, title: '아임웹 (쇼핑몰/홈페이지 제작)', category: '디자인·제작 툴', keywords: ['아임웹', '쇼핑몰', '홈페이지', '웹사이트', '제작'], url: 'https://imweb.me/' },
+  { id: 20, title: '식스샵 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['식스샵', '쇼핑몰', '제작', '자사몰'], url: 'https://www.sixshop.com/' },
+  { id: 21, title: '카페24 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
+
   // 필수 실무 링크 (안내/접수용 사이트 연결)
   { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
   { id: 16, title: '4대보험통합징수포털', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
@@ -26,17 +33,6 @@ const LINKS = [
   { id: 5, title: '축산물 이력제 양식 다운로드', category: '필수행정서식', keywords: ['축산물', '이력제', '양식', '서식'], url: '#' },
   { id: 6, title: '영업신고증 위임장 등 서식 다운로드', category: '필수행정서식', keywords: ['영업신고증', '신고', '서식', '위임장'], url: '#' },
   { id: 15, title: '표준근로계약서 양식 다운로드 (알바/직원)', category: '필수행정서식', keywords: ['근로계약서', '알바', '직원', '계약서', '서식'], url: '#' },
-  
-  // 지원금 / 세무
-  { id: 7, title: '소상공인 정책자금 (대출 지원)', category: '지원금·세무', keywords: ['지원금', '정책자금', '소상공인', '대출'], url: '#' },
-  { id: 8, title: '종합소득세 / 부가세 신고 가이드', category: '지원금·세무', keywords: ['세무', '세금', '종소세', '종합소득세', '부가세'], url: '#' },
-
-  // 디자인·제작 툴
-  { id: 17, title: '미리캔버스 (포스터/메뉴판 등)', category: '디자인·제작 툴', keywords: ['미리캔버스', '디자인', '포스터', '메뉴판', '배너', '제작'], url: 'https://www.miricanvas.com/' },
-  { id: 18, title: '망고보드 (카드뉴스/홍보물 등)', category: '디자인·제작 툴', keywords: ['망고보드', '디자인', '카드뉴스', '홍보물', '배너', '제작'], url: 'https://www.mangoboard.net/' },
-  { id: 19, title: '아임웹 (쇼핑몰/홈페이지 제작)', category: '디자인·제작 툴', keywords: ['아임웹', '쇼핑몰', '홈페이지', '웹사이트', '제작'], url: 'https://imweb.me/' },
-  { id: 20, title: '식스샵 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['식스샵', '쇼핑몰', '제작', '자사몰'], url: 'https://www.sixshop.com/' },
-  { id: 21, title: '카페24 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
 ];
 
 export default function Home() {
