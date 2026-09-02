@@ -6,11 +6,62 @@ import { useState, useEffect } from 'react';
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [pin, setPin] = useState('');
+  const [isChecking, setIsChecking] = useState(true);
 
   // 페이지 이동 시 모바일 메뉴 자동으로 닫기
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [pathname]);
+
+  // 접속 시 인증 여부 확인
+  useEffect(() => {
+    if (localStorage.getItem('admin_pin') === '1234') {
+      setIsAuthed(true);
+    }
+    setIsChecking(false);
+  }, []);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pin === '1234') {
+      localStorage.setItem('admin_pin', '1234');
+      setIsAuthed(true);
+    } else {
+      alert('비밀번호가 일치하지 않습니다.');
+      setPin('');
+    }
+  };
+
+  if (isChecking) return <div className="min-h-screen bg-gray-50"></div>;
+
+  if (!isAuthed) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans">
+        <form onSubmit={handleLogin} className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 w-full max-w-sm flex flex-col items-center">
+          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h2 className="text-2xl font-extrabold text-gray-900 mb-2">싹다모아 Admin</h2>
+          <p className="text-sm text-gray-500 mb-8 text-center">관리자 전용 페이지입니다.<br/>비밀번호 4자리를 입력해주세요.</p>
+          
+          <input 
+            type="password" 
+            maxLength={4}
+            value={pin}
+            onChange={e => setPin(e.target.value.replace(/[^0-9]/g, ''))}
+            className="w-full text-center text-3xl tracking-[0.5em] p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 mb-6 font-mono transition-shadow"
+            placeholder="****"
+            autoFocus
+          />
+          <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-colors shadow-sm">
+            관리자 접속하기
+          </button>
+        </form>
+      </div>
+    );
+  }
 
   const menuItems = [
     { name: '대시보드', path: '/admin', icon: '📊' },

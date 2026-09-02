@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { fetchAdminAnalytics } from './actions';
 
 interface VisitorStat {
   id: string;
@@ -15,57 +15,55 @@ export default function AdminDashboard() {
   const [todayTotal, setTodayTotal] = useState(0);
   const [instagramCount, setInstagramCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
-    fetchAnalytics();
+    const pin = localStorage.getItem('admin_pin') || '';
+    if (pin === '1234') {
+      fetchAnalytics(pin);
+    } else {
+      setLoading(false);
+      setErrorMsg('관리자 인증이 필요합니다.');
+    }
   }, []);
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = async (pin: string) => {
     setLoading(true);
     try {
-      // 한국 시간 기준 오늘 자정 구하기
-      const now = new Date();
-      const kstOffset = 9 * 60 * 60 * 1000; // UTC+9
-      const kstNow = new Date(now.getTime() + kstOffset);
-      kstNow.setUTCHours(0, 0, 0, 0); // KST 자정
-      const startOfTodayIso = new Date(kstNow.getTime() - kstOffset).toISOString();
-
-      // 1. 오늘 총 방문자 수 카운팅
-      const { count: totalCount, error: totalError } = await supabase
-        .from('ssakdamoa_analytics')
-        .select('*', { count: 'exact', head: true })
-        .gte('visited_at', startOfTodayIso);
-
-      if (totalError) throw totalError;
-
-      // 2. 오늘 인스타그램 유입 수 카운팅
-      const { count: instaCount, error: instaError } = await supabase
-        .from('ssakdamoa_analytics')
-        .select('*', { count: 'exact', head: true })
-        .gte('visited_at', startOfTodayIso)
-        .eq('is_instagram', true);
-
-      if (instaError) throw instaError;
-
-      // 3. 최근 접속 기록 딱 10건만 가져오기
-      const { data, error: listError } = await supabase
-        .from('ssakdamoa_analytics')
-        .select('*')
-        .order('visited_at', { ascending: false })
-        .limit(10);
-
-      if (listError) throw listError;
-
-      setTodayTotal(totalCount || 0);
-      setInstagramCount(instaCount || 0);
-      if (data) setStats(data);
+      const result = await fetchAdminAnalytics(pin);
+      if (result.error) {
+        setErrorMsg(result.message || '권한이 없습니다.');
+        return;
+      }
       
-    } catch (error) {
-      console.error('Error fetching analytics:', error);
+      setTodayTotal(result.totalCount!);
+      setInstagramCount(result.instaCount!);
+      setStats(result.recentVisits!);
+    } catch (err) {
+      console.error('Error fetching analytics:', err);
+      setErrorMsg('통계 데이터를 불러오는 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
     }
   };
+
+  if (errorMsg) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <div className="bg-red-50 border border-red-200 text-red-700 p-8 rounded-3xl flex flex-col items-center text-center max-w-lg">
+          <span className="text-4xl mb-4">⚠️</span>
+          <p className="font-extrabold text-xl mb-2">{errorMsg}</p>
+          {errorMsg.includes('SUPABASE_SERVICE_ROLE_KEY') && (
+            <p className="text-sm mt-2 text-red-600/80 leading-relaxed">
+              보안 강화를 위해 일반 유저의 통계 조회가 차단되었습니다.<br/>
+              관리자가 통계를 보려면 <b>Vercel과 로컬(.env.local)</b> 환경변수에<br/>
+              <code className="bg-red-100 px-1 py-0.5 rounded mx-1">SUPABASE_SERVICE_ROLE_KEY</code>를 등록해야 합니다.
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
