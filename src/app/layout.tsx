@@ -13,7 +13,6 @@ const geistMono = Geist_Mono({
 });
 
 import BottomNav from "@/components/BottomNav";
-import TopNav from "@/components/TopNav";
 
 export const metadata: Metadata = {
   title: "싹다모아 - 자영업자 필수 링크 & 서식 종합 허브",
@@ -28,10 +27,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <TopNav />
-        <div className="flex-1">
-          {children}
-        </div>
+        {children}
         <BottomNav />
       </body>
     </html>
