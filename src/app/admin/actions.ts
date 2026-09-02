@@ -77,23 +77,32 @@ export async function fetchAdminAnalytics(pin: string) {
   const { count: totalCount } = await supabaseAdmin
     .from('ssakdamoa_analytics')
     .select('*', { count: 'exact', head: true })
-    .gte('visited_at', startOfTodayIso);
+    .gte('visited_at', startOfTodayIso)
+    .neq('path', 'APP_INSTALL');
 
   const { count: instaCount } = await supabaseAdmin
     .from('ssakdamoa_analytics')
     .select('*', { count: 'exact', head: true })
     .gte('visited_at', startOfTodayIso)
-    .eq('is_instagram', true);
+    .eq('is_instagram', true)
+    .neq('path', 'APP_INSTALL');
+
+  const { count: installCount } = await supabaseAdmin
+    .from('ssakdamoa_analytics')
+    .select('*', { count: 'exact', head: true })
+    .gte('visited_at', startOfTodayIso)
+    .eq('path', 'APP_INSTALL');
 
   const { data } = await supabaseAdmin
     .from('ssakdamoa_analytics')
     .select('*')
     .order('visited_at', { ascending: false })
-    .limit(10);
+    .limit(15);
 
   return {
     totalCount: totalCount || 0,
     instaCount: instaCount || 0,
+    installCount: installCount || 0,
     recentVisits: data || []
   };
 }

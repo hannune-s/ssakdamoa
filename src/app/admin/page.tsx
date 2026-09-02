@@ -11,9 +11,10 @@ interface VisitorStat {
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<VisitorStat[]>([]);
-  const [todayTotal, setTodayTotal] = useState(0);
-  const [instagramCount, setInstagramCount] = useState(0);
+  const [stats, setStats] = useState<any[]>([]);
+  const [todayTotal, setTodayTotal] = useState<number>(0);
+  const [instagramCount, setInstagramCount] = useState<number>(0);
+  const [installCount, setInstallCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
 
@@ -35,9 +36,9 @@ export default function AdminDashboard() {
         setErrorMsg(result.message || '권한이 없습니다.');
         return;
       }
-      
       setTodayTotal(result.totalCount!);
       setInstagramCount(result.instaCount!);
+      setInstallCount(result.installCount!);
       setStats(result.recentVisits!);
     } catch (err) {
       console.error('Error fetching analytics:', err);
@@ -92,18 +93,29 @@ export default function AdminDashboard() {
             비중: {todayTotal > 0 ? Math.round((instagramCount / todayTotal) * 100) : 0}%
           </p>
         </div>
+        {/* 앱 설치 횟수 */}
+        <div className="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-green-500 flex flex-col justify-center">
+          <h3 className="text-gray-500 font-semibold mb-2">앱 설치 횟수 (오늘)</h3>
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-extrabold text-green-600">{loading ? '-' : installCount}</span>
+            <span className="text-gray-500">건</span>
+          </div>
+          <p className="text-xs text-gray-400 mt-2">
+            '홈 화면 추가'를 통해 설치된 기기 수
+          </p>
+        </div>
       </div>
 
       {/* 최근 접속 기록 */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
         <div className="px-6 py-5 border-b border-gray-100">
-          <h3 className="text-lg font-bold">최근 접속 기록 (최근 10건)</h3>
+          <h3 className="text-lg font-bold">최근 접속/설치 기록 (최근 15건)</h3>
         </div>
         <div className="overflow-x-auto pb-4">
           <table className="w-full min-w-[600px] text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-sm">
-                <th className="px-6 py-3 font-semibold">접속 시간</th>
+                <th className="px-6 py-3 font-semibold">분류 / 접속 시간</th>
                 <th className="px-6 py-3 font-semibold">유입 경로 (Referrer)</th>
                 <th className="px-6 py-3 font-semibold">인스타그램 여부</th>
                 <th className="px-6 py-3 font-semibold">접속 페이지</th>
@@ -112,29 +124,34 @@ export default function AdminDashboard() {
             <tbody className="text-sm">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-400">데이터를 불러오는 중입니다...</td>
+                  <td colSpan={4} className="px-6 py-8 text-center text-gray-400">불러오는 중...</td>
                 </tr>
-              ) : stats.slice(0, 10).map((stat) => (
-                <tr key={stat.id} className="border-t border-gray-100 hover:bg-gray-50">
-                  <td className="px-6 py-4 text-gray-600">
-                    {new Date(stat.visited_at).toLocaleString('ko-KR')}
-                  </td>
-                  <td className="px-6 py-4 truncate max-w-xs text-gray-600">
-                    {stat.referrer || '-'}
-                  </td>
-                  <td className="px-6 py-4">
-                    {stat.is_instagram ? (
-                      <span className="px-2.5 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-bold">인스타</span>
+              ) : stats.map((stat, idx) => (
+                <tr key={stat.id || idx} className={`border-t border-gray-50 ${stat.path === 'APP_INSTALL' ? 'bg-green-50/30' : ''}`}>
+                  <td className="px-6 py-3 text-gray-600 flex flex-col gap-1 items-start">
+                    {stat.path === 'APP_INSTALL' ? (
+                      <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded-full">앱 설치</span>
                     ) : (
-                      <span className="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold">일반</span>
+                      <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full">웹 방문</span>
+                    )}
+                    <span className="text-xs">{new Date(stat.visited_at).toLocaleString('ko-KR')}</span>
+                  </td>
+                  <td className="px-6 py-3 text-gray-800">{stat.referrer || '알 수 없음'}</td>
+                  <td className="px-6 py-3">
+                    {stat.path !== 'APP_INSTALL' && stat.is_instagram ? (
+                      <span className="text-pink-600 font-bold bg-pink-50 px-2 py-1 rounded text-xs">Instagram</span>
+                    ) : (
+                      <span className="text-gray-400 text-xs">-</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{stat.path}</td>
+                  <td className="px-6 py-3 text-gray-500 truncate max-w-[150px]">
+                    {stat.path === 'APP_INSTALL' ? '-' : stat.path}
+                  </td>
                 </tr>
               ))}
               {!loading && stats.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-400">접속 기록이 없습니다.</td>
+                  <td colSpan={4} className="px-6 py-8 text-center text-gray-400">최근 기록이 없습니다.</td>
                 </tr>
               )}
             </tbody>

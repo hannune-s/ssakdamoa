@@ -90,6 +90,22 @@ export default function Home() {
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
         setDeferredPrompt(null);
+        
+        // 앱 설치 통계 기록 (비동기)
+        try {
+          const ua = navigator.userAgent.toLowerCase();
+          const isMobile = /mobile|android|iphone|ipad|ipod/i.test(ua);
+          const platform = isMobile ? 'Mobile Web' : 'PC Web';
+          
+          await supabase.from('ssakdamoa_analytics').insert([{
+            path: 'APP_INSTALL',
+            referrer: `[${platform}] 홈 화면 추가 버튼`,
+            is_instagram: false,
+            visited_at: new Date().toISOString()
+          }]);
+        } catch (e) {
+          console.error('Failed to log install event', e);
+        }
       }
     } else {
       // 팝업이 차단되는 환경(카카오톡 인앱, 아이폰 등)에서 버튼이 '먹통'처럼 느껴지지 않게 예외 처리
