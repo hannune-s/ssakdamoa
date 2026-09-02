@@ -20,6 +20,12 @@ const ContactIcon = () => (
   </svg>
 );
 
+const CalculatorIcon = () => (
+  <svg className="w-[22px] h-[22px] mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+  </svg>
+);
+
 export default function BottomNav() {
   const pathname = usePathname();
 
@@ -30,6 +36,7 @@ export default function BottomNav() {
 
   const tabs = [
     { name: '홈', path: '/', icon: <HomeIcon /> },
+    { name: '마진 계산기', path: '/calculator', icon: <CalculatorIcon /> },
     { name: '공지·안내', path: '/notices', icon: <NoticeIcon /> },
     { name: '제휴·문의', path: '/inquiry', icon: <ContactIcon /> },
   ];
