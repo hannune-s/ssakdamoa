@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-const CATEGORIES = ['전체', '페이·가맹', '필수 실무 링크', '필수행정서식', '지원금·세무'];
+const CATEGORIES = ['전체', '페이·가맹', '필수 실무 링크', '필수행정서식', '지원금·세무', '디자인·제작 툴'];
 
 const LINKS = [
   // 전국 단위
@@ -30,6 +30,13 @@ const LINKS = [
   // 지원금 / 세무
   { id: 7, title: '소상공인 정책자금 (대출 지원)', category: '지원금·세무', keywords: ['지원금', '정책자금', '소상공인', '대출'], url: '#' },
   { id: 8, title: '종합소득세 / 부가세 신고 가이드', category: '지원금·세무', keywords: ['세무', '세금', '종소세', '종합소득세', '부가세'], url: '#' },
+
+  // 디자인·제작 툴
+  { id: 17, title: '미리캔버스 (포스터/메뉴판 등)', category: '디자인·제작 툴', keywords: ['미리캔버스', '디자인', '포스터', '메뉴판', '배너', '제작'], url: 'https://www.miricanvas.com/' },
+  { id: 18, title: '망고보드 (카드뉴스/홍보물 등)', category: '디자인·제작 툴', keywords: ['망고보드', '디자인', '카드뉴스', '홍보물', '배너', '제작'], url: 'https://www.mangoboard.net/' },
+  { id: 19, title: '아임웹 (쇼핑몰/홈페이지 제작)', category: '디자인·제작 툴', keywords: ['아임웹', '쇼핑몰', '홈페이지', '웹사이트', '제작'], url: 'https://imweb.me/' },
+  { id: 20, title: '식스샵 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['식스샵', '쇼핑몰', '제작', '자사몰'], url: 'https://www.sixshop.com/' },
+  { id: 21, title: '카페24 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
 ];
 
 export default function Home() {
@@ -66,7 +73,7 @@ export default function Home() {
         <div className="relative mb-4">
           <input 
             type="text" 
-            placeholder="'보건증', '제로페이', '계약서' 등 키워드 검색" 
+            placeholder="'보건증', '제로페이', '메뉴판' 등 키워드 검색" 
             className="w-full bg-gray-100 text-gray-800 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-gray-400 text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
