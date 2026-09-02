@@ -85,14 +85,25 @@ export default function Home() {
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
-      // Chrome 등에서 기본 제공하는 설치 팝업 띄우기
+      // 브라우저가 지원할 때 (PC 크롬, 안드로이드 크롬 등)
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
         setDeferredPrompt(null);
       }
+    } else {
+      // 팝업이 차단되는 환경(카카오톡 인앱, 아이폰 등)에서 버튼이 '먹통'처럼 느껴지지 않게 예외 처리
+      const ua = navigator.userAgent.toLowerCase();
+      
+      if (ua.includes('kakaotalk')) {
+        // 카카오톡 내부에선 외부 브라우저(크롬/사파리)로 강제 연결
+        window.location.href = 'kakaotalk://web/openExternal?url=' + encodeURIComponent(window.location.href);
+      } else if (/iphone|ipad|ipod/.test(ua)) {
+        alert('애플 정책상 아이폰은 사파리(Safari) 브라우저 하단의 [공유] 버튼을 통해서만 설치할 수 있습니다.');
+      } else {
+        alert('이미 앱이 바탕화면에 설치되어 있거나, 현재 환경에서 설치 기능을 지원하지 않습니다.\n(크롬이나 삼성 인터넷 앱을 이용해주세요!)');
+      }
     }
-    // 안내창(설명서) 등 부가적인 UI는 UX 저하를 방지하기 위해 띄우지 않습니다.
   };
 
   // 검색어나 카테고리가 변경되면 표시 개수를 다시 10개로 초기화
