@@ -142,7 +142,7 @@ export default function Home() {
     
     if (term) {
       const title = link.title.toLowerCase().replace(/\s+/g, '');
-      return title.includes(term) || link.keywords.some(kw => kw.toLowerCase().replace(/\s+/g, '').includes(term));
+      return title.includes(term) || link.keywords.some((kw: string) => kw.toLowerCase().replace(/\s+/g, '').includes(term));
     }
     
     return selectedCategory === '전체' || link.category === selectedCategory;
