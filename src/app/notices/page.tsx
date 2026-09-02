@@ -1,47 +1,57 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
-// 샘플 데이터 (향후 DB 연동 시 이 부분을 교체하면 됩니다)
-const MOCK_DATA = [
-  { 
-    id: 1, 
-    type: 'notice', 
-    title: '싹다모아 베타 서비스 오픈 안내', 
-    content: '자영업자 분들의 편리한 업무를 위한 싹다모아 서비스가 오픈되었습니다.\n앞으로 많은 이용 부탁드립니다.', 
-    date: '2026. 09. 02' 
-  },
-  { 
-    id: 2, 
-    type: 'notice', 
-    title: '신규 실무 서식 (근로계약서 등) 업데이트', 
-    content: '자주 쓰시는 표준 근로계약서와 근태일지 양식이 새롭게 추가되었습니다.\n[실무 서식·양식] 탭에서 바로 다운로드 가능합니다.', 
-    date: '2026. 09. 01' 
-  },
-  { 
-    id: 3, 
-    type: 'news', 
-    title: '여름철 매장 위생 관리 팁 3가지 공유해요', 
-    content: '안녕하세요 사장님들!\n최근 날씨가 더워지면서 식자재 관리가 많이 까다로우시죠?\n\n1. 냉장고 온도 수시로 체크 생활화\n2. 도마/칼 교차 오염 주의 및 분리 사용\n3. 마감 후 철저한 수분 건조\n\n기본적인 것들이지만 바쁘면 놓치기 쉬우니 꼭 챙겨보아요. 모두 화이팅합시다!', 
-    date: '2026. 08. 28' 
-  },
-  { 
-    id: 4, 
-    type: 'news', 
-    title: '오늘 배달 주문 받으면서 느낀 점...', 
-    content: '고객분들이 리뷰 이벤트 참여를 누르고 요청사항에 안 적어주시는 경우가 꽤 있네요 ㅠㅠ\n이럴 때는 배달앱 메뉴 선택에 필수 옵션으로 [리뷰 참여 여부]를 넣는 게 좋은 것 같습니다.\n\n다들 비슷한 고민 있으시면 참고하세요!', 
-    date: '2026. 08. 25' 
-  }
-];
+interface NoticeItem {
+  id: string;
+  type: 'notice' | 'news';
+  title: string;
+  content: string;
+  created_at: string;
+}
 
 export default function NoticesPage() {
   const [activeTab, setActiveTab] = useState<'notice' | 'news'>('notice');
-  const [openId, setOpenId] = useState<number | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+  
+  const [notices, setNotices] = useState<NoticeItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredData = MOCK_DATA.filter(item => item.type === activeTab);
+  // DB에서 데이터 불러오기
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('notices')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        if (data) setNotices(data);
+      } catch (err) {
+        console.error('Failed to fetch notices:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchNotices();
+  }, []);
+
+  const filteredData = notices.filter(item => item.type === activeTab);
 
   // 아코디언 열기/닫기 토글 함수
-  const toggleAccordion = (id: number) => {
+  const toggleAccordion = (id: string) => {
     setOpenId(openId === id ? null : id);
+  };
+
+  // 날짜 포맷 (예: 2026. 09. 02)
+  const formatDate = (isoString: string) => {
+    const date = new Date(isoString);
+    return date.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
   };
 
   return (
@@ -75,8 +85,12 @@ export default function NoticesPage() {
         </div>
 
         {/* Accordion List */}
-        <div className="flex flex-col">
-          {filteredData.length > 0 ? (
+        <div className="flex flex-col min-h-[300px]">
+          {loading ? (
+            <div className="flex justify-center items-center h-40 text-gray-400 text-sm">
+              게시글을 불러오는 중입니다...
+            </div>
+          ) : filteredData.length > 0 ? (
             filteredData.map((item) => (
               <div key={item.id} className="border-b border-gray-100 last:border-b-0">
                 <button 
@@ -87,7 +101,7 @@ export default function NoticesPage() {
                     <span className={`font-semibold text-[15px] leading-tight ${openId === item.id ? 'text-blue-600' : 'text-gray-800'}`}>
                       {item.title}
                     </span>
-                    <span className="text-[11px] text-gray-400 font-medium">{item.date}</span>
+                    <span className="text-[11px] text-gray-400 font-medium">{formatDate(item.created_at)}</span>
                   </div>
                   <span className={`text-gray-400 text-xs transition-transform duration-300 ${openId === item.id ? 'rotate-180' : ''}`}>
                     ▼
@@ -103,8 +117,8 @@ export default function NoticesPage() {
               </div>
             ))
           ) : (
-            <div className="text-center py-12 text-gray-400 text-sm">
-              등록된 게시글이 없습니다.
+            <div className="flex justify-center items-center h-40 text-gray-400 text-sm">
+              아직 등록된 게시글이 없습니다.
             </div>
           )}
         </div>

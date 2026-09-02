@@ -8,7 +8,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const menuItems = [
     { name: '대시보드', path: '/admin', icon: '📊' },
     { name: '서식 관리', path: '/admin/forms', icon: '📄' },
-    // { name: '공지사항 관리', path: '/admin/notices', icon: '📢' },
+    { name: '공지사항 관리', path: '/admin/notices', icon: '📢' },
     // { name: '고객센터(1:1)', path: '/admin/inquiries', icon: '🎧' },
   ];
 
