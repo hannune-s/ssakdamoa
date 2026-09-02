@@ -82,11 +82,22 @@ export default function Home() {
           <input 
             type="text" 
             placeholder="'보건증', '제로페이', '메뉴판' 등 키워드 검색" 
-            className="w-full bg-gray-100 text-gray-800 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-gray-400 text-sm"
+            className="w-full bg-gray-100 text-gray-800 rounded-xl pl-4 pr-16 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-gray-400 text-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <span className="absolute right-4 top-3 text-gray-400">🔍</span>
+          <div className="absolute right-3 top-2.5 flex items-center gap-2">
+            {searchTerm.length > 0 && (
+              <button 
+                onClick={() => setSearchTerm('')}
+                className="w-5 h-5 flex items-center justify-center bg-gray-300 hover:bg-gray-400 text-white rounded-full text-xs transition-colors"
+                aria-label="검색어 지우기"
+              >
+                ✕
+              </button>
+            )}
+            <span className="text-gray-400 text-lg mr-1">🔍</span>
+          </div>
         </div>
 
         {/* Category Tabs (스크롤 없이 한 화면에 꽉 차게 래핑) */}
