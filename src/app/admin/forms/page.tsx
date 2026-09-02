@@ -33,7 +33,7 @@ export default function AdminForms() {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('forms')
+        .from('ssakdamoa_forms')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -117,7 +117,7 @@ export default function AdminForms() {
       if (editingId) {
         // [수정 모드] DB 업데이트
         const { error: updateError } = await supabase
-          .from('forms')
+          .from('ssakdamoa_forms')
           .update({ title, description, file_url: finalFileUrl })
           .eq('id', editingId);
 
@@ -126,7 +126,7 @@ export default function AdminForms() {
       } else {
         // [신규 모드] DB 추가
         const { error: insertError } = await supabase
-          .from('forms')
+          .from('ssakdamoa_forms')
           .insert([{ title, description, file_url: finalFileUrl }]);
 
         if (insertError) throw insertError;
@@ -150,7 +150,7 @@ export default function AdminForms() {
 
     try {
       // DB에서 먼저 삭제
-      const { error: dbError } = await supabase.from('forms').delete().eq('id', id);
+      const { error: dbError } = await supabase.from('ssakdamoa_forms').delete().eq('id', id);
       if (dbError) throw dbError;
 
       // Storage에서 파일 삭제

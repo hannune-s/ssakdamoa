@@ -31,7 +31,7 @@ export default function AdminNotices() {
     setLoading(true);
     try {
       const { data, error } = await supabase
-        .from('notices')
+        .from('ssakdamoa_notices')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -70,7 +70,7 @@ export default function AdminNotices() {
     try {
       if (editingId) {
         const { error } = await supabase
-          .from('notices')
+          .from('ssakdamoa_notices')
           .update({ title, content, type })
           .eq('id', editingId);
 
@@ -78,7 +78,7 @@ export default function AdminNotices() {
         alert('게시글이 성공적으로 수정되었습니다!');
       } else {
         const { error } = await supabase
-          .from('notices')
+          .from('ssakdamoa_notices')
           .insert([{ title, content, type }]);
 
         if (error) throw error;
@@ -99,7 +99,7 @@ export default function AdminNotices() {
     if (!confirm('정말로 삭제하시겠습니까?')) return;
 
     try {
-      const { error } = await supabase.from('notices').delete().eq('id', id);
+      const { error } = await supabase.from('ssakdamoa_notices').delete().eq('id', id);
       if (error) throw error;
 
       fetchNotices();

@@ -32,7 +32,7 @@ export default function AdminDashboard() {
 
       // 1. 오늘 총 방문자 수 카운팅
       const { count: totalCount, error: totalError } = await supabase
-        .from('analytics')
+        .from('ssakdamoa_analytics')
         .select('*', { count: 'exact', head: true })
         .gte('visited_at', startOfTodayIso);
 
@@ -40,7 +40,7 @@ export default function AdminDashboard() {
 
       // 2. 오늘 인스타그램 유입 수 카운팅
       const { count: instaCount, error: instaError } = await supabase
-        .from('analytics')
+        .from('ssakdamoa_analytics')
         .select('*', { count: 'exact', head: true })
         .gte('visited_at', startOfTodayIso)
         .eq('is_instagram', true);
@@ -49,7 +49,7 @@ export default function AdminDashboard() {
 
       // 3. 최근 접속 기록 딱 10건만 가져오기
       const { data, error: listError } = await supabase
-        .from('analytics')
+        .from('ssakdamoa_analytics')
         .select('*')
         .order('visited_at', { ascending: false })
         .limit(10);

@@ -165,7 +165,7 @@ export default function Home() {
         const path = window.location.pathname;
 
         // DB에 조용히 비동기 기록
-        await supabase.from('analytics').insert([{ 
+        await supabase.from('ssakdamoa_analytics').insert([{ 
           referrer: finalReferrer, 
           is_instagram: isInstagram, 
           path 
@@ -182,7 +182,7 @@ export default function Home() {
     const fetchForms = async () => {
       try {
         const { data, error } = await supabase
-          .from('forms')
+          .from('ssakdamoa_forms')
           .select('*')
           .order('created_at', { ascending: false });
 
@@ -221,9 +221,9 @@ export default function Home() {
     
     // 2. 백그라운드에서 다운로드 수 증가 (실제 다운로드 버튼을 눌렀을 때만!)
     try {
-      const { data } = await supabase.from('forms').select('downloads').eq('id', formId).single();
+      const { data } = await supabase.from('ssakdamoa_forms').select('downloads').eq('id', formId).single();
       if (data) {
-        await supabase.from('forms').update({ downloads: data.downloads + 1 }).eq('id', formId);
+        await supabase.from('ssakdamoa_forms').update({ downloads: data.downloads + 1 }).eq('id', formId);
       }
     } catch (err) {
       console.error('Failed to increment download count', err);

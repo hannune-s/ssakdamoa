@@ -22,7 +22,7 @@ export default function NoticesPage() {
     const fetchNotices = async () => {
       try {
         const { data, error } = await supabase
-          .from('notices')
+          .from('ssakdamoa_notices')
           .select('*')
           .order('created_at', { ascending: false });
 
