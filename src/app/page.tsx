@@ -22,6 +22,7 @@ const LINKS = [
   { id: 27, title: '배달의민족 (배민사장님광장)', category: '배달·입점 관리', keywords: ['배달의민족', '배민', '배달', '입점', '사장님광장'], url: 'https://ceo.baemin.com/' },
   { id: 28, title: '쿠팡이츠 스토어 (입점/관리)', category: '배달·입점 관리', keywords: ['쿠팡이츠', '쿠팡', '이츠', '배달', '입점', '스토어'], url: 'https://store.coupangeats.com/' },
   { id: 29, title: '요기요 파트너스 (입점/관리)', category: '배달·입점 관리', keywords: ['요기요', '요기요파트너스', '배달', '입점'], url: 'https://partner.yogiyo.co.kr/' },
+  { id: 31, title: '신한 땡겨요 사장님라운지 (입점/관리)', category: '배달·입점 관리', keywords: ['신한', '땡겨요', '신한땡겨요', '배달', '입점', '사장님라운지'], url: 'https://boss.ddangyo.com/' },
   { id: 30, title: '배달특급 가맹점 신청', category: '배달·입점 관리', keywords: ['배달특급', '경기도배달앱', '공공배달앱', '배달', '입점'], url: 'https://www.specialdelivery.co.kr/' },
   
   // 디자인·제작 툴
