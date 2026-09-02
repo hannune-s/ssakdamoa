@@ -26,9 +26,14 @@ export async function changePin(currentPin: string, newPin: string) {
   if (!isValid) return { success: false, error: '현재 비밀번호가 일치하지 않습니다.' };
 
   const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-  const { error } = await supabaseAdmin.from('ssakdamoa_admin_config').update({ admin_pin: newPin }).eq('id', 1);
+  
+  // UPDATE 대신 UPSERT를 사용하여 DB에 1번 행이 없더라도 무조건 강제로 생성하며 저장하도록 수정
+  const { error } = await supabaseAdmin
+    .from('ssakdamoa_admin_config')
+    .upsert({ id: 1, admin_pin: newPin });
 
   if (error) {
+    console.error('changePin error:', error);
     return { success: false, error: 'DB 오류: 먼저 안내해 드린 SQL 스크립트를 실행했는지 확인해주세요.' };
   }
   return { success: true };
