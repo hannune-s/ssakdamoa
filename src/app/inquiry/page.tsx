@@ -3,20 +3,26 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
 export default function InquiryPage() {
-  const [formData, setFormData] = useState({ name: '', contact: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', company: '', phone: '', email: '', message: '' });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg('');
     
     try {
       const { error } = await supabase.from('ssakdamoa_inquiries').insert([formData]);
-      if (error) throw error;
+      if (error) {
+        console.error('Insert error:', error);
+        throw error;
+      }
       setSubmitted(true);
-    } catch (err) {
-      alert('접수 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+    } catch (err: any) {
+      console.error(err);
+      setErrorMsg('전송 중 오류가 발생했습니다. 관리자에게 DB 설정을 확인해달라고 요청해주세요. (에러코드: 401/403)');
     } finally {
       setLoading(false);
     }
@@ -52,28 +58,62 @@ export default function InquiryPage() {
       <div className="w-full max-w-2xl bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-bold text-gray-800">이름 / 상호명 <span className="text-red-500">*</span></label>
-            <input 
-              type="text" 
-              required
-              placeholder="예: 홍길동 / 싹다식당"
-              value={formData.name}
-              onChange={e => setFormData({...formData, name: e.target.value})}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-            />
+          {errorMsg && (
+            <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-bold border border-red-100">
+              ⚠️ {errorMsg}
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-gray-800">이름 <span className="text-red-500">*</span></label>
+              <input 
+                type="text" 
+                required
+                placeholder="예: 홍길동"
+                value={formData.name}
+                onChange={e => setFormData({...formData, name: e.target.value})}
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+              />
+            </div>
+            
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-gray-800">상호명 <span className="text-red-500">*</span></label>
+              <input 
+                type="text" 
+                required
+                placeholder="예: 싹다식당"
+                value={formData.company}
+                onChange={e => setFormData({...formData, company: e.target.value})}
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+              />
+            </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-bold text-gray-800">연락받으실 곳 <span className="text-red-500">*</span></label>
-            <input 
-              type="text" 
-              required
-              placeholder="예: 010-1234-5678 또는 이메일 주소"
-              value={formData.contact}
-              onChange={e => setFormData({...formData, contact: e.target.value})}
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-gray-800">연락처 <span className="text-red-500">*</span></label>
+              <input 
+                type="tel" 
+                required
+                placeholder="예: 010-1234-5678"
+                value={formData.phone}
+                onChange={e => setFormData({...formData, phone: e.target.value})}
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-gray-800">이메일 <span className="text-red-500">*</span></label>
+              <input 
+                type="email" 
+                required
+                placeholder="예: example@email.com"
+                value={formData.email}
+                onChange={e => setFormData({...formData, email: e.target.value})}
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+              />
+            </div>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -93,7 +133,7 @@ export default function InquiryPage() {
             disabled={loading}
             className="w-full py-4 mt-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold rounded-xl transition-colors shadow-sm"
           >
-            {loading ? '전송 중...' : '문의하기'}
+            {loading ? '전송 중...' : '문의 접수하기'}
           </button>
         </form>
       </div>

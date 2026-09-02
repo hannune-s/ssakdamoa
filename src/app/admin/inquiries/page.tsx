@@ -5,7 +5,9 @@ import { fetchAdminInquiries, deleteAdminInquiry } from '../actions';
 interface Inquiry {
   id: string;
   name: string;
-  contact: string;
+  company: string;
+  phone: string;
+  email: string;
   message: string;
   created_at: string;
 }
@@ -69,31 +71,38 @@ export default function AdminInquiries() {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[700px] text-left border-collapse">
+          <table className="w-full min-w-[900px] text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-sm">
-                <th className="px-6 py-4 font-semibold w-1/6">작성일시</th>
-                <th className="px-6 py-4 font-semibold w-1/6">이름/상호명</th>
-                <th className="px-6 py-4 font-semibold w-1/5">연락처</th>
+                <th className="px-6 py-4 font-semibold w-40">작성일시</th>
+                <th className="px-6 py-4 font-semibold w-32">이름</th>
+                <th className="px-6 py-4 font-semibold w-32">상호명</th>
+                <th className="px-6 py-4 font-semibold w-40">연락처/이메일</th>
                 <th className="px-6 py-4 font-semibold">문의 내용</th>
-                <th className="px-6 py-4 font-semibold w-24 text-center">관리</th>
+                <th className="px-6 py-4 font-semibold w-20 text-center">관리</th>
               </tr>
             </thead>
             <tbody className="text-sm">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-400">불러오는 중...</td>
+                  <td colSpan={6} className="px-6 py-12 text-center text-gray-400">불러오는 중...</td>
                 </tr>
               ) : inquiries.map((item) => (
                 <tr key={item.id} className="border-t border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-gray-500">
+                  <td className="px-6 py-4 text-gray-500 text-xs">
                     {new Date(item.created_at).toLocaleString('ko-KR')}
                   </td>
                   <td className="px-6 py-4 font-bold text-gray-800">
                     {item.name}
                   </td>
-                  <td className="px-6 py-4 text-blue-600 font-medium">
-                    {item.contact}
+                  <td className="px-6 py-4 text-gray-700">
+                    {item.company}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-col gap-1">
+                      <span className="text-blue-600 font-medium whitespace-nowrap">{item.phone}</span>
+                      <span className="text-gray-500 text-xs whitespace-nowrap">{item.email}</span>
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-gray-700 whitespace-pre-wrap leading-relaxed">
                     {item.message}
@@ -110,7 +119,7 @@ export default function AdminInquiries() {
               ))}
               {!loading && inquiries.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-400">접수된 제휴·문의 내역이 없습니다.</td>
+                  <td colSpan={6} className="px-6 py-12 text-center text-gray-400">접수된 제휴·문의 내역이 없습니다.</td>
                 </tr>
               )}
             </tbody>
