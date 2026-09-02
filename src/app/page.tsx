@@ -47,7 +47,7 @@ const LINKS = [
   { id: 6, title: '영업신고증 위임장 등 서식 다운로드', desc: '영업신고증 대리 발급 및 신청 시 필요', category: '실무 서식·양식', keywords: ['영업신고증', '신고', '서식', '양식', '위임장'], url: '#' },
 
   // 추천 앱
-  { id: 33, title: '한고세쏙 (세무/재고 관리)', desc: '복잡한 매장 관리, 한고세쏙 하나로 간편하게 해결', category: '추천 앱', keywords: ['한고세쏙', '세무', '재고', '매출', '관리앱', '추천앱'], url: '#' },
+  { id: 33, title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '추천 앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱'], url: 'https://hangose-me.vercel.app/landing.html' },
   { id: 34, title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '추천 앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱'], url: 'https://business.daangn.com/' },
   { id: 35, title: '알바몬 / 알바천국 (구인구직)', desc: '빠르고 확실한 매장 아르바이트생 구인', category: '추천 앱', keywords: ['알바몬', '알바천국', '알바', '구인', '채용', '추천앱'], url: 'https://www.albamon.com/' },
 ];
@@ -154,13 +154,18 @@ export default function Home() {
       </div>
 
       {/* Cross Promotion Banner */}
-      <div className="w-full max-w-2xl mt-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-6 text-white shadow-lg text-center transform hover:scale-[1.02] transition-transform cursor-pointer">
-        <h3 className="text-lg font-extrabold mb-1.5">사장님을 위한 맞춤형 세무/재고 관리! 🚀</h3>
-        <p className="text-indigo-100 text-sm mb-4">복잡한 매장 관리, '한고세쏙' 하나로 간편하게 해결하세요.</p>
-        <button className="bg-white text-indigo-700 font-bold py-2.5 px-6 rounded-full hover:bg-indigo-50 transition-colors shadow-sm text-sm">
-          한고세쏙 앱 알아보기
-        </button>
-      </div>
+      <a 
+        href="https://hangose-me.vercel.app/landing.html" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="block w-full max-w-2xl mt-10 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl p-6 text-white shadow-lg text-center transform hover:scale-[1.02] transition-transform cursor-pointer"
+      >
+        <h3 className="text-lg font-extrabold mb-1.5">복잡한 일상 기록, 한곳에 쏙! 🚀</h3>
+        <p className="text-green-50 text-sm mb-4">계좌, 구독, 돈거래 장부, 아이디까지 흩어진 내 정보를 직관적으로 관리하세요.</p>
+        <div className="inline-block bg-white text-green-700 font-bold py-2.5 px-6 rounded-full hover:bg-green-50 transition-colors shadow-sm text-sm">
+          한고세쏙 무료로 시작하기
+        </div>
+      </a>
     </main>
   );
 }
