@@ -182,7 +182,7 @@ export default function AdminForms() {
       <p className="text-gray-500 mb-8">메인 페이지의 서식 리스트와 실시간으로 연동됩니다.</p>
 
       {/* Upload & Edit Form */}
-      <div className={`rounded-2xl shadow-sm border p-6 mb-8 transition-colors ${editingId ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-100'}`}>
+      <div className={`rounded-2xl shadow-sm border p-4 sm:p-6 mb-8 transition-colors ${editingId ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-100'}`}>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-800">
             {editingId ? '✍️ 양식 수정 모드' : '새 양식 업로드'}
@@ -244,12 +244,12 @@ export default function AdminForms() {
 
       {/* List */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-        <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 flex justify-between items-center">
           <h3 className="text-lg font-bold">등록된 서식 목록</h3>
           <span className="text-sm text-gray-500">총 {forms.length}건</span>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto pb-4">
+          <table className="w-full min-w-[700px] text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-sm">
                 <th className="px-6 py-3 font-semibold">제목</th>

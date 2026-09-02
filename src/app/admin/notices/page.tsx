@@ -116,7 +116,7 @@ export default function AdminNotices() {
       <p className="text-gray-500 mb-8">앱 하단의 [공지·안내] 메뉴와 실시간으로 연동됩니다.</p>
 
       {/* Upload & Edit Form */}
-      <div className={`rounded-2xl shadow-sm border p-6 mb-8 transition-colors ${editingId ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-100'}`}>
+      <div className={`rounded-2xl shadow-sm border p-4 sm:p-6 mb-8 transition-colors ${editingId ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-100'}`}>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-bold text-gray-800">
             {editingId ? '✍️ 게시글 수정 모드' : '새 게시글 작성'}
@@ -134,7 +134,7 @@ export default function AdminNotices() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-2xl">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1">게시판 선택</label>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input 
                   type="radio" 
@@ -155,7 +155,7 @@ export default function AdminNotices() {
                   onChange={() => setType('news')}
                   className="w-4 h-4 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-sm text-gray-800 font-medium">소식 (팁, 자유로운 이야기)</span>
+                <span className="text-sm text-gray-800 font-medium">소식 (팁, 이야기)</span>
               </label>
             </div>
           </div>
@@ -194,12 +194,12 @@ export default function AdminNotices() {
 
       {/* List */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-        <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-gray-100 flex justify-between items-center">
           <h3 className="text-lg font-bold">등록된 게시글 목록</h3>
           <span className="text-sm text-gray-500">총 {notices.length}건</span>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto pb-4">
+          <table className="w-full min-w-[700px] text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-sm">
                 <th className="px-6 py-3 font-semibold w-24 text-center">분류</th>

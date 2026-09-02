@@ -101,8 +101,8 @@ export default function AdminDashboard() {
         <div className="px-6 py-5 border-b border-gray-100">
           <h3 className="text-lg font-bold">최근 접속 기록 (최근 10건)</h3>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto pb-4">
+          <table className="w-full min-w-[600px] text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 text-gray-500 text-sm">
                 <th className="px-6 py-3 font-semibold">접속 시간</th>
