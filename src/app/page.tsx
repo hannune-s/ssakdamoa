@@ -61,6 +61,40 @@ export default function Home() {
   const [hangoseUrl, setHangoseUrl] = useState('https://hangose-me.vercel.app/landing.html');
   const [dbForms, setDbForms] = useState<any[]>([]);
   const [visibleCount, setVisibleCount] = useState(10);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isIOS, setIsIOS] = useState(false);
+
+  // PWA 앱 설치 프롬프트 및 모바일(iOS/Android) 감지
+  useEffect(() => {
+    const ua = window.navigator.userAgent.toLowerCase();
+    setIsIOS(/iphone|ipad|ipod/.test(ua));
+
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      // Chrome 등에서 기본 제공하는 설치 팝업 띄우기
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setDeferredPrompt(null);
+      }
+    } else {
+      // 설치 팝업을 띄울 수 없는 환경(iOS 사파리 등)인 경우 수동 가이드 안내
+      if (isIOS) {
+        alert("🍎 아이폰(iOS) 설치 방법:\n하단의 [공유] 버튼(네모 안 화살표)을 누른 후,\n[홈 화면에 추가]를 선택해주세요!");
+      } else {
+        alert("🤖 안드로이드 앱 설치 방법:\n브라우저 우측 상단의 [메뉴(⋮)]를 누른 후,\n[홈 화면에 추가] 또는 [앱 설치]를 선택해주세요!");
+      }
+    }
+  };
 
   // 검색어나 카테고리가 변경되면 표시 개수를 다시 10개로 초기화
   useEffect(() => {
@@ -209,7 +243,16 @@ export default function Home() {
       {/* Header */}
       <div className="w-full max-w-2xl text-center mb-6">
         <h1 className="text-3xl font-extrabold text-blue-600 mb-2 tracking-tight">싹다모아</h1>
-        <p className="text-gray-500 text-sm">자영업자 필수 링크 & 서식 종합 허브</p>
+        <p className="text-gray-500 text-sm mb-4">자영업자 필수 링크 & 서식 종합 허브</p>
+        <button 
+          onClick={handleInstallClick}
+          className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 font-bold py-2 px-4 rounded-full text-[13px] transition-colors border border-blue-100 shadow-sm"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          홈 화면에 앱 추가하기 (1초 설치)
+        </button>
       </div>
 
       {/* Search & Filter Area */}
