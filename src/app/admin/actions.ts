@@ -4,8 +4,39 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''; 
 
+export async function verifyPin(pin: string) {
+  // 아직 환경변수 셋업이 안 되었을 때 관리자가 아예 튕기는 걸 방지하는 안전장치
+  if (!supabaseServiceKey) {
+    return pin === '1234';
+  }
+
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+  const { data, error } = await supabaseAdmin.from('ssakdamoa_admin_config').select('admin_pin').eq('id', 1).single();
+  
+  if (error || !data) return pin === '1234'; // 테이블 생성 전 기본값
+  return pin === data.admin_pin;
+}
+
+export async function changePin(currentPin: string, newPin: string) {
+  if (!supabaseServiceKey) {
+    return { success: false, error: 'SUPABASE_SERVICE_ROLE_KEY가 등록되지 않아 비밀번호를 변경할 수 없습니다.' };
+  }
+
+  const isValid = await verifyPin(currentPin);
+  if (!isValid) return { success: false, error: '현재 비밀번호가 일치하지 않습니다.' };
+
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+  const { error } = await supabaseAdmin.from('ssakdamoa_admin_config').update({ admin_pin: newPin }).eq('id', 1);
+
+  if (error) {
+    return { success: false, error: 'DB 오류: 먼저 안내해 드린 SQL 스크립트를 실행했는지 확인해주세요.' };
+  }
+  return { success: true };
+}
+
 export async function fetchAdminAnalytics(pin: string) {
-  if (pin !== '1234') {
+  const isPinValid = await verifyPin(pin);
+  if (!isPinValid) {
     return { error: 'Unauthorized' };
   }
 

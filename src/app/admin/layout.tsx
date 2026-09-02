@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
+import { verifyPin } from './actions';
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,26 +17,38 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  // 접속 시 인증 여부 확인
+  // 접속 시 인증 여부 확인 (서버 액션 통해 확인)
   useEffect(() => {
-    if (localStorage.getItem('admin_pin') === '1234') {
-      setIsAuthed(true);
-    }
-    setIsChecking(false);
+    const checkAuth = async () => {
+      const storedPin = localStorage.getItem('admin_pin');
+      if (storedPin) {
+        const isValid = await verifyPin(storedPin);
+        if (isValid) {
+          setIsAuthed(true);
+        } else {
+          localStorage.removeItem('admin_pin');
+        }
+      }
+      setIsChecking(false);
+    };
+    checkAuth();
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pin === '1234') {
-      localStorage.setItem('admin_pin', '1234');
+    setIsChecking(true);
+    const isValid = await verifyPin(pin);
+    if (isValid) {
+      localStorage.setItem('admin_pin', pin);
       setIsAuthed(true);
     } else {
       alert('비밀번호가 일치하지 않습니다.');
       setPin('');
     }
+    setIsChecking(false);
   };
 
-  if (isChecking) return <div className="min-h-screen bg-gray-50"></div>;
+  if (isChecking) return <div className="min-h-screen bg-gray-50 flex items-center justify-center"><div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div></div>;
 
   if (!isAuthed) {
     return (
@@ -55,7 +69,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             placeholder="****"
             autoFocus
           />
-          <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-2xl transition-colors shadow-sm">
+          <button type="submit" disabled={isChecking || pin.length < 4} className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white font-bold rounded-2xl transition-colors shadow-sm">
             관리자 접속하기
           </button>
         </form>
@@ -67,6 +81,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: '대시보드', path: '/admin', icon: '📊' },
     { name: '서식 관리', path: '/admin/forms', icon: '📄' },
     { name: '공지사항 관리', path: '/admin/notices', icon: '📢' },
+    { name: '보안 설정', path: '/admin/settings', icon: '⚙️' },
   ];
 
   return (
