@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-const CATEGORIES = ['전체', '페이·가맹', '디자인·제작 툴', '필수 실무 링크', '필수행정서식'];
+const CATEGORIES = ['전체', '페이·가맹', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '필수행정서식'];
 
 const LINKS = [
   // 전국 단위 (페이·가맹)
@@ -17,6 +17,12 @@ const LINKS = [
   { id: 12, title: '부산 동백전 가맹 신청', category: '페이·가맹', keywords: ['동백전', '부산', '지역화폐'], url: 'https://busandong100.kr/' },
   { id: 13, title: '대구로페이 가맹 신청', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://minwon.daegu.go.kr/cvpl/AUTN-009/info' },
   { id: 9, title: '김포페이 가맹 신청', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
+  
+  // 배달·입점 관리
+  { id: 27, title: '배달의민족 (배민사장님광장)', category: '배달·입점 관리', keywords: ['배달의민족', '배민', '배달', '입점', '사장님광장'], url: 'https://ceo.baemin.com/' },
+  { id: 28, title: '쿠팡이츠 스토어 (입점/관리)', category: '배달·입점 관리', keywords: ['쿠팡이츠', '쿠팡', '이츠', '배달', '입점', '스토어'], url: 'https://store.coupangeats.com/' },
+  { id: 29, title: '요기요 파트너스 (입점/관리)', category: '배달·입점 관리', keywords: ['요기요', '요기요파트너스', '배달', '입점'], url: 'https://partner.yogiyo.co.kr/' },
+  { id: 30, title: '배달특급 가맹점 신청', category: '배달·입점 관리', keywords: ['배달특급', '경기도배달앱', '공공배달앱', '배달', '입점'], url: 'https://www.specialdelivery.co.kr/' },
   
   // 디자인·제작 툴
   { id: 17, title: '미리캔버스 (포스터/메뉴판 등)', category: '디자인·제작 툴', keywords: ['미리캔버스', '디자인', '포스터', '메뉴판', '배너', '제작'], url: 'https://www.miricanvas.com/' },
