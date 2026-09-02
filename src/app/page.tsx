@@ -68,32 +68,31 @@ export default function Home() {
       setHangoseUrl('https://hangose-me.vercel.app/m_landing.html');
     }
 
-    // 통계 기록 (중복 방지 적용)
+    // 통계 기록 (중복 방지 완벽 차단)
     const trackVisit = async () => {
       try {
-        // 오늘 날짜 구하기 (YYYY-MM-DD)
-        const today = new Date().toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul' });
+        // 절대적인 날짜 문자열 사용 (예: 2026-09-02)
+        const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' });
         const visitedToday = localStorage.getItem('ssakdamoa_visited_today');
 
-        // 오늘 이미 방문한 기록이 있다면 스킵
+        // 오늘 이미 방문한 기록이 있다면 0.1초만에 즉시 차단
         if (visitedToday === today) {
           return;
         }
+
+        // 통과했다면, DB 통신을 기다리지 않고 로컬스토리지에 '오늘 방문함'을 즉시 못 박음 (새로고침 연타 방지)
+        localStorage.setItem('ssakdamoa_visited_today', today);
 
         const referrer = document.referrer;
         const isInstagram = referrer.includes('instagram.com') || referrer.includes('l.instagram.com');
         const path = window.location.pathname;
 
-        const { error } = await supabase.from('analytics').insert([{ 
+        // DB에 조용히 비동기 기록
+        await supabase.from('analytics').insert([{ 
           referrer: referrer || 'Direct', 
           is_instagram: isInstagram, 
           path 
         }]);
-
-        if (!error) {
-          // 통계 기록 성공 시 로컬스토리지에 오늘 날짜 저장
-          localStorage.setItem('ssakdamoa_visited_today', today);
-        }
       } catch (err) {
         console.error('Failed to track visit', err);
       }

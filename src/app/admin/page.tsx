@@ -23,27 +23,43 @@ export default function AdminDashboard() {
   const fetchAnalytics = async () => {
     setLoading(true);
     try {
-      // 오늘 날짜 구하기 (UTC 기준)
-      const startOfToday = new Date();
-      startOfToday.setHours(0, 0, 0, 0);
+      // 한국 시간 기준 오늘 자정 구하기
+      const now = new Date();
+      const kstOffset = 9 * 60 * 60 * 1000; // UTC+9
+      const kstNow = new Date(now.getTime() + kstOffset);
+      kstNow.setUTCHours(0, 0, 0, 0); // KST 자정
+      const startOfTodayIso = new Date(kstNow.getTime() - kstOffset).toISOString();
 
-      // 데이터 가져오기 (최신순 100건 정도만 우선 가져옴)
-      const { data, error } = await supabase
+      // 1. 오늘 총 방문자 수 카운팅
+      const { count: totalCount, error: totalError } = await supabase
+        .from('analytics')
+        .select('*', { count: 'exact', head: true })
+        .gte('visited_at', startOfTodayIso);
+
+      if (totalError) throw totalError;
+
+      // 2. 오늘 인스타그램 유입 수 카운팅
+      const { count: instaCount, error: instaError } = await supabase
+        .from('analytics')
+        .select('*', { count: 'exact', head: true })
+        .gte('visited_at', startOfTodayIso)
+        .eq('is_instagram', true);
+
+      if (instaError) throw instaError;
+
+      // 3. 최근 접속 기록 딱 10건만 가져오기
+      const { data, error: listError } = await supabase
         .from('analytics')
         .select('*')
         .order('visited_at', { ascending: false })
-        .limit(100);
+        .limit(10);
 
-      if (error) throw error;
+      if (listError) throw listError;
 
-      if (data) {
-        setStats(data);
-        
-        // 오늘 총 방문자 및 인스타그램 유입 수 계산
-        const todayStats = data.filter(s => new Date(s.visited_at) >= startOfToday);
-        setTodayTotal(todayStats.length);
-        setInstagramCount(todayStats.filter(s => s.is_instagram).length);
-      }
+      setTodayTotal(totalCount || 0);
+      setInstagramCount(instaCount || 0);
+      if (data) setStats(data);
+      
     } catch (error) {
       console.error('Error fetching analytics:', error);
     } finally {
