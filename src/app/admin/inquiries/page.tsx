@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { fetchAdminInquiries, deleteAdminInquiry } from '../actions';
 
 interface Inquiry {
@@ -16,6 +16,11 @@ export default function AdminInquiries() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+
+  const toggleExpand = (id: string) => {
+    setExpandedId(prev => prev === id ? null : id);
+  };
 
   useEffect(() => {
     const pin = localStorage.getItem('admin_pin') || '';
@@ -88,34 +93,65 @@ export default function AdminInquiries() {
                   <td colSpan={6} className="px-6 py-12 text-center text-gray-400">불러오는 중...</td>
                 </tr>
               ) : inquiries.map((item) => (
-                <tr key={item.id} className="border-t border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-gray-500 text-xs">
-                    {new Date(item.created_at).toLocaleString('ko-KR')}
-                  </td>
-                  <td className="px-6 py-4 font-bold text-gray-800">
-                    {item.name}
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">
-                    {item.company}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-blue-600 font-medium whitespace-nowrap">{item.phone}</span>
-                      <span className="text-gray-500 text-xs whitespace-nowrap">{item.email}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-700 whitespace-pre-wrap leading-relaxed">
-                    {item.message}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <button 
-                      onClick={() => handleDelete(item.id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors font-medium text-xs"
-                    >
-                      삭제
-                    </button>
-                  </td>
-                </tr>
+                <React.Fragment key={item.id}>
+                  <tr 
+                    onClick={() => toggleExpand(item.id)}
+                    className={`border-t border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
+                      expandedId === item.id ? 'bg-blue-50/30' : ''
+                    }`}
+                  >
+                    <td className="px-6 py-4 text-gray-500 text-xs">
+                      {new Date(item.created_at).toLocaleString('ko-KR')}
+                    </td>
+                    <td className="px-6 py-4 font-bold text-gray-800">
+                      {item.name}
+                    </td>
+                    <td className="px-6 py-4 text-gray-700">
+                      {item.company}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-blue-600 font-medium whitespace-nowrap">{item.phone}</span>
+                        <span className="text-gray-500 text-xs whitespace-nowrap">{item.email}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-400">
+                      <div className="flex items-center gap-2">
+                        <span className="truncate max-w-[150px] inline-block">
+                          {item.message}
+                        </span>
+                        <span className="text-xs text-blue-500 font-bold whitespace-nowrap">
+                          {expandedId === item.id ? '접기 ▲' : '펼쳐보기 ▼'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(item.id);
+                        }}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors font-medium text-xs"
+                      >
+                        삭제
+                      </button>
+                    </td>
+                  </tr>
+                  
+                  {/* 펼쳐지는 세부 내용 영역 */}
+                  {expandedId === item.id && (
+                    <tr className="bg-blue-50/10 border-b border-gray-100">
+                      <td colSpan={6} className="px-6 py-6">
+                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                          <h4 className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">문의 상세 내용</h4>
+                          <div className="text-gray-700 whitespace-pre-wrap leading-relaxed text-sm">
+                            {item.message}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))}
               {!loading && inquiries.length === 0 && (
                 <tr>
