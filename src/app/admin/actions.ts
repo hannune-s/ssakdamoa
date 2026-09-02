@@ -1,8 +1,18 @@
 "use server";
 import { createClient } from '@supabase/supabase-js';
+import { revalidatePath } from 'next/cache';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''; 
+
+// Next.js의 강력한 fetch 캐시를 무력화하고 무조건 실시간 DB를 조회하도록 설정
+function getAdminClient() {
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    global: {
+      fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
+    },
+  });
+}
 
 export async function verifyPin(pin: string) {
   // 아직 환경변수 셋업이 안 되었을 때 관리자가 아예 튕기는 걸 방지하는 안전장치
@@ -10,7 +20,7 @@ export async function verifyPin(pin: string) {
     return pin === '1234';
   }
 
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+  const supabaseAdmin = getAdminClient();
   const { data, error } = await supabaseAdmin.from('ssakdamoa_admin_config').select('admin_pin').eq('id', 1).single();
   
   if (error || !data) return pin === '1234'; // 테이블 생성 전 기본값
@@ -25,7 +35,7 @@ export async function changePin(currentPin: string, newPin: string) {
   const isValid = await verifyPin(currentPin);
   if (!isValid) return { success: false, error: '현재 비밀번호가 일치하지 않습니다.' };
 
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+  const supabaseAdmin = getAdminClient();
   
   // UPDATE 대신 UPSERT를 사용하여 DB에 1번 행이 없더라도 무조건 강제로 생성하며 저장하도록 수정
   const { error } = await supabaseAdmin
@@ -36,6 +46,9 @@ export async function changePin(currentPin: string, newPin: string) {
     console.error('changePin error:', error);
     return { success: false, error: 'DB 오류: 먼저 안내해 드린 SQL 스크립트를 실행했는지 확인해주세요.' };
   }
+  
+  // 성공 시 모든 어드민 페이지 캐시 즉각 삭제
+  revalidatePath('/admin', 'layout');
   return { success: true };
 }
 
@@ -52,8 +65,7 @@ export async function fetchAdminAnalytics(pin: string) {
     };
   }
 
-  // 서버 환경에서 RLS를 우회하는 관리자(Service Role) 클라이언트 생성
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
+  const supabaseAdmin = getAdminClient();
 
   const now = new Date();
   const kstOffset = 9 * 60 * 60 * 1000;
