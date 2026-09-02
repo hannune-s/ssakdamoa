@@ -65,6 +65,7 @@ export async function fetchAdminAnalytics(pin: string) {
     };
   }
 
+  // 서버 환경에서 RLS를 우회하는 관리자(Service Role) 클라이언트 생성
   const supabaseAdmin = getAdminClient();
 
   const now = new Date();
@@ -95,4 +96,31 @@ export async function fetchAdminAnalytics(pin: string) {
     instaCount: instaCount || 0,
     recentVisits: data || []
   };
+}
+
+export async function fetchAdminInquiries(pin: string) {
+  const isPinValid = await verifyPin(pin);
+  if (!isPinValid) return { error: 'Unauthorized' };
+  if (!supabaseServiceKey) return { error: 'MissingKey', message: '서버 비밀키가 없습니다.' };
+
+  const supabaseAdmin = getAdminClient();
+  const { data, error } = await supabaseAdmin
+    .from('ssakdamoa_inquiries')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) return { error: error.message };
+  return { inquiries: data || [] };
+}
+
+export async function deleteAdminInquiry(pin: string, id: string) {
+  const isPinValid = await verifyPin(pin);
+  if (!isPinValid) return { error: 'Unauthorized' };
+  
+  const supabaseAdmin = getAdminClient();
+  const { error } = await supabaseAdmin.from('ssakdamoa_inquiries').delete().eq('id', id);
+  if (error) return { error: error.message };
+  
+  revalidatePath('/admin', 'layout');
+  return { success: true };
 }
