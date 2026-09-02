@@ -97,7 +97,7 @@ export default function AdminInquiries() {
                   <tr 
                     onClick={() => toggleExpand(item.id)}
                     className={`border-t border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
-                      expandedId === item.id ? 'bg-blue-50/30' : ''
+                      expandedId === item.id ? 'bg-gray-50' : ''
                     }`}
                   >
                     <td className="px-6 py-4 text-gray-500 text-xs">
@@ -120,7 +120,7 @@ export default function AdminInquiries() {
                         <span className="truncate max-w-[150px] inline-block">
                           {item.message}
                         </span>
-                        <span className="text-xs text-blue-500 font-bold whitespace-nowrap">
+                        <span className="text-xs text-gray-500 font-bold whitespace-nowrap">
                           {expandedId === item.id ? '접기 ▲' : '펼쳐보기 ▼'}
                         </span>
                       </div>
@@ -138,15 +138,12 @@ export default function AdminInquiries() {
                     </td>
                   </tr>
                   
-                  {/* 펼쳐지는 세부 내용 영역 */}
+                  {/* 펼쳐지는 세부 내용 영역 (일반 게시판 스타일) */}
                   {expandedId === item.id && (
-                    <tr className="bg-blue-50/10 border-b border-gray-100">
-                      <td colSpan={6} className="px-6 py-6">
-                        <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                          <h4 className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">문의 상세 내용</h4>
-                          <div className="text-gray-700 whitespace-pre-wrap leading-relaxed text-sm">
-                            {item.message}
-                          </div>
+                    <tr className="bg-gray-50 border-b border-gray-200">
+                      <td colSpan={6} className="px-10 py-10 border-t border-gray-200/60">
+                        <div className="text-gray-800 whitespace-pre-wrap leading-relaxed text-[15px] max-w-4xl">
+                          {item.message}
                         </div>
                       </td>
                     </tr>
