@@ -169,7 +169,7 @@ export default function Home() {
   });
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4 font-sans">
+    <main className="min-h-screen bg-gray-50 flex flex-col items-center pt-8 pb-28 px-4 font-sans">
       {/* Header */}
       <div className="w-full max-w-2xl text-center mb-6">
         <h1 className="text-3xl font-extrabold text-blue-600 mb-2 tracking-tight">싹다모아</h1>
