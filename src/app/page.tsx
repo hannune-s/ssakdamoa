@@ -130,12 +130,19 @@ export default function Home() {
     fetchForms();
   }, []);
 
-  const handleFormDownload = async (e: React.MouseEvent<HTMLAnchorElement>, formId: string, url: string) => {
+  const handleFormDownload = async (e: React.MouseEvent<HTMLButtonElement>, formId: string, url: string) => {
     e.preventDefault();
-    // 1. 새 창으로 파일 열기 (UX를 위해 먼저 실행)
-    window.open(url, '_blank');
+    e.stopPropagation();
     
-    // 2. 백그라운드에서 다운로드 수 증가
+    // 1. 새 창이 아닌 '강제 파일 다운로드' 모드로 실행
+    const forceDownloadUrl = url + (url.includes('?') ? '&' : '?') + 'download=';
+    const link = document.createElement('a');
+    link.href = forceDownloadUrl;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // 2. 백그라운드에서 다운로드 수 증가 (실제 다운로드 버튼을 눌렀을 때만!)
     try {
       const { data } = await supabase.from('forms').select('downloads').eq('id', formId).single();
       if (data) {
@@ -218,13 +225,41 @@ export default function Home() {
         {filteredLinks.length > 0 ? (
           filteredLinks.map(link => {
             const currentUrl = link.id === 'static-33' ? hangoseUrl : link.url;
+            
+            // DB 서식인 경우: 미리보기(좌측)와 다운로드(우측 버튼)를 분리
+            if (link.isDbForm) {
+              return (
+                <div 
+                  key={link.id} 
+                  className="w-full bg-white text-gray-800 py-3 px-4 rounded-xl border border-gray-200 font-medium transition-all text-left flex justify-between items-center shadow-sm hover:shadow"
+                >
+                  <a
+                    href={currentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col gap-1 flex-1 cursor-pointer group pr-4"
+                  >
+                    <span className="text-[15px] leading-tight group-hover:text-blue-600 transition-colors">{link.title}</span>
+                    <span className="text-xs text-blue-500 font-medium">{link.desc}</span>
+                  </a>
+                  <button
+                    onClick={(e) => handleFormDownload(e, link.id, link.url)}
+                    className="flex items-center justify-center bg-gray-50 border border-gray-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 text-gray-500 w-11 h-11 rounded-xl transition-colors shrink-0"
+                    title="파일 강제 다운로드"
+                  >
+                    ↓
+                  </button>
+                </div>
+              );
+            }
+
+            // 일반 링크인 경우 (기존 유지)
             return (
               <a 
                 key={link.id} 
                 href={currentUrl}
                 target={currentUrl === '#' ? '_self' : '_blank'}
                 rel="noopener noreferrer"
-                onClick={link.isDbForm ? (e) => handleFormDownload(e, link.id, link.url) : undefined}
                 className="w-full bg-white hover:bg-gray-50 text-gray-800 py-3.5 px-5 rounded-xl border border-gray-200 font-medium transition-all text-left flex justify-between items-center group shadow-sm hover:shadow"
               >
                 <div className="flex flex-col gap-1">
