@@ -19,7 +19,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     const pin = localStorage.getItem('admin_pin') || '';
-    if (pin === '1234') {
+    if (pin) {
       fetchAnalytics(pin);
     } else {
       setLoading(false);
