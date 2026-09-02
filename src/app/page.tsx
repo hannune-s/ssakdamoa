@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-const CATEGORIES = ['전체', '페이·가맹', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '필수행정서식'];
+const CATEGORIES = ['전체', '페이·가맹', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식'];
 
 const LINKS = [
   // 전국 단위 (페이·가맹)
@@ -41,10 +41,10 @@ const LINKS = [
   { id: 4, title: '보건증(건강진단결과서) 발급 안내', desc: '외식업 종사자 필수 건강진단 서류', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
   { id: 16, title: '4대보험통합징수포털', desc: '직원 및 알바생 4대보험 신고/납부', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
   
-  // 필수행정서식 (실제 양식/파일 다운로드용)
-  { id: 5, title: '축산물 이력제 양식 다운로드', desc: '식육판매업소 등 매장 내 필수 비치 양식', category: '필수행정서식', keywords: ['축산물', '이력제', '양식', '서식'], url: '#' },
-  { id: 6, title: '영업신고증 위임장 등 서식 다운로드', desc: '영업신고증 대리 발급 및 신청 시 필요', category: '필수행정서식', keywords: ['영업신고증', '신고', '서식', '위임장'], url: '#' },
-  { id: 15, title: '표준근로계약서 양식 다운로드 (알바/직원)', desc: '직원/알바 고용 시 반드시 작성해야 할 계약서', category: '필수행정서식', keywords: ['근로계약서', '알바', '직원', '계약서', '서식'], url: '#' },
+  // 실무 서식·양식 (실제 양식/파일 다운로드용)
+  { id: 15, title: '표준근로계약서 양식 다운로드 (알바/직원)', desc: '직원/알바 고용 시 반드시 작성해야 할 계약서', category: '실무 서식·양식', keywords: ['근로계약서', '알바', '직원', '계약서', '서식', '양식'], url: '#' },
+  { id: 32, title: '근태일지 (출퇴근 기록부) 양식 다운로드', desc: '직원/알바 출퇴근 및 근무시간 기록 양식', category: '실무 서식·양식', keywords: ['근태일지', '출퇴근', '기록부', '알바', '서식', '양식'], url: '#' },
+  { id: 6, title: '영업신고증 위임장 등 서식 다운로드', desc: '영업신고증 대리 발급 및 신청 시 필요', category: '실무 서식·양식', keywords: ['영업신고증', '신고', '서식', '양식', '위임장'], url: '#' },
 ];
 
 export default function Home() {
@@ -137,7 +137,7 @@ export default function Home() {
                 <span className="text-xs text-blue-500 font-medium">{link.desc}</span>
               </div>
               <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl ml-3 shrink-0">
-                {link.category === '필수행정서식' ? '↓' : '→'}
+                {link.category === '실무 서식·양식' ? '↓' : '→'}
               </span>
             </a>
           ))
