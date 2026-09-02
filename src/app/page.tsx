@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-const CATEGORIES = ['전체', '페이·가맹', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '추천 앱'];
+const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '추천 앱'];
 
 const LINKS = [
   // 전국 단위 (페이·가맹)
@@ -18,6 +18,12 @@ const LINKS = [
   { id: 13, title: '대구로페이 가맹 신청', desc: '대구광역시 지역화폐', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://minwon.daegu.go.kr/cvpl/AUTN-009/info' },
   { id: 9, title: '김포페이 가맹 신청', desc: '경기도 김포시 지역화폐', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
   
+  // 결제·POS
+  { id: 36, title: '페이히어 (모바일 POS)', desc: '스마트폰/태블릿으로 가볍게 쓰는 무료 포스기', category: '결제·POS', keywords: ['페이히어', '포스', 'POS', '결제', '카드결제', '원격결제', '간편결제'], url: 'https://payhere.in/' },
+  { id: 37, title: '페이앱 (원격/링크 결제)', desc: '단말기 없이 스마트폰으로 링크 및 원격 간편결제', category: '결제·POS', keywords: ['페이앱', '링크결제', '원격결제', '스마트폰결제', '간편결제', '수기결제'], url: 'https://www.payapp.kr/' },
+  { id: 38, title: '토스페이먼츠 (PG/간편결제)', desc: '온라인 쇼핑몰 및 매장의 빠르고 쉬운 간편결제', category: '결제·POS', keywords: ['토스', '토스페이먼츠', 'PG', '간편결제', '결제연동'], url: 'https://www.tosspayments.com/' },
+  { id: 39, title: 'IBK 박스포스 (스마트폰 카드결제)', desc: '스마트폰을 카드 결제기로 만들어주는 앱', category: '결제·POS', keywords: ['박스포스', 'IBK', '기업은행', '스마트폰결제', '포스', '간편결제', '원격결제'], url: 'https://boxpos.ibk.co.kr/' },
+
   // 배달·입점 관리
   { id: 27, title: '배달의민족 (배민사장님광장)', desc: '배달의민족 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['배달의민족', '배민', '배달', '입점', '사장님광장'], url: 'https://ceo.baemin.com/' },
   { id: 28, title: '쿠팡이츠 스토어 (입점/관리)', desc: '쿠팡이츠 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['쿠팡이츠', '쿠팡', '이츠', '배달', '입점', '스토어'], url: 'https://store.coupangeats.com/' },
