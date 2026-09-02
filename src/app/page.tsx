@@ -60,6 +60,12 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [hangoseUrl, setHangoseUrl] = useState('https://hangose-me.vercel.app/landing.html');
   const [dbForms, setDbForms] = useState<any[]>([]);
+  const [visibleCount, setVisibleCount] = useState(10);
+
+  // 검색어나 카테고리가 변경되면 표시 개수를 다시 10개로 초기화
+  useEffect(() => {
+    setVisibleCount(10);
+  }, [selectedCategory, searchTerm]);
 
   // 방문자 통계 기록 및 디바이스 체크
   useEffect(() => {
@@ -168,6 +174,9 @@ export default function Home() {
     return selectedCategory === '전체' || link.category === selectedCategory;
   });
 
+  // 화면에 렌더링할 10개 이하의 링크만 잘라내기
+  const displayedLinks = filteredLinks.slice(0, visibleCount);
+
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col items-center pt-8 pb-28 px-4 font-sans">
       {/* Header */}
@@ -222,8 +231,8 @@ export default function Home() {
 
       {/* Compact Links List */}
       <div className="w-full max-w-2xl flex flex-col gap-2.5">
-        {filteredLinks.length > 0 ? (
-          filteredLinks.map(link => {
+        {displayedLinks.length > 0 ? (
+          displayedLinks.map(link => {
             const currentUrl = link.id === 'static-33' ? hangoseUrl : link.url;
             
             // DB 서식인 경우: 미리보기(좌측)와 다운로드(우측 버튼)를 분리
@@ -278,6 +287,16 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      {/* 더보기 버튼 */}
+      {filteredLinks.length > visibleCount && (
+        <button 
+          onClick={() => setVisibleCount(prev => prev + 10)}
+          className="w-full max-w-2xl mt-4 py-3 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
+        >
+          더보기 ({visibleCount} / {filteredLinks.length}) ⬇️
+        </button>
+      )}
 
       {/* Cross Promotion Banner */}
       <a 
