@@ -21,6 +21,8 @@ const LINKS = [
   // 디자인·제작 툴
   { id: 17, title: '미리캔버스 (포스터/메뉴판 등)', category: '디자인·제작 툴', keywords: ['미리캔버스', '디자인', '포스터', '메뉴판', '배너', '제작'], url: 'https://www.miricanvas.com/' },
   { id: 18, title: '망고보드 (카드뉴스/홍보물 등)', category: '디자인·제작 툴', keywords: ['망고보드', '디자인', '카드뉴스', '홍보물', '배너', '제작'], url: 'https://www.mangoboard.net/' },
+  { id: 22, title: '캔바 (글로벌 디자인/로고 제작)', category: '디자인·제작 툴', keywords: ['캔바', 'canva', '디자인', '포스터', '로고', '제작'], url: 'https://www.canva.com/ko_kr/' },
+  { id: 23, title: '픽사베이 (상업용 무료 이미지)', category: '디자인·제작 툴', keywords: ['픽사베이', 'pixabay', '무료이미지', '사진', '디자인소스', '상업용무료'], url: 'https://pixabay.com/ko/' },
   { id: 19, title: '아임웹 (쇼핑몰/홈페이지 제작)', category: '디자인·제작 툴', keywords: ['아임웹', '쇼핑몰', '홈페이지', '웹사이트', '제작'], url: 'https://imweb.me/' },
   { id: 20, title: '식스샵 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['식스샵', '쇼핑몰', '제작', '자사몰'], url: 'https://www.sixshop.com/' },
   { id: 21, title: '카페24 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
