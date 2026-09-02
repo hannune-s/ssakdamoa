@@ -46,7 +46,7 @@ export default function InquiryPage() {
     <main className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4 font-sans pb-28">
       <div className="w-full max-w-2xl text-center mb-6">
         <h1 className="text-3xl font-extrabold text-blue-600 mb-2">제휴 및 문의</h1>
-        <p className="text-gray-500 text-sm">자영업자 분들을 위한 서비스 제휴나 궁금하신 점을 남겨주세요.</p>
+        <p className="text-gray-500 text-sm">서비스 제휴나 앱 제작 및 기타 궁금하신 사항을 남겨주세요.</p>
       </div>
 
       <div className="w-full max-w-2xl bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100">
