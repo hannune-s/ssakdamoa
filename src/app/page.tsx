@@ -293,12 +293,6 @@ export default function Home() {
         </div>
       </a>
       
-      {/* Footer Admin Link */}
-      <div className="w-full max-w-2xl mt-8 text-center pb-8">
-        <a href="/admin" className="text-xs text-gray-300 hover:text-gray-400 transition-colors">
-          관리자 접속 (Admin)
-        </a>
-      </div>
     </main>
   );
 }
