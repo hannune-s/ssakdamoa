@@ -89,13 +89,40 @@ export default function Home() {
         // 통과했다면, DB 통신을 기다리지 않고 로컬스토리지에 '오늘 방문함'을 즉시 못 박음 (새로고침 연타 방지)
         localStorage.setItem('ssakdamoa_visited_today', today);
 
-        const referrer = document.referrer;
-        const isInstagram = referrer.includes('instagram.com') || referrer.includes('l.instagram.com');
+        const rawReferrer = document.referrer;
+        const ua = navigator.userAgent.toLowerCase();
+        
+        // 1. 접속 기기(환경) 판별
+        const isMobile = /mobile|android|iphone|ipad|ipod/i.test(ua);
+        const platform = isMobile ? 'Mobile Web' : 'PC Web';
+
+        // 2. 유입 출처 판별 (인앱 브라우저 우선 체크)
+        let source = rawReferrer || 'Direct';
+        let isInstagram = false;
+
+        if (ua.includes('instagram') || rawReferrer.includes('instagram.com') || rawReferrer.includes('l.instagram.com')) {
+          source = 'Instagram';
+          isInstagram = true;
+        } else if (ua.includes('kakaotalk')) {
+          source = 'KakaoTalk';
+        } else if (ua.includes('naver')) {
+          source = 'Naver App';
+        } else if (rawReferrer.includes('naver.com')) {
+          source = 'Naver 검색';
+        } else if (rawReferrer.includes('google.com')) {
+          source = 'Google 검색';
+        } else if (rawReferrer.includes('daum.net')) {
+          source = 'Daum 검색';
+        } else if (source === 'Direct') {
+          source = '직접 접속 (Direct)';
+        }
+
+        const finalReferrer = `[${platform}] ${source}`;
         const path = window.location.pathname;
 
         // DB에 조용히 비동기 기록
         await supabase.from('analytics').insert([{ 
-          referrer: referrer || 'Direct', 
+          referrer: finalReferrer, 
           is_instagram: isInstagram, 
           path 
         }]);
