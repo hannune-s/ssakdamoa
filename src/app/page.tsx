@@ -63,6 +63,7 @@ export default function Home() {
   const [visibleCount, setVisibleCount] = useState(10);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
+  const [installGuide, setInstallGuide] = useState<'ios' | 'android' | null>(null);
 
   // PWA 앱 설치 프롬프트 및 모바일(iOS/Android) 감지
   useEffect(() => {
@@ -92,12 +93,9 @@ export default function Home() {
         setDeferredPrompt(null);
       }
     } else {
-      // 설치 팝업을 띄울 수 없는 환경(iOS 사파리 등)인 경우 수동 가이드 안내
-      if (isIOS) {
-        alert("🍎 아이폰(iOS) 설치 방법:\n하단의 [공유] 버튼(네모 안 화살표)을 누른 후,\n[홈 화면에 추가]를 선택해주세요!");
-      } else {
-        alert("🤖 안드로이드 앱 설치 방법:\n브라우저 우측 상단의 [메뉴(⋮)]를 누른 후,\n[홈 화면에 추가] 또는 [앱 설치]를 선택해주세요!");
-      }
+      // 설치 팝업을 띄울 수 없는 환경(iOS 사파리 등)인 경우 수동 가이드 팝업 띄우기
+      if (isIOS) setInstallGuide('ios');
+      else setInstallGuide('android');
     }
   };
 
@@ -386,6 +384,57 @@ export default function Home() {
           한고세쏙 무료로 시작하기
         </div>
       </a>
+
+      {/* 수동 설치 가이드 모달 (iOS / 안드로이드 예외상황) */}
+      {installGuide && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 transition-opacity p-4 pb-8" onClick={() => setInstallGuide(null)}>
+          <div className="bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl transform transition-transform" onClick={e => e.stopPropagation()}>
+            <div className="text-center mb-5">
+              <h3 className="text-xl font-extrabold text-gray-800">
+                {installGuide === 'ios' ? '🍎 아이폰 앱 설치 방법' : '🤖 안드로이드 앱 설치 방법'}
+              </h3>
+              <p className="text-sm text-gray-500 mt-1">현재 브라우저에서는 아래 방법으로 설치해주세요.</p>
+            </div>
+            
+            <div className="flex flex-col gap-4 text-[15px] font-medium text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-100">
+              {installGuide === 'ios' ? (
+                <>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center shrink-0 border border-gray-100">
+                      <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                    </div>
+                    <p>1. 하단 메뉴에서 <b>공유 버튼</b>을 누르세요.</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center shrink-0 border border-gray-100 text-gray-700 font-bold text-xl">+</div>
+                    <p>2. <b>홈 화면에 추가</b>를 선택하세요.</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center shrink-0 border border-gray-100 text-gray-700 font-bold text-xl">⋮</div>
+                    <p>1. 우측 상단의 <b>메뉴 버튼</b>을 누르세요.</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center shrink-0 border border-gray-100">
+                      <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path></svg>
+                    </div>
+                    <p>2. <b>홈 화면에 추가</b>를 선택하세요.</p>
+                  </div>
+                </>
+              )}
+            </div>
+            
+            <button 
+              onClick={() => setInstallGuide(null)}
+              className="w-full mt-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm"
+            >
+              확인했습니다
+            </button>
+          </div>
+        </div>
+      )}
       
     </main>
   );
