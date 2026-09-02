@@ -28,6 +28,9 @@ const LINKS = [
   { id: 21, title: '카페24 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
 
   // 필수 실무 링크 (안내/접수용 사이트 연결)
+  { id: 24, title: '정부24 (각종 민원/증명서 발급)', category: '필수 실무 링크', keywords: ['정부24', '민원24', '민원', '증명서', '등본', '행정'], url: 'https://www.gov.kr/' },
+  { id: 25, title: '식품안전나라 (식품/위생 관련)', category: '필수 실무 링크', keywords: ['식품안전나라', '식품', '위생', '식약처', '영업신고'], url: 'https://www.foodsafetykorea.go.kr/' },
+  { id: 26, title: '세움터 (건축물대장/용도변경 등)', category: '필수 실무 링크', keywords: ['세움터', '건축물대장', '건축', '용도변경', '건축행정'], url: 'https://cloud.eais.go.kr/' },
   { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
   { id: 16, title: '4대보험통합징수포털', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
   
