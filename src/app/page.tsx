@@ -6,45 +6,45 @@ const CATEGORIES = ['전체', '페이·가맹', '배달·입점 관리', '디자
 
 const LINKS = [
   // 전국 단위 (페이·가맹)
-  { id: 1, title: '제로페이 가맹 신청', category: '페이·가맹', keywords: ['제로페이', '페이', '가맹'], url: 'https://www.zeropay.or.kr/UI_HP_001.act' },
-  { id: 2, title: '온누리 가맹 신청', category: '페이·가맹', keywords: ['온누리', '가맹', '신청', '온누리상품권'], url: 'https://frc.sbiz.or.kr/afms/afm/SMMDL0001M01/page.do' },
-  { id: 14, title: '농할상품권 가맹 신청', category: '페이·가맹', keywords: ['농할상품권', '농할', '가맹', '신청'], url: 'https://app.catchsecu.com/projects/2816edfa3b5d25f/form' },
+  { id: 1, title: '제로페이 가맹 신청', desc: '소상공인 수수료 부담을 낮춘 간편결제', category: '페이·가맹', keywords: ['제로페이', '페이', '가맹'], url: 'https://www.zeropay.or.kr/UI_HP_001.act' },
+  { id: 2, title: '온누리 가맹 신청', desc: '전통시장 및 상점가 전용 상품권', category: '페이·가맹', keywords: ['온누리', '가맹', '신청', '온누리상품권'], url: 'https://frc.sbiz.or.kr/afms/afm/SMMDL0001M01/page.do' },
+  { id: 14, title: '농할상품권 가맹 신청', desc: '우리 농수축산물 전용 할인 상품권', category: '페이·가맹', keywords: ['농할상품권', '농할', '가맹', '신청'], url: 'https://app.catchsecu.com/projects/2816edfa3b5d25f/form' },
   
   // 핵심 인구 밀집 지역화폐 (페이·가맹)
-  { id: 10, title: '서울페이+ 가맹 신청', category: '페이·가맹', keywords: ['서울페이', '서울페이플러스', '서울', '지역화폐'], url: 'https://seoulpay.shinhancard.com/' },
-  { id: 11, title: '경기지역화폐 가맹 신청', category: '페이·가맹', keywords: ['경기지역화폐', '경기', '경기도', '지역화폐'], url: 'https://www.gmoney.or.kr/' },
-  { id: 3, title: '인천이음카드 가맹 신청', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음', '인천이음카드', '인천'], url: 'https://with.konacard.co.kr/8-1' },
-  { id: 12, title: '부산 동백전 가맹 신청', category: '페이·가맹', keywords: ['동백전', '부산', '지역화폐'], url: 'https://busandong100.kr/' },
-  { id: 13, title: '대구로페이 가맹 신청', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://minwon.daegu.go.kr/cvpl/AUTN-009/info' },
-  { id: 9, title: '김포페이 가맹 신청', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
+  { id: 10, title: '서울페이+ 가맹 신청', desc: '서울 지역 전용 모바일 결제', category: '페이·가맹', keywords: ['서울페이', '서울페이플러스', '서울', '지역화폐'], url: 'https://seoulpay.shinhancard.com/' },
+  { id: 11, title: '경기지역화폐 가맹 신청', desc: '경기도 시·군별 지역화폐', category: '페이·가맹', keywords: ['경기지역화폐', '경기', '경기도', '지역화폐'], url: 'https://www.gmoney.or.kr/' },
+  { id: 3, title: '인천이음카드 가맹 신청', desc: '인천광역시 지역화폐', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음', '인천이음카드', '인천'], url: 'https://with.konacard.co.kr/8-1' },
+  { id: 12, title: '부산 동백전 가맹 신청', desc: '부산광역시 지역화폐', category: '페이·가맹', keywords: ['동백전', '부산', '지역화폐'], url: 'https://busandong100.kr/' },
+  { id: 13, title: '대구로페이 가맹 신청', desc: '대구광역시 지역화폐', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://minwon.daegu.go.kr/cvpl/AUTN-009/info' },
+  { id: 9, title: '김포페이 가맹 신청', desc: '경기도 김포시 지역화폐', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
   
   // 배달·입점 관리
-  { id: 27, title: '배달의민족 (배민사장님광장)', category: '배달·입점 관리', keywords: ['배달의민족', '배민', '배달', '입점', '사장님광장'], url: 'https://ceo.baemin.com/' },
-  { id: 28, title: '쿠팡이츠 스토어 (입점/관리)', category: '배달·입점 관리', keywords: ['쿠팡이츠', '쿠팡', '이츠', '배달', '입점', '스토어'], url: 'https://store.coupangeats.com/' },
-  { id: 29, title: '요기요 파트너스 (입점/관리)', category: '배달·입점 관리', keywords: ['요기요', '요기요파트너스', '배달', '입점'], url: 'https://partner.yogiyo.co.kr/' },
-  { id: 31, title: '신한 땡겨요 사장님라운지 (입점/관리)', category: '배달·입점 관리', keywords: ['신한', '땡겨요', '신한땡겨요', '배달', '입점', '사장님라운지'], url: 'https://boss.ddangyo.com/' },
-  { id: 30, title: '배달특급 가맹점 신청', category: '배달·입점 관리', keywords: ['배달특급', '경기도배달앱', '공공배달앱', '배달', '입점'], url: 'https://www.specialdelivery.co.kr/' },
+  { id: 27, title: '배달의민족 (배민사장님광장)', desc: '배달의민족 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['배달의민족', '배민', '배달', '입점', '사장님광장'], url: 'https://ceo.baemin.com/' },
+  { id: 28, title: '쿠팡이츠 스토어 (입점/관리)', desc: '쿠팡이츠 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['쿠팡이츠', '쿠팡', '이츠', '배달', '입점', '스토어'], url: 'https://store.coupangeats.com/' },
+  { id: 29, title: '요기요 파트너스 (입점/관리)', desc: '요기요 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['요기요', '요기요파트너스', '배달', '입점'], url: 'https://partner.yogiyo.co.kr/' },
+  { id: 31, title: '신한 땡겨요 사장님라운지 (입점/관리)', desc: '신한은행의 착한 수수료 배달앱 입점 관리', category: '배달·입점 관리', keywords: ['신한', '땡겨요', '신한땡겨요', '배달', '입점', '사장님라운지'], url: 'https://boss.ddangyo.com/' },
+  { id: 30, title: '배달특급 가맹점 신청', desc: '수수료 부담 없는 경기도 공공배달앱', category: '배달·입점 관리', keywords: ['배달특급', '경기도배달앱', '공공배달앱', '배달', '입점'], url: 'https://www.specialdelivery.co.kr/' },
   
   // 디자인·제작 툴
-  { id: 17, title: '미리캔버스 (포스터/메뉴판 등)', category: '디자인·제작 툴', keywords: ['미리캔버스', '디자인', '포스터', '메뉴판', '배너', '제작'], url: 'https://www.miricanvas.com/' },
-  { id: 18, title: '망고보드 (카드뉴스/홍보물 등)', category: '디자인·제작 툴', keywords: ['망고보드', '디자인', '카드뉴스', '홍보물', '배너', '제작'], url: 'https://www.mangoboard.net/' },
-  { id: 22, title: '캔바 (글로벌 디자인/로고 제작)', category: '디자인·제작 툴', keywords: ['캔바', 'canva', '디자인', '포스터', '로고', '제작'], url: 'https://www.canva.com/ko_kr/' },
-  { id: 23, title: '픽사베이 (상업용 무료 이미지)', category: '디자인·제작 툴', keywords: ['픽사베이', 'pixabay', '무료이미지', '사진', '디자인소스', '상업용무료'], url: 'https://pixabay.com/ko/' },
-  { id: 19, title: '아임웹 (쇼핑몰/홈페이지 제작)', category: '디자인·제작 툴', keywords: ['아임웹', '쇼핑몰', '홈페이지', '웹사이트', '제작'], url: 'https://imweb.me/' },
-  { id: 20, title: '식스샵 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['식스샵', '쇼핑몰', '제작', '자사몰'], url: 'https://www.sixshop.com/' },
-  { id: 21, title: '카페24 (쇼핑몰 제작)', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
+  { id: 17, title: '미리캔버스 (포스터/메뉴판 등)', desc: '누구나 쉬운 무료 디자인 템플릿 제작', category: '디자인·제작 툴', keywords: ['미리캔버스', '디자인', '포스터', '메뉴판', '배너', '제작'], url: 'https://www.miricanvas.com/' },
+  { id: 18, title: '망고보드 (카드뉴스/홍보물 등)', desc: '포스터, 카드뉴스 등 전문적인 홍보물 제작', category: '디자인·제작 툴', keywords: ['망고보드', '디자인', '카드뉴스', '홍보물', '배너', '제작'], url: 'https://www.mangoboard.net/' },
+  { id: 22, title: '캔바 (글로벌 디자인/로고 제작)', desc: '전 세계 1위 무료 디자인 플랫폼', category: '디자인·제작 툴', keywords: ['캔바', 'canva', '디자인', '포스터', '로고', '제작'], url: 'https://www.canva.com/ko_kr/' },
+  { id: 23, title: '픽사베이 (상업용 무료 이미지)', desc: '저작권 걱정 없는 고화질 이미지 무료 다운로드', category: '디자인·제작 툴', keywords: ['픽사베이', 'pixabay', '무료이미지', '사진', '디자인소스', '상업용무료'], url: 'https://pixabay.com/ko/' },
+  { id: 19, title: '아임웹 (쇼핑몰/홈페이지 제작)', desc: '코딩 없이 클릭만으로 만드는 웹사이트', category: '디자인·제작 툴', keywords: ['아임웹', '쇼핑몰', '홈페이지', '웹사이트', '제작'], url: 'https://imweb.me/' },
+  { id: 20, title: '식스샵 (쇼핑몰 제작)', desc: '쉽고 직관적인 자사 쇼핑몰 제작 솔루션', category: '디자인·제작 툴', keywords: ['식스샵', '쇼핑몰', '제작', '자사몰'], url: 'https://www.sixshop.com/' },
+  { id: 21, title: '카페24 (쇼핑몰 제작)', desc: '전문적인 글로벌 쇼핑몰 구축 솔루션', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
 
   // 필수 실무 링크 (안내/접수용 사이트 연결)
-  { id: 24, title: '정부24 (각종 민원/증명서 발급)', category: '필수 실무 링크', keywords: ['정부24', '민원24', '민원', '증명서', '등본', '행정'], url: 'https://www.gov.kr/' },
-  { id: 25, title: '식품안전나라 (식품/위생 관련)', category: '필수 실무 링크', keywords: ['식품안전나라', '식품', '위생', '식약처', '영업신고'], url: 'https://www.foodsafetykorea.go.kr/' },
-  { id: 26, title: '세움터 (건축물대장/용도변경 등)', category: '필수 실무 링크', keywords: ['세움터', '건축물대장', '건축', '용도변경', '건축행정'], url: 'https://cloud.eais.go.kr/' },
-  { id: 4, title: '보건증(건강진단결과서) 발급 안내', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
-  { id: 16, title: '4대보험통합징수포털', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
+  { id: 24, title: '정부24 (각종 민원/증명서 발급)', desc: '사업자등록증명·민원 서류 발급', category: '필수 실무 링크', keywords: ['정부24', '민원24', '민원', '증명서', '등본', '행정'], url: 'https://www.gov.kr/' },
+  { id: 25, title: '식품안전나라 (식품/위생 관련)', desc: '위생교육 및 식품 안전 허가', category: '필수 실무 링크', keywords: ['식품안전나라', '식품', '위생', '식약처', '영업신고'], url: 'https://www.foodsafetykorea.go.kr/' },
+  { id: 26, title: '세움터 (건축물대장/용도변경 등)', desc: '건축물대장 열람 및 용도변경 신청', category: '필수 실무 링크', keywords: ['세움터', '건축물대장', '건축', '용도변경', '건축행정'], url: 'https://cloud.eais.go.kr/' },
+  { id: 4, title: '보건증(건강진단결과서) 발급 안내', desc: '외식업 종사자 필수 건강진단 서류', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
+  { id: 16, title: '4대보험통합징수포털', desc: '직원 및 알바생 4대보험 신고/납부', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
   
   // 필수행정서식 (실제 양식/파일 다운로드용)
-  { id: 5, title: '축산물 이력제 양식 다운로드', category: '필수행정서식', keywords: ['축산물', '이력제', '양식', '서식'], url: '#' },
-  { id: 6, title: '영업신고증 위임장 등 서식 다운로드', category: '필수행정서식', keywords: ['영업신고증', '신고', '서식', '위임장'], url: '#' },
-  { id: 15, title: '표준근로계약서 양식 다운로드 (알바/직원)', category: '필수행정서식', keywords: ['근로계약서', '알바', '직원', '계약서', '서식'], url: '#' },
+  { id: 5, title: '축산물 이력제 양식 다운로드', desc: '식육판매업소 등 매장 내 필수 비치 양식', category: '필수행정서식', keywords: ['축산물', '이력제', '양식', '서식'], url: '#' },
+  { id: 6, title: '영업신고증 위임장 등 서식 다운로드', desc: '영업신고증 대리 발급 및 신청 시 필요', category: '필수행정서식', keywords: ['영업신고증', '신고', '서식', '위임장'], url: '#' },
+  { id: 15, title: '표준근로계약서 양식 다운로드 (알바/직원)', desc: '직원/알바 고용 시 반드시 작성해야 할 계약서', category: '필수행정서식', keywords: ['근로계약서', '알바', '직원', '계약서', '서식'], url: '#' },
 ];
 
 export default function Home() {
@@ -132,11 +132,11 @@ export default function Home() {
               rel="noopener noreferrer"
               className="w-full bg-white hover:bg-gray-50 text-gray-800 py-3.5 px-5 rounded-xl border border-gray-200 font-medium transition-all text-left flex justify-between items-center group shadow-sm hover:shadow"
             >
-              <div className="flex flex-col gap-0.5">
-                <span className="text-[15px]">{link.title}</span>
-                <span className="text-xs text-blue-500 font-semibold">{link.category}</span>
+              <div className="flex flex-col gap-1">
+                <span className="text-[15px] leading-tight">{link.title}</span>
+                <span className="text-xs text-blue-500 font-medium">{link.desc}</span>
               </div>
-              <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl">
+              <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl ml-3 shrink-0">
                 {link.category === '필수행정서식' ? '↓' : '→'}
               </span>
             </a>
