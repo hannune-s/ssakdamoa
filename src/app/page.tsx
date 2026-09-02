@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import Calculator from '@/components/Calculator';
 
-const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '추천 앱'];
+const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '추천 앱'];
 
 // 정적 링크 데이터 (실무 서식·양식 제외)
 const STATIC_LINKS = [
@@ -289,7 +290,12 @@ export default function Home() {
             placeholder="'보건증', '제로페이', '메뉴판' 등 키워드 검색" 
             className="w-full bg-gray-100 text-gray-800 rounded-xl pl-4 pr-16 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-gray-400 text-sm"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              setSearchTerm(e.target.value);
+              if (selectedCategory === '마진 계산기') {
+                setSelectedCategory('전체');
+              }
+            }}
           />
           <div className="absolute right-3 top-2.5 flex items-center gap-2">
             {searchTerm.length > 0 && (
@@ -325,9 +331,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Compact Links List */}
+      {/* Content Area */}
       <div className="w-full max-w-2xl flex flex-col gap-2.5">
-        {displayedLinks.length > 0 ? (
+        {selectedCategory === '마진 계산기' ? (
+          <Calculator />
+        ) : displayedLinks.length > 0 ? (
           displayedLinks.map(link => {
             const currentUrl = link.id === 'static-33' ? hangoseUrl : link.url;
             

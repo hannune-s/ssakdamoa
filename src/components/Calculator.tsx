@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 
-export default function CalculatorPage() {
+export default function Calculator() {
   const [price, setPrice] = useState<number | ''>('');
   const [cost, setCost] = useState<number | ''>('');
   const [feeRate, setFeeRate] = useState<number | ''>('');
@@ -22,13 +22,13 @@ export default function CalculatorPage() {
   const feePercent = numPrice > 0 ? (totalFee / numPrice) * 100 : 0;
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4 font-sans pb-28">
-      <div className="w-full max-w-2xl text-center mb-6">
-        <h1 className="text-2xl font-extrabold text-blue-600 mb-2">마진율/원가율 간이 계산기</h1>
+    <div className="w-full max-w-2xl flex flex-col items-center">
+      <div className="w-full text-center mb-6 mt-4">
+        <h2 className="text-xl font-extrabold text-blue-600 mb-2">마진율/원가율 간이 계산기</h2>
         <p className="text-gray-500 text-sm">복잡한 플랫폼 수수료와 순이익을 한눈에 확인해보세요.</p>
       </div>
 
-      <div className="w-full max-w-2xl bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col gap-6">
+      <div className="w-full bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-gray-100 flex flex-col gap-6">
         
         {/* 입력 영역 */}
         <div className="flex flex-col gap-4">
@@ -118,6 +118,6 @@ export default function CalculatorPage() {
           💡 플랫폼 수수료로 새어나가는 돈을 확인해보세요.
         </p>
       </div>
-    </main>
+    </div>
   );
 }
