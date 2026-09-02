@@ -2,6 +2,24 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+const HomeIcon = () => (
+  <svg className="w-[22px] h-[22px] mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+  </svg>
+);
+
+const NoticeIcon = () => (
+  <svg className="w-[22px] h-[22px] mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+  </svg>
+);
+
+const ContactIcon = () => (
+  <svg className="w-[22px] h-[22px] mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+  </svg>
+);
+
 export default function BottomNav() {
   const pathname = usePathname();
 
@@ -11,9 +29,9 @@ export default function BottomNav() {
   }
 
   const tabs = [
-    { name: '홈', path: '/', icon: '🏠' },
-    { name: '공지·안내', path: '/notices', icon: '📢' },
-    { name: '제휴·문의', path: '/inquiry', icon: '🤝' },
+    { name: '홈', path: '/', icon: <HomeIcon /> },
+    { name: '공지·안내', path: '/notices', icon: <NoticeIcon /> },
+    { name: '제휴·문의', path: '/inquiry', icon: <ContactIcon /> },
   ];
 
   return (
@@ -25,12 +43,12 @@ export default function BottomNav() {
             <Link 
               key={tab.path} 
               href={tab.path}
-              className={`flex flex-col items-center justify-center w-full h-full space-y-1 transition-all ${
-                isActive ? 'text-blue-600 scale-105' : 'text-gray-400 hover:text-gray-600'
+              className={`flex flex-col items-center justify-center w-full h-full transition-all ${
+                isActive ? 'text-blue-600' : 'text-gray-400 hover:text-gray-500'
               }`}
             >
-              <span className="text-[22px] mb-0.5">{tab.icon}</span>
-              <span className={`text-[11px] font-extrabold ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>
+              {tab.icon}
+              <span className={`text-[11px] ${isActive ? 'font-bold text-blue-600' : 'font-medium text-gray-400'}`}>
                 {tab.name}
               </span>
             </Link>
