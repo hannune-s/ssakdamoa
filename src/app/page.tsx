@@ -1,89 +1,150 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
 const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '추천 앱'];
 
-const LINKS = [
+// 정적 링크 데이터 (실무 서식·양식 제외)
+const STATIC_LINKS = [
   // 전국 단위 (페이·가맹)
-  { id: 1, title: '제로페이 가맹 신청', desc: '소상공인 수수료 부담을 낮춘 간편결제', category: '페이·가맹', keywords: ['제로페이', '페이', '가맹'], url: 'https://www.zeropay.or.kr/UI_HP_001.act' },
-  { id: 2, title: '온누리 가맹 신청', desc: '전통시장 및 상점가 전용 상품권', category: '페이·가맹', keywords: ['온누리', '가맹', '신청', '온누리상품권'], url: 'https://frc.sbiz.or.kr/afms/afm/SMMDL0001M01/page.do' },
-  { id: 14, title: '농할상품권 가맹 신청', desc: '우리 농수축산물 전용 할인 상품권', category: '페이·가맹', keywords: ['농할상품권', '농할', '가맹', '신청'], url: 'https://app.catchsecu.com/projects/2816edfa3b5d25f/form' },
+  { id: 'static-1', title: '제로페이 가맹 신청', desc: '소상공인 수수료 부담을 낮춘 간편결제', category: '페이·가맹', keywords: ['제로페이', '페이', '가맹'], url: 'https://www.zeropay.or.kr/UI_HP_001.act' },
+  { id: 'static-2', title: '온누리 가맹 신청', desc: '전통시장 및 상점가 전용 상품권', category: '페이·가맹', keywords: ['온누리', '가맹', '신청', '온누리상품권'], url: 'https://frc.sbiz.or.kr/afms/afm/SMMDL0001M01/page.do' },
+  { id: 'static-14', title: '농할상품권 가맹 신청', desc: '우리 농수축산물 전용 할인 상품권', category: '페이·가맹', keywords: ['농할상품권', '농할', '가맹', '신청'], url: 'https://app.catchsecu.com/projects/2816edfa3b5d25f/form' },
   
   // 핵심 인구 밀집 지역화폐 (페이·가맹)
-  { id: 10, title: '서울페이+ 가맹 신청', desc: '서울 지역 전용 모바일 결제', category: '페이·가맹', keywords: ['서울페이', '서울페이플러스', '서울', '지역화폐'], url: 'https://seoulpay.shinhancard.com/' },
-  { id: 11, title: '경기지역화폐 가맹 신청', desc: '경기도 시·군별 지역화폐', category: '페이·가맹', keywords: ['경기지역화폐', '경기', '경기도', '지역화폐'], url: 'https://www.gmoney.or.kr/' },
-  { id: 3, title: '인천이음카드 가맹 신청', desc: '인천광역시 지역화폐', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음', '인천이음카드', '인천'], url: 'https://with.konacard.co.kr/8-1' },
-  { id: 12, title: '부산 동백전 가맹 신청', desc: '부산광역시 지역화폐', category: '페이·가맹', keywords: ['동백전', '부산', '지역화폐'], url: 'https://busandong100.kr/' },
-  { id: 13, title: '대구로페이 가맹 신청', desc: '대구광역시 지역화폐', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://minwon.daegu.go.kr/cvpl/AUTN-009/info' },
-  { id: 9, title: '김포페이 가맹 신청', desc: '경기도 김포시 지역화폐', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
+  { id: 'static-10', title: '서울페이+ 가맹 신청', desc: '서울 지역 전용 모바일 결제', category: '페이·가맹', keywords: ['서울페이', '서울페이플러스', '서울', '지역화폐'], url: 'https://seoulpay.shinhancard.com/' },
+  { id: 'static-11', title: '경기지역화폐 가맹 신청', desc: '경기도 시·군별 지역화폐', category: '페이·가맹', keywords: ['경기지역화폐', '경기', '경기도', '지역화폐'], url: 'https://www.gmoney.or.kr/' },
+  { id: 'static-3', title: '인천이음카드 가맹 신청', desc: '인천광역시 지역화폐', category: '페이·가맹', keywords: ['인천이음', '지역화폐', '이음', '인천이음카드', '인천'], url: 'https://with.konacard.co.kr/8-1' },
+  { id: 'static-12', title: '부산 동백전 가맹 신청', desc: '부산광역시 지역화폐', category: '페이·가맹', keywords: ['동백전', '부산', '지역화폐'], url: 'https://busandong100.kr/' },
+  { id: 'static-13', title: '대구로페이 가맹 신청', desc: '대구광역시 지역화폐', category: '페이·가맹', keywords: ['대구로페이', '대구', '대구행복페이', '지역화폐'], url: 'https://minwon.daegu.go.kr/cvpl/AUTN-009/info' },
+  { id: 'static-9', title: '김포페이 가맹 신청', desc: '경기도 김포시 지역화폐', category: '페이·가맹', keywords: ['김포페이', '지역화폐', '김포'], url: 'https://gppay.merchant-portal.co.kr/bridge/' },
   
   // 결제·POS
-  { id: 36, title: '페이히어 (모바일 POS)', desc: '스마트폰/태블릿으로 가볍게 쓰는 무료 포스기', category: '결제·POS', keywords: ['페이히어', '포스', 'POS', '결제', '카드결제', '원격결제', '간편결제'], url: 'https://payhere.in/' },
-  { id: 37, title: '페이앱 (원격/링크 결제)', desc: '단말기 없이 스마트폰으로 링크 및 원격 간편결제', category: '결제·POS', keywords: ['페이앱', '링크결제', '원격결제', '스마트폰결제', '간편결제', '수기결제'], url: 'https://www.payapp.kr/' },
-  { id: 38, title: '토스페이먼츠 (PG/간편결제)', desc: '온라인 쇼핑몰 및 매장의 빠르고 쉬운 간편결제', category: '결제·POS', keywords: ['토스', '토스페이먼츠', 'PG', '간편결제', '결제연동'], url: 'https://www.tosspayments.com/' },
-  { id: 39, title: 'IBK 박스포스 (스마트폰 카드결제)', desc: '스마트폰을 카드 결제기로 만들어주는 앱', category: '결제·POS', keywords: ['박스포스', 'IBK', '기업은행', '스마트폰결제', '포스', '간편결제', '원격결제'], url: 'https://pos.ibkbox.net/main/index.do' },
+  { id: 'static-36', title: '페이히어 (모바일 POS)', desc: '스마트폰/태블릿으로 가볍게 쓰는 무료 포스기', category: '결제·POS', keywords: ['페이히어', '포스', 'POS', '결제', '카드결제', '원격결제', '간편결제'], url: 'https://payhere.in/' },
+  { id: 'static-37', title: '페이앱 (원격/링크 결제)', desc: '단말기 없이 스마트폰으로 링크 및 원격 간편결제', category: '결제·POS', keywords: ['페이앱', '링크결제', '원격결제', '스마트폰결제', '간편결제', '수기결제'], url: 'https://www.payapp.kr/' },
+  { id: 'static-38', title: '토스페이먼츠 (PG/간편결제)', desc: '온라인 쇼핑몰 및 매장의 빠르고 쉬운 간편결제', category: '결제·POS', keywords: ['토스', '토스페이먼츠', 'PG', '간편결제', '결제연동'], url: 'https://www.tosspayments.com/' },
+  { id: 'static-39', title: 'IBK 박스포스 (스마트폰 카드결제)', desc: '스마트폰을 카드 결제기로 만들어주는 앱', category: '결제·POS', keywords: ['박스포스', 'IBK', '기업은행', '스마트폰결제', '포스', '간편결제', '원격결제'], url: 'https://pos.ibkbox.net/main/index.do' },
 
   // 배달·입점 관리
-  { id: 27, title: '배달의민족 (배민사장님광장)', desc: '배달의민족 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['배달의민족', '배민', '배달', '입점', '사장님광장'], url: 'https://ceo.baemin.com/' },
-  { id: 28, title: '쿠팡이츠 스토어 (입점/관리)', desc: '쿠팡이츠 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['쿠팡이츠', '쿠팡', '이츠', '배달', '입점', '스토어'], url: 'https://store.coupangeats.com/' },
-  { id: 29, title: '요기요 파트너스 (입점/관리)', desc: '요기요 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['요기요', '요기요파트너스', '배달', '입점'], url: 'https://partner.yogiyo.co.kr/' },
-  { id: 31, title: '신한 땡겨요 사장님라운지 (입점/관리)', desc: '신한은행의 착한 수수료 배달앱 입점 관리', category: '배달·입점 관리', keywords: ['신한', '땡겨요', '신한땡겨요', '배달', '입점', '사장님라운지'], url: 'https://boss.ddangyo.com/' },
-  { id: 30, title: '배달특급 가맹점 신청', desc: '수수료 부담 없는 경기도 공공배달앱', category: '배달·입점 관리', keywords: ['배달특급', '경기도배달앱', '공공배달앱', '배달', '입점'], url: 'https://www.specialdelivery.co.kr/' },
+  { id: 'static-27', title: '배달의민족 (배민사장님광장)', desc: '배달의민족 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['배달의민족', '배민', '배달', '입점', '사장님광장'], url: 'https://ceo.baemin.com/' },
+  { id: 'static-28', title: '쿠팡이츠 스토어 (입점/관리)', desc: '쿠팡이츠 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['쿠팡이츠', '쿠팡', '이츠', '배달', '입점', '스토어'], url: 'https://store.coupangeats.com/' },
+  { id: 'static-29', title: '요기요 파트너스 (입점/관리)', desc: '요기요 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['요기요', '요기요파트너스', '배달', '입점'], url: 'https://partner.yogiyo.co.kr/' },
+  { id: 'static-31', title: '신한 땡겨요 사장님라운지 (입점/관리)', desc: '신한은행의 착한 수수료 배달앱 입점 관리', category: '배달·입점 관리', keywords: ['신한', '땡겨요', '신한땡겨요', '배달', '입점', '사장님라운지'], url: 'https://boss.ddangyo.com/' },
+  { id: 'static-30', title: '배달특급 가맹점 신청', desc: '수수료 부담 없는 경기도 공공배달앱', category: '배달·입점 관리', keywords: ['배달특급', '경기도배달앱', '공공배달앱', '배달', '입점'], url: 'https://www.specialdelivery.co.kr/' },
   
   // 디자인·제작 툴
-  { id: 17, title: '미리캔버스 (포스터/메뉴판 등)', desc: '누구나 쉬운 무료 디자인 템플릿 제작', category: '디자인·제작 툴', keywords: ['미리캔버스', '디자인', '포스터', '메뉴판', '배너', '제작'], url: 'https://www.miricanvas.com/' },
-  { id: 18, title: '망고보드 (카드뉴스/홍보물 등)', desc: '포스터, 카드뉴스 등 전문적인 홍보물 제작', category: '디자인·제작 툴', keywords: ['망고보드', '디자인', '카드뉴스', '홍보물', '배너', '제작'], url: 'https://www.mangoboard.net/' },
-  { id: 22, title: '캔바 (글로벌 디자인/로고 제작)', desc: '전 세계 1위 무료 디자인 플랫폼', category: '디자인·제작 툴', keywords: ['캔바', 'canva', '디자인', '포스터', '로고', '제작'], url: 'https://www.canva.com/ko_kr/' },
-  { id: 23, title: '픽사베이 (상업용 무료 이미지)', desc: '저작권 걱정 없는 고화질 이미지 무료 다운로드', category: '디자인·제작 툴', keywords: ['픽사베이', 'pixabay', '무료이미지', '사진', '디자인소스', '상업용무료'], url: 'https://pixabay.com/ko/' },
-  { id: 19, title: '아임웹 (쇼핑몰/홈페이지 제작)', desc: '코딩 없이 클릭만으로 만드는 웹사이트', category: '디자인·제작 툴', keywords: ['아임웹', '쇼핑몰', '홈페이지', '웹사이트', '제작'], url: 'https://imweb.me/' },
-  { id: 20, title: '식스샵 (쇼핑몰 제작)', desc: '쉽고 직관적인 자사 쇼핑몰 제작 솔루션', category: '디자인·제작 툴', keywords: ['식스샵', '쇼핑몰', '제작', '자사몰'], url: 'https://www.sixshop.com/' },
-  { id: 21, title: '카페24 (쇼핑몰 제작)', desc: '전문적인 글로벌 쇼핑몰 구축 솔루션', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
+  { id: 'static-17', title: '미리캔버스 (포스터/메뉴판 등)', desc: '누구나 쉬운 무료 디자인 템플릿 제작', category: '디자인·제작 툴', keywords: ['미리캔버스', '디자인', '포스터', '메뉴판', '배너', '제작'], url: 'https://www.miricanvas.com/' },
+  { id: 'static-18', title: '망고보드 (카드뉴스/홍보물 등)', desc: '포스터, 카드뉴스 등 전문적인 홍보물 제작', category: '디자인·제작 툴', keywords: ['망고보드', '디자인', '카드뉴스', '홍보물', '배너', '제작'], url: 'https://www.mangoboard.net/' },
+  { id: 'static-22', title: '캔바 (글로벌 디자인/로고 제작)', desc: '전 세계 1위 무료 디자인 플랫폼', category: '디자인·제작 툴', keywords: ['캔바', 'canva', '디자인', '포스터', '로고', '제작'], url: 'https://www.canva.com/ko_kr/' },
+  { id: 'static-23', title: '픽사베이 (상업용 무료 이미지)', desc: '저작권 걱정 없는 고화질 이미지 무료 다운로드', category: '디자인·제작 툴', keywords: ['픽사베이', 'pixabay', '무료이미지', '사진', '디자인소스', '상업용무료'], url: 'https://pixabay.com/ko/' },
+  { id: 'static-19', title: '아임웹 (쇼핑몰/홈페이지 제작)', desc: '코딩 없이 클릭만으로 만드는 웹사이트', category: '디자인·제작 툴', keywords: ['아임웹', '쇼핑몰', '홈페이지', '웹사이트', '제작'], url: 'https://imweb.me/' },
+  { id: 'static-20', title: '식스샵 (쇼핑몰 제작)', desc: '쉽고 직관적인 자사 쇼핑몰 제작 솔루션', category: '디자인·제작 툴', keywords: ['식스샵', '쇼핑몰', '제작', '자사몰'], url: 'https://www.sixshop.com/' },
+  { id: 'static-21', title: '카페24 (쇼핑몰 제작)', desc: '전문적인 글로벌 쇼핑몰 구축 솔루션', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
 
   // 필수 실무 링크 (안내/접수용 사이트 연결)
-  { id: 24, title: '정부24 (각종 민원/증명서 발급)', desc: '사업자등록증명·민원 서류 발급', category: '필수 실무 링크', keywords: ['정부24', '민원24', '민원', '증명서', '등본', '행정'], url: 'https://www.gov.kr/' },
-  { id: 25, title: '식품안전나라 (식품/위생 관련)', desc: '위생교육 및 식품 안전 허가', category: '필수 실무 링크', keywords: ['식품안전나라', '식품', '위생', '식약처', '영업신고'], url: 'https://www.foodsafetykorea.go.kr/' },
-  { id: 26, title: '세움터 (건축물대장/용도변경 등)', desc: '건축물대장 열람 및 용도변경 신청', category: '필수 실무 링크', keywords: ['세움터', '건축물대장', '건축', '용도변경', '건축행정'], url: 'https://cloud.eais.go.kr/' },
-  { id: 4, title: '보건증(건강진단결과서) 발급 안내', desc: '외식업 종사자 필수 건강진단 서류', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
-  { id: 16, title: '4대보험통합징수포털', desc: '직원 및 알바생 4대보험 신고/납부', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
+  { id: 'static-24', title: '정부24 (각종 민원/증명서 발급)', desc: '사업자등록증명·민원 서류 발급', category: '필수 실무 링크', keywords: ['정부24', '민원24', '민원', '증명서', '등본', '행정'], url: 'https://www.gov.kr/' },
+  { id: 'static-25', title: '식품안전나라 (식품/위생 관련)', desc: '위생교육 및 식품 안전 허가', category: '필수 실무 링크', keywords: ['식품안전나라', '식품', '위생', '식약처', '영업신고'], url: 'https://www.foodsafetykorea.go.kr/' },
+  { id: 'static-26', title: '세움터 (건축물대장/용도변경 등)', desc: '건축물대장 열람 및 용도변경 신청', category: '필수 실무 링크', keywords: ['세움터', '건축물대장', '건축', '용도변경', '건축행정'], url: 'https://cloud.eais.go.kr/' },
+  { id: 'static-4', title: '보건증(건강진단결과서) 발급 안내', desc: '외식업 종사자 필수 건강진단 서류', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
+  { id: 'static-16', title: '4대보험통합징수포털', desc: '직원 및 알바생 4대보험 신고/납부', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
   
-  // 실무 서식·양식 (실제 양식/파일 다운로드용)
-  { id: 15, title: '표준근로계약서 양식 다운로드 (알바/직원)', desc: '직원/알바 고용 시 반드시 작성해야 할 계약서', category: '실무 서식·양식', keywords: ['근로계약서', '알바', '직원', '계약서', '서식', '양식'], url: '#' },
-  { id: 32, title: '근태일지 (출퇴근 기록부) 양식 다운로드', desc: '직원/알바 출퇴근 및 근무시간 기록 양식', category: '실무 서식·양식', keywords: ['근태일지', '출퇴근', '기록부', '알바', '서식', '양식'], url: '#' },
-  { id: 6, title: '영업신고증 위임장 등 서식 다운로드', desc: '영업신고증 대리 발급 및 신청 시 필요', category: '실무 서식·양식', keywords: ['영업신고증', '신고', '서식', '양식', '위임장'], url: '#' },
-
   // 추천 앱
-  { id: 33, title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '추천 앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱'], url: 'https://hangose-me.vercel.app/landing.html' },
-  { id: 34, title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '추천 앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱'], url: 'https://business.daangn.com/' },
-  { id: 35, title: '알바몬 / 알바천국 (구인구직)', desc: '빠르고 확실한 매장 아르바이트생 구인', category: '추천 앱', keywords: ['알바몬', '알바천국', '알바', '구인', '채용', '추천앱'], url: 'https://www.albamon.com/' },
+  { id: 'static-33', title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '추천 앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱'], url: 'https://hangose-me.vercel.app/landing.html' },
+  { id: 'static-34', title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '추천 앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱'], url: 'https://business.daangn.com/' },
+  { id: 'static-35', title: '알바몬 / 알바천국 (구인구직)', desc: '빠르고 확실한 매장 아르바이트생 구인', category: '추천 앱', keywords: ['알바몬', '알바천국', '알바', '구인', '채용', '추천앱'], url: 'https://www.albamon.com/' },
 ];
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('전체');
   const [hangoseUrl, setHangoseUrl] = useState('https://hangose-me.vercel.app/landing.html');
+  const [dbForms, setDbForms] = useState<any[]>([]);
 
-  // 컴포넌트가 마운트되면 기기 환경을 체크하여 한고세쏙 모바일/PC URL을 동적으로 설정합니다.
+  // 방문자 통계 기록 및 디바이스 체크
   useEffect(() => {
     const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 768;
     if (isMobile) {
       setHangoseUrl('https://hangose-me.vercel.app/m_landing.html');
     }
+
+    // 통계 기록
+    const trackVisit = async () => {
+      try {
+        const referrer = document.referrer;
+        const isInstagram = referrer.includes('instagram.com') || referrer.includes('l.instagram.com');
+        const path = window.location.pathname;
+
+        await supabase.from('analytics').insert([{ 
+          referrer: referrer || 'Direct', 
+          is_instagram: isInstagram, 
+          path 
+        }]);
+      } catch (err) {
+        console.error('Failed to track visit', err);
+      }
+    };
+    trackVisit();
   }, []);
 
+  // Supabase에서 동적 폼(실무 서식) 데이터 불러오기
+  useEffect(() => {
+    const fetchForms = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('forms')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        
+        if (data) {
+          const formattedForms = data.map(form => ({
+            id: form.id,
+            title: form.title,
+            desc: form.description,
+            category: '실무 서식·양식',
+            keywords: [form.title, '다운로드', '서식', '양식'],
+            url: form.file_url,
+            isDbForm: true,
+          }));
+          setDbForms(formattedForms);
+        }
+      } catch (err) {
+        console.error('Failed to fetch forms from Supabase', err);
+      }
+    };
+    fetchForms();
+  }, []);
+
+  const handleFormDownload = async (e: React.MouseEvent<HTMLAnchorElement>, formId: string, url: string) => {
+    e.preventDefault();
+    // 1. 새 창으로 파일 열기 (UX를 위해 먼저 실행)
+    window.open(url, '_blank');
+    
+    // 2. 백그라운드에서 다운로드 수 증가
+    try {
+      const { data } = await supabase.from('forms').select('downloads').eq('id', formId).single();
+      if (data) {
+        await supabase.from('forms').update({ downloads: data.downloads + 1 }).eq('id', formId);
+      }
+    } catch (err) {
+      console.error('Failed to increment download count', err);
+    }
+  };
+
+  // 정적 링크와 동적 서식 링크 결합
+  const ALL_LINKS = [...STATIC_LINKS, ...dbForms];
+
   // 향상된 검색 및 필터링 로직
-  const filteredLinks = LINKS.filter(link => {
-    // 검색어에서 공백 제거 (예: '제로 페이' -> '제로페이'도 검색되도록)
+  const filteredLinks = ALL_LINKS.filter(link => {
     const term = searchTerm.trim().toLowerCase().replace(/\s+/g, '');
     
-    // 1. 검색어가 있을 때는 현재 카테고리 탭을 무시하고 "전체"에서 실시간으로 찾아줍니다.
     if (term) {
       const title = link.title.toLowerCase().replace(/\s+/g, '');
-      const matchSearch = title.includes(term) || link.keywords.some(kw => kw.toLowerCase().replace(/\s+/g, '').includes(term));
-      return matchSearch;
+      return title.includes(term) || link.keywords.some(kw => kw.toLowerCase().replace(/\s+/g, '').includes(term));
     }
     
-    // 2. 검색어가 없을 때는 선택된 카테고리 탭에 맞는 것만 보여줍니다.
     return selectedCategory === '전체' || link.category === selectedCategory;
   });
 
@@ -97,7 +158,6 @@ export default function Home() {
 
       {/* Search & Filter Area */}
       <div className="w-full max-w-2xl bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6">
-        {/* Search Bar */}
         <div className="relative mb-4">
           <input 
             type="text" 
@@ -120,14 +180,13 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Category Tabs (스크롤 없이 한 화면에 꽉 차게 래핑) */}
         <div className="flex flex-wrap justify-center gap-2 pb-1">
           {CATEGORIES.map(category => (
             <button
               key={category}
               onClick={() => {
                 setSelectedCategory(category);
-                setSearchTerm(''); // 탭 이동 시 검색어 초기화
+                setSearchTerm('');
               }}
               className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-[13px] sm:text-sm font-semibold transition-colors ${
                 selectedCategory === category && !searchTerm
@@ -145,14 +204,14 @@ export default function Home() {
       <div className="w-full max-w-2xl flex flex-col gap-2.5">
         {filteredLinks.length > 0 ? (
           filteredLinks.map(link => {
-            // 한고세쏙(id:33)인 경우 동적으로 설정된 기기별 URL 적용
-            const currentUrl = link.id === 33 ? hangoseUrl : link.url;
+            const currentUrl = link.id === 'static-33' ? hangoseUrl : link.url;
             return (
               <a 
                 key={link.id} 
                 href={currentUrl}
                 target={currentUrl === '#' ? '_self' : '_blank'}
                 rel="noopener noreferrer"
+                onClick={link.isDbForm ? (e) => handleFormDownload(e, link.id, link.url) : undefined}
                 className="w-full bg-white hover:bg-gray-50 text-gray-800 py-3.5 px-5 rounded-xl border border-gray-200 font-medium transition-all text-left flex justify-between items-center group shadow-sm hover:shadow"
               >
                 <div className="flex flex-col gap-1">
@@ -185,6 +244,13 @@ export default function Home() {
           한고세쏙 무료로 시작하기
         </div>
       </a>
+      
+      {/* Footer Admin Link */}
+      <div className="w-full max-w-2xl mt-8 text-center pb-8">
+        <a href="/admin" className="text-xs text-gray-300 hover:text-gray-400 transition-colors">
+          관리자 접속 (Admin)
+        </a>
+      </div>
     </main>
   );
 }
