@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const CATEGORIES = ['전체', '페이·가맹', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '추천 앱'];
 
@@ -55,6 +55,15 @@ const LINKS = [
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('전체');
+  const [hangoseUrl, setHangoseUrl] = useState('https://hangose-me.vercel.app/landing.html');
+
+  // 컴포넌트가 마운트되면 기기 환경을 체크하여 한고세쏙 모바일/PC URL을 동적으로 설정합니다.
+  useEffect(() => {
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    if (isMobile) {
+      setHangoseUrl('https://hangose-me.vercel.app/m_landing.html');
+    }
+  }, []);
 
   // 향상된 검색 및 필터링 로직
   const filteredLinks = LINKS.filter(link => {
@@ -129,23 +138,27 @@ export default function Home() {
       {/* Compact Links List */}
       <div className="w-full max-w-2xl flex flex-col gap-2.5">
         {filteredLinks.length > 0 ? (
-          filteredLinks.map(link => (
-            <a 
-              key={link.id} 
-              href={link.url}
-              target={link.url === '#' ? '_self' : '_blank'}
-              rel="noopener noreferrer"
-              className="w-full bg-white hover:bg-gray-50 text-gray-800 py-3.5 px-5 rounded-xl border border-gray-200 font-medium transition-all text-left flex justify-between items-center group shadow-sm hover:shadow"
-            >
-              <div className="flex flex-col gap-1">
-                <span className="text-[15px] leading-tight">{link.title}</span>
-                <span className="text-xs text-blue-500 font-medium">{link.desc}</span>
-              </div>
-              <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl ml-3 shrink-0">
-                {link.category === '실무 서식·양식' ? '↓' : '→'}
-              </span>
-            </a>
-          ))
+          filteredLinks.map(link => {
+            // 한고세쏙(id:33)인 경우 동적으로 설정된 기기별 URL 적용
+            const currentUrl = link.id === 33 ? hangoseUrl : link.url;
+            return (
+              <a 
+                key={link.id} 
+                href={currentUrl}
+                target={currentUrl === '#' ? '_self' : '_blank'}
+                rel="noopener noreferrer"
+                className="w-full bg-white hover:bg-gray-50 text-gray-800 py-3.5 px-5 rounded-xl border border-gray-200 font-medium transition-all text-left flex justify-between items-center group shadow-sm hover:shadow"
+              >
+                <div className="flex flex-col gap-1">
+                  <span className="text-[15px] leading-tight">{link.title}</span>
+                  <span className="text-xs text-blue-500 font-medium">{link.desc}</span>
+                </div>
+                <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl ml-3 shrink-0">
+                  {link.category === '실무 서식·양식' ? '↓' : '→'}
+                </span>
+              </a>
+            );
+          })
         ) : (
           <div className="text-center text-gray-500 py-12 bg-white rounded-2xl border border-gray-200">
             검색 결과가 없습니다. 다른 키워드를 입력해보세요!
@@ -155,7 +168,7 @@ export default function Home() {
 
       {/* Cross Promotion Banner */}
       <a 
-        href="https://hangose-me.vercel.app/landing.html" 
+        href={hangoseUrl} 
         target="_blank" 
         rel="noopener noreferrer" 
         className="block w-full max-w-2xl mt-10 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl p-6 text-white shadow-lg text-center transform hover:scale-[1.02] transition-transform cursor-pointer"
