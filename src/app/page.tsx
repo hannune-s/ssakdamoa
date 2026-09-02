@@ -22,7 +22,7 @@ const LINKS = [
   { id: 36, title: '페이히어 (모바일 POS)', desc: '스마트폰/태블릿으로 가볍게 쓰는 무료 포스기', category: '결제·POS', keywords: ['페이히어', '포스', 'POS', '결제', '카드결제', '원격결제', '간편결제'], url: 'https://payhere.in/' },
   { id: 37, title: '페이앱 (원격/링크 결제)', desc: '단말기 없이 스마트폰으로 링크 및 원격 간편결제', category: '결제·POS', keywords: ['페이앱', '링크결제', '원격결제', '스마트폰결제', '간편결제', '수기결제'], url: 'https://www.payapp.kr/' },
   { id: 38, title: '토스페이먼츠 (PG/간편결제)', desc: '온라인 쇼핑몰 및 매장의 빠르고 쉬운 간편결제', category: '결제·POS', keywords: ['토스', '토스페이먼츠', 'PG', '간편결제', '결제연동'], url: 'https://www.tosspayments.com/' },
-  { id: 39, title: 'IBK 박스포스 (스마트폰 카드결제)', desc: '스마트폰을 카드 결제기로 만들어주는 앱', category: '결제·POS', keywords: ['박스포스', 'IBK', '기업은행', '스마트폰결제', '포스', '간편결제', '원격결제'], url: 'https://boxpos.ibk.co.kr/' },
+  { id: 39, title: 'IBK 박스포스 (스마트폰 카드결제)', desc: '스마트폰을 카드 결제기로 만들어주는 앱', category: '결제·POS', keywords: ['박스포스', 'IBK', '기업은행', '스마트폰결제', '포스', '간편결제', '원격결제'], url: 'https://pos.ibkbox.net/main/index.do' },
 
   // 배달·입점 관리
   { id: 27, title: '배달의민족 (배민사장님광장)', desc: '배달의민족 입점 신청 및 가게 관리', category: '배달·입점 관리', keywords: ['배달의민족', '배민', '배달', '입점', '사장님광장'], url: 'https://ceo.baemin.com/' },
