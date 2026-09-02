@@ -19,6 +19,8 @@ export default function InquiryPage() {
         console.error('Insert error:', error);
         throw error;
       }
+      // 성공 시 입력했던 폼 데이터 깔끔하게 초기화
+      setFormData({ name: '', company: '', phone: '', email: '', message: '' });
       setSubmitted(true);
     } catch (err: any) {
       console.error(err);
