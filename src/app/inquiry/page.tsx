@@ -31,7 +31,7 @@ export default function InquiryPage() {
     
     const finalMessage = inquiryType === 'app'
       ? `[앱 제작 문의]\n- 희망 앱 형태: ${appData.type || '미입력'}\n- 매장 업종: ${appData.industry || '미입력'}\n- 예상 예산: ${appData.budget || '미입력'}\n- 희망 일정: ${appData.schedule || '미입력'}\n\n[상세 내용]\n${formData.message}`
-      : `[일반/제휴 문의]\n${formData.message}`;
+      : `[기타 문의]\n${formData.message}`;
 
     const submitData = { ...formData, message: finalMessage };
     
@@ -61,7 +61,7 @@ export default function InquiryPage() {
             <span className="text-3xl">✅</span>
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">접수가 완료되었습니다</h2>
-          <p className="text-gray-500 mb-6 text-sm">보내주신 소중한 문의/제휴 내용을 꼼꼼히 확인 후<br/>최대한 빠르게 연락드리겠습니다.</p>
+          <p className="text-gray-500 mb-6 text-sm">보내주신 소중한 문의 내용을 꼼꼼히 확인 후<br/>최대한 빠르게 연락드리겠습니다.</p>
           <button 
             onClick={() => setSubmitted(false)}
             className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold rounded-xl transition-colors"
@@ -76,7 +76,7 @@ export default function InquiryPage() {
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col items-center py-8 px-4 font-sans pb-32">
       <div className="w-full max-w-2xl text-center mb-8">
-        <h1 className="text-3xl font-extrabold text-blue-600 mb-2">제휴 및 문의</h1>
+        <h1 className="text-3xl font-extrabold text-blue-600 mb-2">문의하기</h1>
         <p className="text-gray-500 text-sm">어떤 도움이 필요하신가요? 목적에 맞는 항목을 선택해주세요.</p>
       </div>
 
@@ -90,12 +90,12 @@ export default function InquiryPage() {
               : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-gray-50'
           }`}
         >
-          <div className="text-2xl mb-3">🤝</div>
+          <div className="text-2xl mb-3">💬</div>
           <h3 className={`text-lg font-bold mb-1 ${inquiryType === 'general' ? 'text-blue-700' : 'text-gray-800'}`}>
-            일반 제휴 및 기타 문의
+            기타 문의
           </h3>
           <p className="text-sm text-gray-500 leading-relaxed">
-            서비스 입점, 마케팅 제휴, 기타 서비스 이용 관련 궁금하신 점을 남겨주세요.
+            기타 서비스 이용 관련 궁금하신 점이나 건의사항을 남겨주세요.
           </p>
         </button>
 
@@ -128,7 +128,7 @@ export default function InquiryPage() {
           
           <div className="mb-6 pb-4 border-b border-gray-100">
             <h2 className="text-xl font-bold text-gray-800">
-              {inquiryType === 'app' ? '📱 앱 제작 상세 문의' : '🤝 일반 제휴 및 문의'}
+              {inquiryType === 'app' ? '📱 앱 제작 상세 문의' : '💬 기타 문의'}
             </h2>
             <p className="text-sm text-gray-500 mt-1">
               {inquiryType === 'app' ? '자세히 적어주실수록 더 정확하고 빠른 상담이 가능합니다.' : '빠른 시일 내에 담당자가 확인 후 연락드리겠습니다.'}
@@ -230,7 +230,7 @@ export default function InquiryPage() {
               <textarea 
                 required
                 rows={5}
-                placeholder={inquiryType === 'app' ? "추가로 원하시는 기능이나 참고할 만한 앱(벤치마킹)이 있다면 적어주세요." : "자세한 제휴 제안 내용이나 문의 사항을 남겨주세요."}
+                placeholder={inquiryType === 'app' ? "추가로 원하시는 기능이나 참고할 만한 앱(벤치마킹)이 있다면 적어주세요." : "자세한 문의 사항이나 건의 내용을 남겨주세요."}
                 value={formData.message}
                 onChange={e => setFormData({...formData, message: e.target.value})}
                 className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow resize-none"
@@ -244,7 +244,7 @@ export default function InquiryPage() {
                 loading ? 'bg-gray-400 cursor-not-allowed' : (inquiryType === 'app' ? 'bg-indigo-600 hover:bg-indigo-700 hover:shadow-lg' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg')
               }`}
             >
-              {loading ? '전송 중...' : (inquiryType === 'app' ? '앱 제작 문의 접수하기' : '제휴/문의 접수하기')}
+              {loading ? '전송 중...' : (inquiryType === 'app' ? '앱 제작 문의 접수하기' : '문의 접수하기')}
             </button>
           </form>
         </div>
