@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import Calculator from '@/components/Calculator';
 
-const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '추천 앱'];
+const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '사장님 모음앱'];
 
 // 정적 링크 데이터 (실무 서식·양식 제외)
 const STATIC_LINKS = [
@@ -51,10 +51,10 @@ const STATIC_LINKS = [
   { id: 'static-16', title: '4대보험통합징수포털', desc: '직원 및 알바생 4대보험 신고/납부', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
   { id: 'static-40', title: '통신판매업 신고', desc: '온라인 판매 및 스마트스토어 필수 행정 절차', category: '필수 실무 링크', keywords: ['통신판매업', '통신판매', '신고', '정부24', '온라인판매', '쇼핑몰'], url: 'https://www.gov.kr/main?a=AA020InfoCappViewApp&HighCtgCD=A09006&CappBizCD=11300000006' },
   
-  // 추천 앱
-  { id: 'static-33', title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '추천 앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱'], url: 'https://hangose-me.vercel.app/landing.html' },
-  { id: 'static-34', title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '추천 앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱'], url: 'https://business.daangn.com/' },
-  { id: 'static-35', title: '알바몬 / 알바천국 (구인구직)', desc: '빠르고 확실한 매장 아르바이트생 구인', category: '추천 앱', keywords: ['알바몬', '알바천국', '알바', '구인', '채용', '추천앱'], url: 'https://www.albamon.com/' },
+  // 사장님 모음앱
+  { id: 'static-33', title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '사장님 모음앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱', '사장님모음앱'], url: 'https://hangose-me.vercel.app/landing.html' },
+  { id: 'static-34', title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '사장님 모음앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱', '사장님모음앱'], url: 'https://business.daangn.com/' },
+  { id: 'static-35', title: '알바몬 / 알바천국 (구인구직)', desc: '빠르고 확실한 매장 아르바이트생 구인', category: '사장님 모음앱', keywords: ['알바몬', '알바천국', '알바', '구인', '채용', '추천앱', '사장님모음앱'], url: 'https://www.albamon.com/' },
 ];
 
 export default function Home() {
