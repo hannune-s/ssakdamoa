@@ -30,8 +30,7 @@ export default function BottomNav() {
 
   const tabs = [
     { name: '홈', path: '/', icon: <HomeIcon /> },
-    { name: '공지·안내', path: '/notices', icon: <NoticeIcon /> },
-    { name: '문의하기', path: '/inquiry', icon: <ContactIcon /> },
+    { name: '공지·문의', path: '/support', icon: <ContactIcon /> },
   ];
 
   return (
