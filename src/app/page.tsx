@@ -50,6 +50,7 @@ const STATIC_LINKS = [
   { id: 'static-4', title: '보건증(건강진단결과서) 발급 안내', desc: '외식업 종사자 필수 건강진단 서류', category: '필수 실무 링크', keywords: ['보건증', '건강진단', '건강진단결과서'], url: 'https://www.gov.kr/portal/service/serviceInfo/135200000129' },
   { id: 'static-16', title: '4대보험통합징수포털', desc: '직원 및 알바생 4대보험 신고/납부', category: '필수 실무 링크', keywords: ['4대보험', '사대보험', '통합징수포털', '국민건강보험'], url: 'https://si4n.nhis.or.kr/jpza/JpZaa00101.do' },
   { id: 'static-40', title: '통신판매업 신고', desc: '온라인 판매 및 스마트스토어 필수 행정 절차', category: '필수 실무 링크', keywords: ['통신판매업', '통신판매', '신고', '정부24', '온라인판매', '쇼핑몰'], url: 'https://www.gov.kr/main?a=AA020InfoCappViewApp&HighCtgCD=A09006&CappBizCD=11300000006' },
+  { id: 'static-41', title: '인터넷등기소 (법인등기 등)', desc: '부동산 및 법인 등기부등본 열람·발급', category: '필수 실무 링크', keywords: ['인터넷등기소', '등기소', '법인등기', '등기부등본', '부동산등기'], url: 'https://www.iros.go.kr/index.jsp' },
   
   // 사장님 모음앱
   { id: 'static-33', title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '사장님 모음앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱', '사장님모음앱'], url: 'https://hangose-me.vercel.app/landing.html' },
