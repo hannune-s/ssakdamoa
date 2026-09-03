@@ -109,7 +109,7 @@ export default function AdminDashboard() {
       {/* 최근 접속 기록 */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
         <div className="px-6 py-5 border-b border-gray-100">
-          <h3 className="text-lg font-bold">최근 접속/설치 기록 (최근 15건)</h3>
+          <h3 className="text-lg font-bold">최근 접속/설치 기록 (최근 5건)</h3>
         </div>
         <div className="overflow-x-auto pb-4">
           <table className="w-full min-w-[600px] text-left border-collapse">
