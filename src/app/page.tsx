@@ -188,19 +188,25 @@ export default function Home() {
       setHangoseUrl('https://hangose-me.vercel.app/m_landing.html');
     }
 
-    // 통계 기록 (중복 방지 완벽 차단)
+    // 통계 기록 (중복 방지 완벽 차단 - 새로고침 뻥튀기 방지)
     const trackVisit = async () => {
       try {
-        // 절대적인 날짜 문자열 사용 (예: 2026-09-02)
-        const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Seoul' });
+        // 날짜 포맷팅 에러 방지를 위해 수동으로 KST(한국 시간) YYYY-MM-DD 문자열 생성
+        const now = new Date();
+        const kstNow = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+        const today = kstNow.toISOString().split('T')[0];
+        
         const visitedToday = localStorage.getItem('ssakdamoa_visited_today');
+        const sessionVisited = sessionStorage.getItem('ssakdamoa_visited_session');
 
-        // 오늘 이미 방문한 기록이 있다면 0.1초만에 즉시 차단
-        if (visitedToday === today) {
-          return;
-        }
+        // 1. 현재 창(탭)에서 이미 기록했다면 즉시 차단 (새로고침 무한 카운트 방지)
+        if (sessionVisited) return;
+        
+        // 2. 오늘 하루 이미 기록했다면 즉시 차단 (브라우저 재실행 카운트 방지)
+        if (visitedToday === today) return;
 
-        // 통과했다면, DB 통신을 기다리지 않고 로컬스토리지에 '오늘 방문함'을 즉시 못 박음 (새로고침 연타 방지)
+        // 통과했다면 즉시 로컬/세션 스토리지에 못 박음 (네트워크 지연 중 중복 실행 방지)
+        sessionStorage.setItem('ssakdamoa_visited_session', 'true');
         localStorage.setItem('ssakdamoa_visited_today', today);
 
         const rawReferrer = document.referrer;
