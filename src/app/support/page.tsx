@@ -214,38 +214,38 @@ export default function SupportPage() {
 
       {mainTab === 'inquiry' && (
         <div className="w-full animate-fade-in-up">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-2 gap-3 md:gap-4 mb-8">
             <button
               onClick={() => setInquiryType('general')}
-              className={`flex flex-col items-start p-6 rounded-2xl border-2 transition-all text-left ${
+              className={`flex flex-col items-start p-4 md:p-6 rounded-2xl border-2 transition-all text-left ${
                 inquiryType === 'general' 
                   ? 'border-blue-500 bg-blue-50 shadow-md' 
                   : 'border-gray-200 bg-white hover:border-blue-300 hover:bg-gray-50'
               }`}
             >
-              <div className="text-2xl mb-3">💬</div>
-              <h3 className={`text-lg font-bold mb-1 ${inquiryType === 'general' ? 'text-blue-700' : 'text-gray-800'}`}>
+              <div className="text-2xl mb-2 md:mb-3">💬</div>
+              <h3 className={`text-base md:text-lg font-bold mb-1 ${inquiryType === 'general' ? 'text-blue-700' : 'text-gray-800'}`}>
                 기타 문의
               </h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
+              <p className="text-[11px] md:text-sm text-gray-500 leading-snug md:leading-relaxed break-keep">
                 기타 서비스 이용 관련 궁금하신 점이나 건의사항을 남겨주세요.
               </p>
             </button>
 
             <button
               onClick={() => setInquiryType('app')}
-              className={`flex flex-col items-start p-6 rounded-2xl border-2 transition-all text-left ${
+              className={`flex flex-col items-start p-4 md:p-6 rounded-2xl border-2 transition-all text-left ${
                 inquiryType === 'app' 
                   ? 'border-indigo-500 bg-indigo-50 shadow-md' 
                   : 'border-gray-200 bg-white hover:border-indigo-300 hover:bg-gray-50'
               }`}
             >
-              <div className="text-2xl mb-3">📱</div>
-              <h3 className={`text-lg font-bold mb-1 ${inquiryType === 'app' ? 'text-indigo-700' : 'text-gray-800'}`}>
+              <div className="text-2xl mb-2 md:mb-3">📱</div>
+              <h3 className={`text-base md:text-lg font-bold mb-1 ${inquiryType === 'app' ? 'text-indigo-700' : 'text-gray-800'}`}>
                 앱 제작 문의
               </h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                우리 매장 전용 앱 개발, 예약/주문 프로그램 구축 상담을 도와드립니다.
+              <p className="text-[11px] md:text-sm text-gray-500 leading-snug md:leading-relaxed break-keep">
+                매장 전용 앱 개발, 예약/주문 프로그램 구축 상담을 도와드립니다.
               </p>
             </button>
           </div>
