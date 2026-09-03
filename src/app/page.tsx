@@ -67,11 +67,59 @@ export default function Home() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
 
+  const urlB64ToUint8Array = (base64String: string) => {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  };
+
+  const subscribeToPush = async () => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') return;
+
+      const registration = await navigator.serviceWorker.ready;
+      const existingSub = await registration.pushManager.getSubscription();
+      if (existingSub) return;
+
+      // Vercel 환경변수에 추가될 Public Key 우선 사용
+      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || 'BPSIMaexeMfcpWWslN3VpLDVWJVWJqvQvfG2y14bWM6Fu6IegevXAhVOFZ5_4T_ZpjYyEAuckPVyZuPoeeGYJgo';
+      const convertedKey = urlB64ToUint8Array(vapidKey);
+
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: convertedKey
+      });
+
+      const subObj = subscription.toJSON();
+      
+      await supabase.from('ssakdamoa_push_subscribers').insert([{
+        endpoint: subObj.endpoint,
+        p256dh: subObj.keys?.p256dh,
+        auth: subObj.keys?.auth
+      }]);
+    } catch (err) {
+      console.error('푸시 구독 실패:', err);
+    }
+  };
+
   // PWA 앱 설치 프롬프트 및 모바일(iOS/Android) 감지
   useEffect(() => {
-    // Service Worker 등록 (PWA 설치 필수 조건)
+    // Service Worker 등록 및 푸시 알림 확인
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW err:', err));
+      navigator.serviceWorker.register('/sw.js').then(() => {
+        // 앱으로 실행 중인지(standalone) 확인하여, 앱 사용자면 푸시 구독 시도
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+        if (isStandalone) {
+          setTimeout(subscribeToPush, 2000); // 사용자 방해되지 않게 약간 지연
+        }
+      }).catch(err => console.log('SW err:', err));
     }
 
     const ua = window.navigator.userAgent.toLowerCase();
@@ -106,8 +154,11 @@ export default function Home() {
             is_instagram: false,
             visited_at: new Date().toISOString()
           }]);
+
+          // 설치 허용 시 알림 권한도 연이어 요청
+          await subscribeToPush();
         } catch (e) {
-          console.error('Failed to log install event', e);
+          console.error('Failed to log install event or subscribe push', e);
         }
       }
     } else {
