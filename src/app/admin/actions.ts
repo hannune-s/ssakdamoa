@@ -97,7 +97,7 @@ export async function fetchAdminAnalytics(pin: string) {
     .from('ssakdamoa_analytics')
     .select('*')
     .order('visited_at', { ascending: false })
-    .limit(15);
+    .limit(5);
 
   return {
     totalCount: totalCount || 0,
