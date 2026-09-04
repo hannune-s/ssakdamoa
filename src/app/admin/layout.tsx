@@ -95,6 +95,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <span className="text-sm font-bold text-gray-400 mt-1">Admin</span>
         </div>
         <nav className="flex-1 p-4 flex flex-col gap-2">
+          <a 
+            href="/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 px-4 py-3 mb-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold shadow-sm hover:shadow-md transition-all text-sm"
+          >
+            📱 싹다모아 앱 바로가기
+          </a>
           {menuItems.map(item => {
             const isActive = pathname === item.path;
             return (
@@ -138,6 +146,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </button>
         </div>
         <nav className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto">
+          <a 
+            href="/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 px-4 py-3 mb-2 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold shadow-sm hover:shadow-md transition-all text-sm"
+          >
+            📱 싹다모아 앱 바로가기
+          </a>
           {menuItems.map(item => {
             const isActive = pathname === item.path;
             return (
