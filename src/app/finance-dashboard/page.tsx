@@ -37,6 +37,7 @@ export default function FinancesDashboardPage() {
   const [isAuthed, setIsAuthed] = useState(false);
   const [pin, setPin] = useState('');
   const [checkingPin, setCheckingPin] = useState(false);
+  const [isBalanceVisible, setIsBalanceVisible] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -124,8 +125,14 @@ export default function FinancesDashboardPage() {
               {/* 최종 잔고 하이라이트 */}
               <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-2xl p-8 mb-8 text-center shadow-sm">
                 <h2 className="text-green-800 text-lg font-bold mb-3 tracking-wide">오늘의 최종 현잔고</h2>
-                <div className="text-4xl sm:text-6xl font-black text-green-600 drop-shadow-sm">
-                  {formatNumber(data.final_balance)} <span className="text-3xl sm:text-4xl font-bold">원</span>
+                <p className="text-xs text-green-600 mb-2 font-medium opacity-80">(금액을 누르면 보입니다)</p>
+                <div 
+                  onClick={() => setIsBalanceVisible(!isBalanceVisible)}
+                  className={`text-4xl sm:text-5xl font-semibold text-green-600 cursor-pointer transition-all duration-300 select-none ${
+                    !isBalanceVisible ? 'blur-[10px] opacity-70' : 'drop-shadow-sm'
+                  }`}
+                >
+                  {formatNumber(data.final_balance)} <span className="text-2xl sm:text-3xl font-medium">원</span>
                 </div>
               </div>
 
