@@ -46,12 +46,19 @@ export default function FinancesDashboardPage() {
     const isValid = await verifyDashboardPin(pin);
     if (isValid) {
       setIsAuthed(true);
+      sessionStorage.setItem('finance_dashboard_authed', 'true');
     } else {
       alert('비밀번호가 일치하지 않습니다.');
       setPin('');
     }
     setCheckingPin(false);
   };
+
+  useEffect(() => {
+    if (sessionStorage.getItem('finance_dashboard_authed') === 'true') {
+      setIsAuthed(true);
+    }
+  }, []);
 
   useEffect(() => {
     if (!isAuthed) return;
