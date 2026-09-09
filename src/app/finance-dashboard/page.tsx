@@ -34,7 +34,26 @@ export default function FinancesDashboardPage() {
     }
   };
 
+  const [isAuthed, setIsAuthed] = useState(false);
+  const [pin, setPin] = useState('');
+  const [checkingPin, setCheckingPin] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCheckingPin(true);
+    const { verifyDashboardPin } = await import('../finance-admin/actions');
+    const isValid = await verifyDashboardPin(pin);
+    if (isValid) {
+      setIsAuthed(true);
+    } else {
+      alert('비밀번호가 일치하지 않습니다.');
+      setPin('');
+    }
+    setCheckingPin(false);
+  };
+
   useEffect(() => {
+    if (!isAuthed) return;
     loadDashboard();
 
     // 실시간 구독
@@ -54,7 +73,35 @@ export default function FinancesDashboardPage() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [isAuthed]);
+
+  if (!isAuthed) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans pb-24">
+        <form onSubmit={handleLogin} className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 w-full max-w-sm flex flex-col items-center">
+          <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mb-4">
+            <span className="text-2xl">🔒</span>
+          </div>
+          <h2 className="text-2xl font-extrabold text-gray-900 mb-2">일일잔고현황</h2>
+          <p className="text-sm text-gray-500 mb-8 text-center">보호된 페이지입니다.<br/>비밀번호 4자리를 입력해주세요.</p>
+          
+          <input 
+            type="password" 
+            maxLength={4}
+            value={pin}
+            onChange={e => setPin(e.target.value.replace(/[^0-9]/g, ''))}
+            className="w-full text-center text-3xl tracking-[0.5em] p-4 bg-gray-50 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-6 font-mono transition-shadow"
+            placeholder="****"
+            autoFocus
+          />
+          <button type="submit" disabled={checkingPin || pin.length < 4} className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white font-bold rounded-2xl transition-colors shadow-sm">
+            확인
+          </button>
+        </form>
+        <style>{`nav { display: none !important; }`}</style>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8 font-sans pb-24">

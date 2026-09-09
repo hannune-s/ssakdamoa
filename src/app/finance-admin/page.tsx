@@ -4,11 +4,13 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 
 export default function FinancesAdminPage() {
-  const [accounts, setAccounts] = useState([{ name: '', balance: '' }, { name: '', balance: '' }, { name: '', balance: '' }, { name: '', balance: '' }, { name: '', balance: '' }]);
+  const [accounts, setAccounts] = useState(Array(8).fill({ name: '', balance: '' }));
   const [expenditures, setExpenditures] = useState([{ name: '', amount: '' }]);
   const [targetDate, setTargetDate] = useState(new Date().toISOString().split('T')[0]);
   const [status, setStatus] = useState({ msg: '', type: '' });
   const [loading, setLoading] = useState(false);
+  const [dashboardPin, setDashboardPin] = useState('');
+  const [savingPin, setSavingPin] = useState(false);
 
   const formatNumber = (num: number) => num.toLocaleString('ko-KR');
   const parseNumber = (str: string) => parseInt(str.toString().replace(/,/g, '') || '0', 10);
@@ -42,7 +44,7 @@ export default function FinancesAdminPage() {
       if (data) {
         const loadedAccounts = [...accounts];
         data.accounts.forEach((acc: any, i: number) => {
-          if (i < 5) {
+          if (i < 8) {
             loadedAccounts[i] = { name: acc.name, balance: acc.balance ? formatNumber(acc.balance) : '' };
           }
         });
@@ -63,7 +65,7 @@ export default function FinancesAdminPage() {
   };
 
   const resetForm = () => {
-    setAccounts(Array(5).fill({ name: '', balance: '' }));
+    setAccounts(Array(8).fill({ name: '', balance: '' }));
     setExpenditures([{ name: '', amount: '' }]);
   };
 
@@ -131,7 +133,7 @@ export default function FinancesAdminPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Accounts */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-blue-800 mb-4">🏦 법인계좌 잔고 (5개)</h2>
+          <h2 className="text-xl font-semibold text-blue-800 mb-4">🏦 계좌잔고내역 (8개)</h2>
           <div className="space-y-3">
             {accounts.map((acc, i) => (
               <div key={i} className="flex space-x-2">
@@ -171,6 +173,36 @@ export default function FinancesAdminPage() {
       <div className="bg-gray-900 text-white rounded-2xl p-8 text-center shadow-lg mt-6">
         <h2 className="text-gray-400 text-sm font-semibold mb-2 tracking-wide uppercase">오늘의 최종 현잔고</h2>
         <div className="text-5xl font-extrabold text-green-400">{formatNumber(totals.finalBalance)} <span className="text-3xl text-gray-400">원</span></div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mt-6 max-w-md mx-auto">
+        <h3 className="text-lg font-bold text-gray-800 mb-2">🔒 공유 페이지 비밀번호 설정</h3>
+        <p className="text-xs text-gray-500 mb-4">공유 링크에 접속할 때 물어볼 4자리 비밀번호를 설정합니다.</p>
+        <div className="flex gap-2">
+          <input 
+            type="password" 
+            maxLength={4} 
+            value={dashboardPin} 
+            onChange={e => setDashboardPin(e.target.value.replace(/[^0-9]/g, ''))} 
+            placeholder="예: 1234" 
+            className="flex-1 p-2 border border-gray-300 rounded-lg text-center tracking-[0.3em] font-mono focus:ring-2 focus:ring-indigo-500 outline-none"
+          />
+          <button 
+            onClick={async () => {
+              if (dashboardPin.length !== 4) return alert('4자리를 입력해주세요.');
+              setSavingPin(true);
+              const { setDashboardPin: savePinAction } = await import('./actions');
+              const res = await savePinAction(dashboardPin);
+              setSavingPin(false);
+              if (res.success) alert('비밀번호가 설정되었습니다.');
+              else alert(res.error);
+            }}
+            disabled={savingPin}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 rounded-lg transition-colors whitespace-nowrap"
+          >
+            {savingPin ? '저장 중...' : '설정'}
+          </button>
+        </div>
       </div>
 
       <div className="flex justify-center space-x-4 pt-4">
