@@ -62,7 +62,7 @@ export default function FinancesDashboardPage() {
         {/* 헤더 영역 */}
         <div className="bg-indigo-600 p-6 sm:p-8 text-white text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-indigo-700 opacity-20 transform -skew-y-3 origin-top-left"></div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold relative z-10">📊 싹다모아 일일 자금 현황</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold relative z-10">📊 일일잔고현황</h1>
           <p className="mt-2 text-indigo-100 font-medium relative z-10">{displayDate}</p>
         </div>
 
