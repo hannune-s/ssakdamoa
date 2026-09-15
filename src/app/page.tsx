@@ -42,6 +42,8 @@ const STATIC_LINKS = [
   { id: 'static-19', title: '아임웹 (쇼핑몰/홈페이지 제작)', desc: '코딩 없이 클릭만으로 만드는 웹사이트', category: '디자인·제작 툴', keywords: ['아임웹', '쇼핑몰', '홈페이지', '웹사이트', '제작'], url: 'https://imweb.me/' },
   { id: 'static-20', title: '식스샵 (쇼핑몰 제작)', desc: '쉽고 직관적인 자사 쇼핑몰 제작 솔루션', category: '디자인·제작 툴', keywords: ['식스샵', '쇼핑몰', '제작', '자사몰'], url: 'https://www.sixshop.com/' },
   { id: 'static-21', title: '카페24 (쇼핑몰 제작)', desc: '전문적인 글로벌 쇼핑몰 구축 솔루션', category: '디자인·제작 툴', keywords: ['카페24', '쇼핑몰', '제작', '자사몰', 'cafe24'], url: 'https://www.cafe24.com/' },
+  { id: 'static-42', title: '가비아 (도메인/호스팅/웹메일)', desc: '쇼핑몰·홈페이지 운영을 위한 도메인 등록 및 호스팅', category: '디자인·제작 툴', keywords: ['가비아', '도메인', '호스팅', '웹메일', '웹사이트', '제작'], url: 'https://www.gabia.com/' },
+  { id: 'static-43', title: '후이즈 (도메인/호스팅)', desc: '국내 최고 수준의 도메인 등록 및 기업 호스팅', category: '디자인·제작 툴', keywords: ['후이즈', '도메인', '호스팅', '웹사이트', '제작', '기업메일'], url: 'https://www.whois.co.kr/' },
 
   // 필수 실무 링크 (안내/접수용 사이트 연결)
   { id: 'static-24', title: '정부24 (각종 민원/증명서 발급)', desc: '사업자등록증명·민원 서류 발급', category: '필수 실무 링크', keywords: ['정부24', '민원24', '민원', '증명서', '등본', '행정'], url: 'https://www.gov.kr/' },
