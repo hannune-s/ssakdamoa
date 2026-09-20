@@ -57,7 +57,7 @@ const STATIC_LINKS = [
   // 매장관리 추천앱
   { id: 'static-33', title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '매장관리 추천앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱', '매장관리 추천앱'], url: 'https://hangose-me.vercel.app/landing.html' },
   { id: 'static-34', title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '매장관리 추천앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱', '매장관리 추천앱'], url: 'https://business.daangn.com/' },
-  { id: 'static-35', title: '알바몬 / 알바천국 (구인구직)', desc: '빠르고 확실한 매장 아르바이트생 구인', category: '매장관리 추천앱', keywords: ['알바몬', '알바천국', '알바', '구인', '채용', '추천앱', '매장관리 추천앱'], url: 'https://www.albamon.com/' },
+  { id: 'static-35', title: '노션 (매장 관리/업무 협업)', desc: '매장 매뉴얼, 직원 교대 일지 등 체계적인 업무 관리', category: '매장관리 추천앱', keywords: ['노션', 'notion', '매장관리', '매뉴얼', '협업', '업무', '추천앱'], url: 'https://www.notion.so/ko-kr' },
 ];
 
 export default function Home() {
