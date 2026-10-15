@@ -185,7 +185,7 @@ export default function SupportPage() {
           <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-200">
             <div className="mb-6 pb-4 border-b border-gray-100">
               <h2 className="text-lg font-bold text-gray-800">💬 1:1 문의 작성</h2>
-              <p className="text-xs text-gray-500 mt-1">서비스 이용 문의, 제휴 및 앱 제작 상담 등 무엇이든 편하게 남겨주세요.</p>
+              <p className="text-xs text-gray-500 mt-1">궁금하신 점이나 건의사항을 편하게 남겨주세요.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -205,17 +205,6 @@ export default function SupportPage() {
                   />
                 </div>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-bold text-gray-700">상호명 <span className="text-red-500">*</span></label>
-                  <input 
-                    type="text" required placeholder="예: 싹다식당"
-                    value={formData.company} onChange={e => setFormData({...formData, company: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-bold text-gray-700">연락처 <span className="text-red-500">*</span></label>
                   <input 
                     type="tel" required placeholder="예: 010-1234-5678"
@@ -223,14 +212,15 @@ export default function SupportPage() {
                     className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
                   />
                 </div>
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-bold text-gray-700">이메일 (선택)</label>
-                  <input 
-                    type="email" placeholder="예: ssakda@moa.com"
-                    value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
-                  />
-                </div>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-bold text-gray-700">이메일 (선택)</label>
+                <input 
+                  type="email" placeholder="예: ssakda@moa.com"
+                  value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-shadow"
+                />
               </div>
 
               <div className="flex flex-col gap-1.5">
