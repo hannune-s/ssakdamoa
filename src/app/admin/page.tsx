@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { fetchAdminAnalytics } from './actions';
+import { fetchAdminAnalytics, resetTodayAnalytics, deleteVisitRecord } from './actions';
 
 interface VisitorStat {
   id: string;
@@ -11,7 +11,7 @@ interface VisitorStat {
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<any[]>([]);
+  const [stats, setStats] = useState<VisitorStat[]>([]);
   const [todayTotal, setTodayTotal] = useState<number>(0);
   const [instagramCount, setInstagramCount] = useState<number>(0);
   const [installCount, setInstallCount] = useState<number>(0);
@@ -48,6 +48,27 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleResetToday = async () => {
+    if (!confirm('오늘 집계된 방문/설치 기록을 모두 초기화하시겠습니까?\n(배포 봇이나 테스트 접속 기록을 지울 때 유용합니다.)')) return;
+    const pin = localStorage.getItem('admin_pin') || '';
+    const res = await resetTodayAnalytics(pin);
+    if (res.error) {
+      alert('초기화 실패: ' + res.error);
+      return;
+    }
+    fetchAnalytics(pin);
+  };
+
+  const handleDeleteRow = async (id: string) => {
+    const pin = localStorage.getItem('admin_pin') || '';
+    const res = await deleteVisitRecord(pin, id);
+    if (res.error) {
+      alert('삭제 실패: ' + res.error);
+      return;
+    }
+    fetchAnalytics(pin);
+  };
+
   if (errorMsg) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
@@ -68,18 +89,45 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-2">방문자 접속 통계</h1>
-      <p className="text-gray-500 mb-8">싹다모아 플랫폼의 통합 관리자 시스템입니다.</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-2xl font-bold">방문자 접속 통계</h1>
+            <span className="bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full">
+              🛡️ 관리자·로컬·배포봇 자동 제외됨
+            </span>
+          </div>
+          <p className="text-gray-500 mt-1 text-sm">실제 외부 방문자만 하루 1회(자정 기준) 순방문자로 정확히 집계됩니다.</p>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={() => fetchAnalytics(localStorage.getItem('admin_pin') || '')}
+            className="px-3.5 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl shadow-sm transition-colors"
+          >
+            🔄 새로고침
+          </button>
+          <button
+            onClick={handleResetToday}
+            className="px-3.5 py-2 bg-red-50 border border-red-200 hover:bg-red-100 text-red-600 text-xs font-bold rounded-xl shadow-sm transition-colors"
+          >
+            🧹 오늘 기록 초기화
+          </button>
+        </div>
+      </div>
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {/* 오늘 총 방문자 */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-blue-500 flex flex-col justify-center">
-          <h3 className="text-gray-500 font-semibold mb-2">오늘 총 방문자</h3>
+          <h3 className="text-gray-500 font-semibold mb-2">오늘 순수 방문자</h3>
           <div className="flex items-baseline gap-2">
             <span className="text-4xl font-extrabold text-blue-600">{loading ? '-' : todayTotal}</span>
             <span className="text-gray-500">명</span>
           </div>
+          <p className="text-xs text-gray-400 mt-2">
+            관리자·봇을 제외한 오늘 실제 방문자 수
+          </p>
         </div>
 
         {/* 인스타그램 유입 */}
@@ -108,8 +156,9 @@ export default function AdminDashboard() {
 
       {/* 최근 접속 기록 */}
       <div className="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
-        <div className="px-6 py-5 border-b border-gray-100">
-          <h3 className="text-lg font-bold">최근 접속/설치 기록 (최근 5건)</h3>
+        <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+          <h3 className="text-lg font-bold">최근 접속/설치 기록 (최근 10건)</h3>
+          <span className="text-xs text-gray-400">불필요한 기록은 우측 삭제 버튼으로 지울 수 있습니다</span>
         </div>
         <div className="overflow-x-auto pb-4">
           <table className="w-full min-w-[600px] text-left border-collapse">
@@ -119,12 +168,13 @@ export default function AdminDashboard() {
                 <th className="px-6 py-3 font-semibold">유입 경로 (Referrer)</th>
                 <th className="px-6 py-3 font-semibold">인스타그램 여부</th>
                 <th className="px-6 py-3 font-semibold">접속 페이지</th>
+                <th className="px-6 py-3 font-semibold text-right">관리</th>
               </tr>
             </thead>
             <tbody className="text-sm">
               {loading ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-400">불러오는 중...</td>
+                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">불러오는 중...</td>
                 </tr>
               ) : stats.map((stat, idx) => (
                 <tr key={stat.id || idx} className={`border-t border-gray-50 ${stat.path === 'APP_INSTALL' ? 'bg-green-50/30' : ''}`}>
@@ -147,11 +197,21 @@ export default function AdminDashboard() {
                   <td className="px-6 py-3 text-gray-500 truncate max-w-[150px]">
                     {stat.path === 'APP_INSTALL' ? '-' : stat.path}
                   </td>
+                  <td className="px-6 py-3 text-right">
+                    {stat.id && (
+                      <button
+                        onClick={() => handleDeleteRow(stat.id)}
+                        className="text-xs text-gray-400 hover:text-red-600 font-semibold px-2 py-1 rounded hover:bg-red-50 transition-colors"
+                      >
+                        삭제
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
               {!loading && stats.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-gray-400">최근 기록이 없습니다.</td>
+                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">최근 기록이 없습니다.</td>
                 </tr>
               )}
             </tbody>
@@ -161,3 +221,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

@@ -81,7 +81,7 @@ export async function fetchAdminAnalytics(pin: string) {
   const kstOffset = 9 * 60 * 60 * 1000;
   const kstNow = new Date(now.getTime() + kstOffset);
   kstNow.setUTCHours(0, 0, 0, 0);
-  const startOfTodayIso = kstNow.toISOString();
+  const startOfTodayIso = new Date(kstNow.getTime() - kstOffset).toISOString();
 
   const { count: totalCount } = await supabaseAdmin
     .from('ssakdamoa_analytics')
@@ -106,7 +106,7 @@ export async function fetchAdminAnalytics(pin: string) {
     .from('ssakdamoa_analytics')
     .select('*')
     .order('visited_at', { ascending: false })
-    .limit(5);
+    .limit(10);
 
   return {
     totalCount: totalCount || 0,
@@ -114,6 +114,44 @@ export async function fetchAdminAnalytics(pin: string) {
     installCount: installCount || 0,
     recentVisits: data || []
   };
+}
+
+export async function resetTodayAnalytics(pin: string) {
+  const isPinValid = await verifyPin(pin);
+  if (!isPinValid) return { error: 'Unauthorized' };
+  if (!supabaseServiceKey) return { error: 'MissingKey', message: '서버 비밀키가 없습니다.' };
+
+  const supabaseAdmin = getAdminClient();
+  const now = new Date();
+  const kstOffset = 9 * 60 * 60 * 1000;
+  const kstNow = new Date(now.getTime() + kstOffset);
+  kstNow.setUTCHours(0, 0, 0, 0);
+  const startOfTodayIso = new Date(kstNow.getTime() - kstOffset).toISOString();
+
+  const { error } = await supabaseAdmin
+    .from('ssakdamoa_analytics')
+    .delete()
+    .gte('visited_at', startOfTodayIso);
+
+  if (error) return { error: error.message };
+  revalidatePath('/admin', 'layout');
+  return { success: true };
+}
+
+export async function deleteVisitRecord(pin: string, id: string) {
+  const isPinValid = await verifyPin(pin);
+  if (!isPinValid) return { error: 'Unauthorized' };
+  if (!supabaseServiceKey) return { error: 'MissingKey', message: '서버 비밀키가 없습니다.' };
+
+  const supabaseAdmin = getAdminClient();
+  const { error } = await supabaseAdmin
+    .from('ssakdamoa_analytics')
+    .delete()
+    .eq('id', id);
+
+  if (error) return { error: error.message };
+  revalidatePath('/admin', 'layout');
+  return { success: true };
 }
 
 export async function fetchAdminInquiries(pin: string) {

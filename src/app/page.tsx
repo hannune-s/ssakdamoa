@@ -228,9 +228,33 @@ export default function Home() {
       setHangoseUrl('https://hangose-me.vercel.app/m_landing.html');
     }
 
-    // 통계 기록 (중복 방지 완벽 차단 - 새로고침 뻥튀기 방지)
+    // 통계 기록 (로컬호스트, 자동화 봇, 관리자 기기 및 중복 카운트 완벽 차단)
     const trackVisit = async () => {
       try {
+        // 1. 로컬 개발 환경(localhost 등) 접속은 통계에서 제외
+        const host = window.location.hostname;
+        if (
+          host === 'localhost' ||
+          host === '127.0.0.1' ||
+          host.startsWith('192.168.') ||
+          host.endsWith('.local')
+        ) {
+          return;
+        }
+
+        // 2. Vercel 배포 캡처 봇, 검색엔진 크롤러, 헤드리스 브라우저 제외
+        const ua = navigator.userAgent.toLowerCase();
+        const isBot =
+          navigator.webdriver === true ||
+          /bot|crawler|spider|headless|vercel|lighthouse|prerender|phantomjs|slurp|facebookexternalhit|kakaotalk-scrap|yeti|googlebot|bingbot|daumoa| screenshot/i.test(ua);
+        if (isBot) return;
+
+        // 3. 관리자(/admin 로그인 이력이 있는 사장님 브라우저) 접속은 통계에서 제외
+        if (localStorage.getItem('admin_pin')) return;
+
+        // 4. 전역 윈도우 플래그로 동시 실행(React StrictMode 2중 실행 등) 즉시 차단
+        if ((window as any).__ssakdamoa_visit_tracked) return;
+
         // 날짜 포맷팅 에러 방지를 위해 수동으로 KST(한국 시간) YYYY-MM-DD 문자열 생성
         const now = new Date();
         const kstNow = new Date(now.getTime() + (9 * 60 * 60 * 1000));
@@ -239,24 +263,24 @@ export default function Home() {
         const visitedToday = localStorage.getItem('ssakdamoa_visited_today');
         const sessionVisited = sessionStorage.getItem('ssakdamoa_visited_session');
 
-        // 1. 현재 창(탭)에서 이미 기록했다면 즉시 차단 (새로고침 무한 카운트 방지)
+        // 5. 현재 창(탭)에서 이미 기록했다면 즉시 차단 (새로고침 무한 카운트 방지)
         if (sessionVisited) return;
         
-        // 2. 오늘 하루 이미 기록했다면 즉시 차단 (브라우저 재실행 카운트 방지)
+        // 6. 오늘 하루 이미 기록했다면 즉시 차단 (브라우저 재실행 카운트 방지)
         if (visitedToday === today) return;
 
-        // 통과했다면 즉시 로컬/세션 스토리지에 못 박음 (네트워크 지연 중 중복 실행 방지)
+        // 통과했다면 즉시 메모리·로컬·세션 스토리지에 못 박음 (네트워크 지연 중 중복 실행 방지)
+        (window as any).__ssakdamoa_visit_tracked = true;
         sessionStorage.setItem('ssakdamoa_visited_session', 'true');
         localStorage.setItem('ssakdamoa_visited_today', today);
 
         const rawReferrer = document.referrer;
-        const ua = navigator.userAgent.toLowerCase();
         
-        // 1. 접속 기기(환경) 판별
-        const isMobile = /mobile|android|iphone|ipad|ipod/i.test(ua);
-        const platform = isMobile ? 'Mobile Web' : 'PC Web';
+        // 접속 기기(환경) 판별
+        const isMobileDevice = /mobile|android|iphone|ipad|ipod/i.test(ua);
+        const platform = isMobileDevice ? 'Mobile Web' : 'PC Web';
 
-        // 2. 유입 출처 판별 (인앱 브라우저 우선 체크)
+        // 유입 출처 판별 (인앱 브라우저 우선 체크)
         let source = rawReferrer || 'Direct';
         let isInstagram = false;
 
