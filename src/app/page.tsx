@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import Calculator from '@/components/Calculator';
+import WageCalculator from '@/components/WageCalculator';
 
-const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '매장관리 추천앱'];
+const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '급여 계산기', '매장관리 추천앱'];
 
 // 정적 링크 데이터 (실무 서식·양식 제외)
 const STATIC_LINKS = [
@@ -46,6 +47,7 @@ const STATIC_LINKS = [
   { id: 'static-43', title: '후이즈 (도메인/호스팅)', desc: '국내 최고 수준의 도메인 등록 및 기업 호스팅', category: '디자인·제작 툴', keywords: ['후이즈', '도메인', '호스팅', '웹사이트', '제작', '기업메일'], url: 'https://www.whois.co.kr/' },
 
   // 필수 실무 링크 (안내/접수용 사이트 연결)
+  { id: 'static-44', title: '국세청 홈택스 (세금신고/전자세금계산서)', desc: '부가가치세·종합소득세 신고 및 사업자등록·세금계산서 발행', category: '필수 실무 링크', keywords: ['홈택스', '국세청', '세금', '부가세', '종합소득세', '전자세금계산서', '사업자등록', '현금영수증'], url: 'https://www.hometax.go.kr/' },
   { id: 'static-24', title: '정부24 (각종 민원/증명서 발급)', desc: '사업자등록증명·민원 서류 발급', category: '필수 실무 링크', keywords: ['정부24', '민원24', '민원', '증명서', '등본', '행정'], url: 'https://www.gov.kr/' },
   { id: 'static-25', title: '식품안전나라 (식품/위생 관련)', desc: '위생교육 및 식품 안전 허가', category: '필수 실무 링크', keywords: ['식품안전나라', '식품', '위생', '식약처', '영업신고'], url: 'https://www.foodsafetykorea.go.kr/' },
   { id: 'static-26', title: '세움터 (건축물대장/용도변경 등)', desc: '건축물대장 열람 및 용도변경 신청', category: '필수 실무 링크', keywords: ['세움터', '건축물대장', '건축', '용도변경', '건축행정'], url: 'https://cloud.eais.go.kr/' },
@@ -60,6 +62,33 @@ const STATIC_LINKS = [
   { id: 'static-35', title: '노션 (매장 관리/업무 협업)', desc: '매장 매뉴얼, 직원 교대 일지 등 체계적인 업무 관리', category: '매장관리 추천앱', keywords: ['노션', 'notion', '매장관리', '매뉴얼', '협업', '업무', '추천앱'], url: 'https://www.notion.so/ko-kr' },
 ];
 
+const PROMO_BANNERS = [
+  {
+    id: 'ssakdaform',
+    badge: '추천',
+    badgeClass: 'bg-amber-300 text-indigo-950',
+    title: '복잡한 주문·예약·알바 이력서는 그만! ✨',
+    subtitle: '링크 하나로 스마트하게 접수받고, 노쇼와 악성 알바 리스크까지 싹 다 방어하세요.',
+    buttonText: '내 매장 전용 폼 만들기 →',
+    url: 'https://ssakdaform-9cqv.vercel.app',
+    bgClass: 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 border-indigo-500/30',
+    subTextClass: 'text-indigo-100',
+    btnClass: 'bg-white text-indigo-700 group-hover:bg-indigo-50',
+  },
+  {
+    id: 'nao3',
+    badge: '문자비 0원',
+    badgeClass: 'bg-yellow-300 text-[#5F0080]',
+    title: '라이브 홈쇼핑을 내 매장으로! 매출 폭발 1초 전단지 🚀',
+    subtitle: '비싼 문자비 평생 0원! 3초 세일 등록과 실시간 품절 푸시 알림으로 단골 지갑을 여세요.',
+    buttonText: '1초 모바일 전단지 무료 체험 →',
+    url: 'https://nao3.vercel.app/',
+    bgClass: 'bg-gradient-to-r from-[#5F0080] via-purple-800 to-fuchsia-800 hover:from-[#4a0063] hover:to-fuchsia-900 border-purple-500/30',
+    subTextClass: 'text-purple-100',
+    btnClass: 'bg-yellow-400 text-purple-950 group-hover:bg-yellow-300',
+  },
+];
+
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('전체');
@@ -68,6 +97,14 @@ export default function Home() {
   const [visibleCount, setVisibleCount] = useState(10);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
+  const [bannerIndex, setBannerIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setBannerIndex((prev) => (prev + 1) % PROMO_BANNERS.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, []);
 
   const urlB64ToUint8Array = (base64String: string) => {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -329,7 +366,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col items-center pt-8 pb-28 px-4 font-sans">
       {/* Header */}
-      <div className="w-full max-w-2xl text-center mb-6">
+      <div className="w-full max-w-2xl text-center mb-5">
         <h1 className="text-3xl font-extrabold text-blue-600 mb-2 tracking-tight">싹다모아</h1>
         <p className="text-gray-500 text-sm mb-4">자영업자 필수 링크 & 서식 종합 허브</p>
         <button 
@@ -343,6 +380,59 @@ export default function Home() {
         </button>
       </div>
 
+      {/* 상단 프로모션 슬라이드 배너 (나중에 어플 완성 후 공개 시 false를 true로 변경) */}
+      {false && (
+      <div className="w-full max-w-2xl mb-5 relative">
+        <div className="overflow-hidden rounded-2xl shadow-md">
+          <div 
+            className="flex transition-transform duration-500 ease-in-out"
+            style={{ transform: `translateX(-${bannerIndex * 100}%)` }}
+          >
+            {PROMO_BANNERS.map((banner) => (
+              <a 
+                key={banner.id}
+                href={banner.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className={`w-full shrink-0 ${banner.bgClass} p-4 sm:px-5 sm:py-4 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors group border`}
+              >
+                <div className="text-left">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className={`${banner.badgeClass} text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0`}>
+                      {banner.badge}
+                    </span>
+                    <h3 className="text-sm sm:text-[15px] font-extrabold tracking-tight text-white">
+                      {banner.title}
+                    </h3>
+                  </div>
+                  <p className={`${banner.subTextClass} text-xs leading-relaxed break-keep`}>
+                    {banner.subtitle}
+                  </p>
+                </div>
+                <div className={`shrink-0 ${banner.btnClass} font-extrabold text-xs py-2.5 px-4 rounded-xl shadow-sm transition-colors text-center whitespace-nowrap`}>
+                  {banner.buttonText}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        {/* 슬라이드 인디케이터 (점 버튼) */}
+        <div className="flex justify-center gap-1.5 mt-2.5">
+          {PROMO_BANNERS.map((banner, idx) => (
+            <button
+              key={banner.id}
+              onClick={() => setBannerIndex(idx)}
+              aria-label={`배너 ${idx + 1} 보기`}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                bannerIndex === idx ? 'w-5 bg-blue-600' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+      )}
+
       {/* Search & Filter Area */}
       <div className="w-full max-w-2xl bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6">
         <div className="relative mb-4">
@@ -353,7 +443,7 @@ export default function Home() {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              if (selectedCategory === '마진 계산기') {
+              if (selectedCategory === '마진 계산기' || selectedCategory === '급여 계산기') {
                 setSelectedCategory('전체');
               }
             }}
@@ -396,6 +486,8 @@ export default function Home() {
       <div className="w-full max-w-2xl flex flex-col gap-2.5">
         {selectedCategory === '마진 계산기' ? (
           <Calculator />
+        ) : selectedCategory === '급여 계산기' ? (
+          <WageCalculator />
         ) : displayedLinks.length > 0 ? (
           displayedLinks.map(link => {
             const currentUrl = link.id === 'static-33' ? hangoseUrl : link.url;
