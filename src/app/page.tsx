@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import Calculator from '@/components/Calculator';
 import WageCalculator from '@/components/WageCalculator';
+import ParcelTracker from '@/components/ParcelTracker';
 
-const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '급여 계산기', '매장관리 추천앱'];
+const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '급여 계산기', '통합 송장조회', '매장관리 추천앱'];
 
 // 정적 링크 데이터 (실무 서식·양식 제외)
 const STATIC_LINKS = [
@@ -443,7 +444,7 @@ export default function Home() {
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
-              if (selectedCategory === '마진 계산기' || selectedCategory === '급여 계산기') {
+              if (selectedCategory === '마진 계산기' || selectedCategory === '급여 계산기' || selectedCategory === '통합 송장조회') {
                 setSelectedCategory('전체');
               }
             }}
@@ -488,6 +489,8 @@ export default function Home() {
           <Calculator />
         ) : selectedCategory === '급여 계산기' ? (
           <WageCalculator />
+        ) : selectedCategory === '통합 송장조회' ? (
+          <ParcelTracker />
         ) : displayedLinks.length > 0 ? (
           displayedLinks.map(link => {
             const currentUrl = link.id === 'static-33' ? hangoseUrl : link.url;
