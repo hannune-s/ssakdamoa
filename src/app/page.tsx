@@ -6,7 +6,7 @@ import Calculator from '@/components/Calculator';
 import WageCalculator from '@/components/WageCalculator';
 import ParcelTracker from '@/components/ParcelTracker';
 
-const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '급여 계산기', '통합 송장조회', '매장관리 추천앱'];
+const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '급여 계산기', '통합 송장조회', '추천 쇼핑몰', '매장관리 추천앱'];
 
 // 정적 링크 데이터 (실무 서식·양식 제외)
 const STATIC_LINKS = [
@@ -57,6 +57,15 @@ const STATIC_LINKS = [
   { id: 'static-40', title: '통신판매업 신고', desc: '온라인 판매 및 스마트스토어 필수 행정 절차', category: '필수 실무 링크', keywords: ['통신판매업', '통신판매', '신고', '정부24', '온라인판매', '쇼핑몰'], url: 'https://www.gov.kr/main?a=AA020InfoCappViewApp&HighCtgCD=A09006&CappBizCD=11300000006' },
   { id: 'static-41', title: '인터넷등기소 (법인등기 등)', desc: '부동산 및 법인 등기부등본 열람·발급', category: '필수 실무 링크', keywords: ['인터넷등기소', '등기소', '법인등기', '등기부등본', '부동산등기'], url: 'https://www.iros.go.kr/index.jsp' },
   
+  // 추천 쇼핑몰 (포장재·부자재·식자재 등)
+  { id: 'static-45', title: '경일포장 (베이커리·종합 포장재 쇼핑몰)', desc: '케이크·제과 상자, 포장용기, 비닐 등 다양한 포장재료 전문 쇼핑몰', category: '추천 쇼핑몰', keywords: ['경일포장', '포장재', '포장재료', '베이커리포장', '케이크상자', '박스', '상자', '포장용기', '쇼핑몰', '추천쇼핑몰', '재료'], url: 'https://www.kyungilpack.co.kr/' },
+  { id: 'static-46', title: '새로피엔엘 (베이킹·선물·종합 포장용품 쇼핑몰)', desc: '베이킹·떡·답례품 포장, 맞춤박스, 테이크아웃 용기 등 포장 전문 쇼핑몰', category: '추천 쇼핑몰', keywords: ['새로피엔엘', '포장용품', '포장재', '포장재료', '베이킹포장', '떡포장', '맞춤박스', '테이크아웃', '선물포장', '쇼핑몰', '추천쇼핑몰'], url: 'https://www.saeropnl.com/' },
+  { id: 'static-47', title: '나비꽃자재 (플라워·리본·포장 부자재 쇼핑몰)', desc: '꽃 포장지, 바구니, 장식·인쇄 리본, 쇼핑백·용돈박스, 조화 등 꽃·포장 자재 쇼핑몰', category: '추천 쇼핑몰', keywords: ['나비꽃자재', '꽃자재', '꽃포장지', '리본', '장식리본', '바구니', '쇼핑백', '용돈박스', '비누꽃', '조화', '부자재', '포장재', '쇼핑몰', '추천쇼핑몰'], url: 'https://nvflower.com/' },
+  { id: 'static-48', title: '포장일번지 (투명케이스·봉투·지퍼백 전문 쇼핑몰)', desc: '투명케이스·원통, OPP·택배 비닐봉투, 지퍼백, 복주머니·부직포가방 등 포장 전문 쇼핑몰', category: '추천 쇼핑몰', keywords: ['포장일번지', '투명케이스', '원통', '지관통', '비닐봉투', 'OPP봉투', '택배봉투', '지퍼백', '복주머니', '부직포가방', '포장재', '쇼핑몰', '추천쇼핑몰'], url: 'https://pojang1st.com/' },
+  { id: 'static-49', title: '핑거데이 (스티커·케이크픽·포장 인쇄디자인 쇼핑몰)', desc: '주문제작 스티커, 케이크픽, 시즌 포장재·상자 등 감각적인 인쇄디자인 쇼핑몰', category: '추천 쇼핑몰', keywords: ['핑거데이', '스티커', '주문제작스티커', '케이크픽', '택', '인쇄디자인', '포장재', '상자', '쇼핑몰', '추천쇼핑몰'], url: 'https://www.fingerday.co.kr/' },
+  { id: 'static-50', title: '신식상점 (친환경·수입지·인쇄 종이 전문 쇼핑몰)', desc: '친환경 인증 종이, 수입지, 포장·인쇄용 특수지 및 주문제작·인쇄 전문 쇼핑몰', category: '추천 쇼핑몰', keywords: ['신식상점', '종이', '친환경종이', '수입지', '특수지', '포장지', '인쇄', '종이쇼핑몰', '쇼핑몰', '추천쇼핑몰'], url: 'https://sinsic.co.kr/' },
+  { id: 'static-51', title: '헬로우모리스 (선물상자·쇼핑백·감성 포장 쇼핑몰)', desc: '베이킹·선물상자, 쇼핑백, 포장지, 스티커·선물택, 리본·끈 등 감성 포장 디자인 쇼핑몰', category: '추천 쇼핑몰', keywords: ['헬로우모리스', '선물상자', '쇼핑백', '포장지', '스티커', '선물택', '띠종이', '리본', '베이킹포장', '포장재', '쇼핑몰', '추천쇼핑몰'], url: 'https://hellomoris.com/' },
+
   // 매장관리 추천앱
   { id: 'static-33', title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '매장관리 추천앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱', '매장관리 추천앱'], url: 'https://hangose-me.vercel.app/landing.html' },
   { id: 'static-34', title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '매장관리 추천앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱', '매장관리 추천앱'], url: 'https://business.daangn.com/' },
