@@ -180,3 +180,27 @@ export async function deleteAdminInquiry(pin: string, id: string) {
   revalidatePath('/admin', 'layout');
   return { success: true };
 }
+
+export async function fetchPublicTodayVisitorCount(): Promise<number> {
+  if (!supabaseServiceKey) return 0;
+
+  try {
+    const supabaseAdmin = getAdminClient();
+    const now = new Date();
+    const kstOffset = 9 * 60 * 60 * 1000;
+    const kstNow = new Date(now.getTime() + kstOffset);
+    kstNow.setUTCHours(0, 0, 0, 0);
+    const startOfTodayIso = new Date(kstNow.getTime() - kstOffset).toISOString();
+
+    const { count } = await supabaseAdmin
+      .from('ssakdamoa_analytics')
+      .select('*', { count: 'exact', head: true })
+      .gte('visited_at', startOfTodayIso)
+      .neq('path', 'APP_INSTALL');
+
+    return count || 0;
+  } catch (e) {
+    console.error('Failed to fetch public today visitor count', e);
+    return 0;
+  }
+}

@@ -5,8 +5,9 @@ import { supabase } from '@/lib/supabase';
 import Calculator from '@/components/Calculator';
 import WageCalculator from '@/components/WageCalculator';
 import ParcelTracker from '@/components/ParcelTracker';
+import { fetchPublicTodayVisitorCount } from './admin/actions';
 
-const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '급여 계산기', '통합 송장조회', '추천 쇼핑몰', '매장관리 추천앱'];
+const CATEGORIES = ['전체', '페이·가맹', '결제·POS', '배달·입점 관리', '디자인·제작 툴', '필수 실무 링크', '실무 서식·양식', '마진 계산기', '급여 계산기', '통합 송장조회', '추천 쇼핑몰', '매장 렌털·케어', '간판·현수막 제작', '매장관리 추천앱'];
 
 // 정적 링크 데이터 (실무 서식·양식 제외)
 const STATIC_LINKS = [
@@ -66,6 +67,28 @@ const STATIC_LINKS = [
   { id: 'static-50', title: '신식상점 (친환경·수입지·인쇄 종이 전문 쇼핑몰)', desc: '친환경 인증 종이, 수입지, 포장·인쇄용 특수지 및 주문제작·인쇄 전문 쇼핑몰', category: '추천 쇼핑몰', keywords: ['신식상점', '종이', '친환경종이', '수입지', '특수지', '포장지', '인쇄', '종이쇼핑몰', '쇼핑몰', '추천쇼핑몰'], url: 'https://sinsic.co.kr/' },
   { id: 'static-51', title: '헬로우모리스 (선물상자·쇼핑백·감성 포장 쇼핑몰)', desc: '베이킹·선물상자, 쇼핑백, 포장지, 스티커·선물택, 리본·끈 등 감성 포장 디자인 쇼핑몰', category: '추천 쇼핑몰', keywords: ['헬로우모리스', '선물상자', '쇼핑백', '포장지', '스티커', '선물택', '띠종이', '리본', '베이킹포장', '포장재', '쇼핑몰', '추천쇼핑몰'], url: 'https://hellomoris.com/' },
 
+  // 매장 렌털·케어 (보안·방역·정수기·가전 렌탈)
+  { id: 'static-52', title: '캡스 (SK쉴더스 매장 보안·CCTV)', desc: '무인경비, 지능형 CCTV, 출입통제 등 매장 통합 보안 서비스', category: '매장 렌털·케어', keywords: ['캡스', 'ADT캡스', 'SK쉴더스', '보안', 'CCTV', '무인경비', '방범', '매장보안', '렌탈', '렌털', '케어'], url: 'https://www.skshieldus.com/' },
+  { id: 'static-53', title: '세스코 (매장 해충방제·위생케어)', desc: '음식점·사업장 통합 해충방제, 바이러스 케어 및 식품안전 위생 관리', category: '매장 렌털·케어', keywords: ['세스코', 'cesco', '방역', '해충방제', '소독', '위생', '매장케어', '렌탈', '렌털', '케어'], url: 'https://www.cesco.co.kr/' },
+  { id: 'static-54', title: '코웨이 (정수기·공기청정기·비데 렌탈)', desc: '매장·업소용 대용량 정수기, 얼음정수기, 공기청정기, 비데 렌탈 및 케어', category: '매장 렌털·케어', keywords: ['코웨이', 'coway', '정수기', '얼음정수기', '공기청정기', '비데', '업소용정수기', '렌탈', '렌털', '케어'], url: 'https://www.coway.com/' },
+  { id: 'static-55', title: '청호나이스 (얼음정수기·매장 가전 렌탈)', desc: '얼음정수기, 업소용 정수기, 공기청정기, 제빙기 등 가전 렌탈 및 관리', category: '매장 렌털·케어', keywords: ['청호나이스', '청호', '정수기', '얼음정수기', '제빙기', '공기청정기', '렌탈', '렌털', '케어'], url: 'https://www.chungho.co.kr/' },
+  { id: 'static-56', title: '쿠쿠 (정수기·제빙기·생활가전 렌탈)', desc: '직수·얼음정수기, 업소용 제빙기, 공기청정기, 비데 등 매장 가전 렌탈', category: '매장 렌털·케어', keywords: ['쿠쿠', 'cuckoo', '쿠쿠홈시스', '정수기', '얼음정수기', '제빙기', '공기청정기', '비데', '렌탈', '렌털', '케어'], url: 'https://www.cuckoo.co.kr/' },
+  { id: 'static-57', title: '에스원 (세콤 매장 보안·CCTV)', desc: '세콤 출동경비, 매장 CCTV, 무인매장 보안 솔루션', category: '매장 렌털·케어', keywords: ['에스원', '세콤', 'secom', '보안', 'CCTV', '경비', '무인매장', '렌탈', '렌털', '케어'], url: 'https://www.s1.co.kr/' },
+  { id: 'static-58', title: 'SK매직 (정수기·식기세척기·가전 렌탈)', desc: '정수기, 공기청정기, 식기세척기 등 매장·사업장 가전 렌탈 케어', category: '매장 렌털·케어', keywords: ['SK매직', '정수기', '식기세척기', '공기청정기', '비데', '렌탈', '렌털', '케어'], url: 'https://www.skmagic.com/' },
+  { id: 'static-68', title: '하우스쿡 (IH 정수조리기·스마트프라이어·상업용 주방가전)', desc: '업소용·멀티형 IH 정수조리기(라면조리기), 스마트프라이어 등 매장 주방가전 솔루션', category: '매장 렌털·케어', keywords: ['하우스쿡', 'hauscook', '정수조리기', '라면조리기', '인덕션', '스마트프라이어', '튀김기', '업소용조리기', '주방가전', '렌탈', '렌털', '케어'], url: 'https://hauscook.com/' },
+
+  // 간판·현수막 제작 (지역별 전문 업체)
+  { id: 'static-60', region: '서울', title: '아우어사인서울 (맞춤 디자인 간판·사인물 제작)', desc: '감각적인 매장 맞춤 디자인 간판, 네온·LED·채널간판 및 사인물 전문 제작·시공', category: '간판·현수막 제작', keywords: ['서울', '서울간판', '아우어사인서울', '아우어사인', '우리간판', '디자인간판', '간판', '네온사인', 'LED간판', '채널간판', '사인물', '간판제작', '현수막'], url: 'https://blog.naver.com/oursignneon' },
+  { id: 'static-61', region: '경기남부', title: '간판대장 수원본점 (수원·안산·안양 간판·아웃테리어)', desc: '매장 컨셉·상권 맞춤 간판 컨설팅, 카페·병원·매장 간판 디자인 및 아웃테리어 시공', category: '간판·현수막 제작', keywords: ['경기남부', '경기', '경기도', '수원', '안산', '안양', '간판대장', '수원간판', '간판', '디자인간판', '아웃테리어', '간판제작', '현수막'], url: 'https://blog.naver.com/lim38383' },
+  { id: 'static-62', region: '인천', title: '우리동네 착한간판 (인천 간판·현수막·사인물 제작)', desc: '합리적인 비용의 매장 맞춤 LED·채널·플렉스 간판, 현수막 및 사인물 제작·시공', category: '간판·현수막 제작', keywords: ['인천', '인천간판', '우리동네착한간판', '착한간판', '간판', 'LED간판', '채널간판', '플렉스간판', '현수막', '사인물', '간판제작'], url: 'https://blog.naver.com/kindsign' },
+  { id: 'static-64', region: '대전', title: '하우광고디자인 (대전 간판·현수막·광고물 제작)', desc: 'LED·채널간판, 현수막, 실사출력, 옥외광고물 등 매장 맞춤 디자인·시공', category: '간판·현수막 제작', keywords: ['대전', '대전간판', '하우광고디자인', '하우광고', '간판', '현수막', 'LED간판', '채널간판', '실사출력', '옥외광고', '간판제작', '현수막제작'], url: 'https://blog.naver.com/how1325' },
+  { id: 'static-63', region: '충남', title: '애드원광고 (천안·충남 간판·현수막·인쇄물 제작)', desc: '간판, 현수막, 인쇄물, 상패·기념품 등 충남 종합 광고기획 및 맞춤 제작·시공', category: '간판·현수막 제작', keywords: ['충남', '충청남도', '천안', '천안간판', '애드원광고', '간판', '현수막', '인쇄', '전단지', '명함', '상패', '기념품', '간판제작', '현수막제작'], url: 'https://blog.naver.com/adone1163' },
+  { id: 'static-67', region: '전북', title: '구륙브랜딩 (전주·전북 간판 디자인·인테리어 시공)', desc: '매장 브랜딩 맞춤 감성 간판 디자인, 사인물 및 인테리어 제작·시공', category: '간판·현수막 제작', keywords: ['전북', '전라북도', '전주', '전주간판', '구륙브랜딩', '96브랜딩', '간판', '현수막', '디자인간판', '브랜딩', '사인물', '인테리어', '간판제작'], url: 'https://blog.naver.com/96branding' },
+  { id: 'static-69', region: '전남', title: '한일디자인 (목포·전남 간판·현수막·옥외광고 디자인)', desc: 'LED·채널간판, 현수막, 옥외광고물 및 기업·매장 맞춤 디자인·시공', category: '간판·현수막 제작', keywords: ['전남', '전라남도', '목포', '목포간판', '한일디자인', '목포한일디자인', '간판', '현수막', '옥외광고', '디자인간판', '간판제작', '현수막제작'], url: 'https://blog.naver.com/inho116' },
+  { id: 'static-59', region: '강원도', title: '싸인플러스 (춘천·강원 간판·현수막 제작)', desc: 'LED·채널·플렉스·나무·에어간판, 현수막, 전단지, 명함, 아크릴 맞춤 제작·시공', category: '간판·현수막 제작', keywords: ['강원도', '강원', '춘천', '춘천간판', '싸인플러스', '간판', '현수막', 'LED간판', '채널간판', '나무간판', '에어간판', '전단지', '명함', '아크릴', '간판제작', '현수막제작'], url: 'https://blog.naver.com/wkhn8325' },
+  { id: 'static-66', region: '부산', title: '대한애드 (부산 간판·POP·아크릴·실사출력 제작)', desc: 'LED 채널간판 시공, UV 실사출력, POP 사인물, 아크릴·레이저가공 맞춤 제작', category: '간판·현수막 제작', keywords: ['부산', '부산간판', '대한애드', '주식회사대한애드', '간판', '현수막', 'POP', '아크릴', 'UV출력', '실사출력', 'LED간판', '채널간판', '사인물', '간판제작'], url: 'https://blog.naver.com/dhad1641' },
+  { id: 'static-65', region: '경남', title: '전진광고 (창원·경남 간판·현수막·사인물 제작)', desc: 'LED·채널·플렉스 간판, 현수막, 옥외광고물 등 매장 맞춤 제작·시공', category: '간판·현수막 제작', keywords: ['경남', '경상남도', '창원', '창원간판', '전진광고', '전진종합광고사', '간판', '현수막', 'LED간판', '채널간판', '사인물', '간판제작', '현수막제작'], url: 'https://blog.naver.com/jeonjinsign' },
+
   // 매장관리 추천앱
   { id: 'static-33', title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '매장관리 추천앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱', '매장관리 추천앱'], url: 'https://hangose-me.vercel.app/landing.html' },
   { id: 'static-34', title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '매장관리 추천앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱', '매장관리 추천앱'], url: 'https://business.daangn.com/' },
@@ -108,6 +131,19 @@ export default function Home() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
   const [bannerIndex, setBannerIndex] = useState(0);
+  const [dailyVisitorCount, setDailyVisitorCount] = useState<number>(2480);
+
+  // 한국 시간(KST) 날짜를 기준으로 매일 2,120 ~ 2,920명 사이의 고유 기본값을 계산하는 함수
+  const getDailyBaseCount = () => {
+    const now = new Date();
+    const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
+    const dateStr = kst.toISOString().split('T')[0]; // YYYY-MM-DD
+    let hash = 0;
+    for (let i = 0; i < dateStr.length; i++) {
+      hash = (hash * 31 + dateStr.charCodeAt(i)) % 100000;
+    }
+    return 2120 + (hash % 801); // 매일 2,120 ~ 2,920 사이로 고유하게 설정
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -321,6 +357,12 @@ export default function Home() {
         }]);
       } catch (err) {
         console.error('Failed to track visit', err);
+      } finally {
+        // 오늘 기본 설정값(2,120~2,920명) + 실제 DB에 집계된 오늘 방문자 수를 합산하여 실시간 반영
+        const baseCount = getDailyBaseCount();
+        setDailyVisitorCount(baseCount);
+        const realCount = await fetchPublicTodayVisitorCount();
+        setDailyVisitorCount(baseCount + realCount);
       }
     };
     trackVisit();
@@ -401,6 +443,12 @@ export default function Home() {
     <main className="min-h-screen bg-gray-50 flex flex-col items-center pt-8 pb-28 px-4 font-sans">
       {/* Header */}
       <div className="w-full max-w-2xl text-center mb-5">
+        <div className="flex justify-end mb-1">
+          <span className="inline-flex items-center gap-1.5 text-[11px] text-gray-400 bg-gray-100/80 border border-gray-200/60 px-2.5 py-0.5 rounded-full font-normal">
+            <span className="w-1.5 h-1.5 rounded-full bg-gray-400/70"></span>
+            오늘 방문자 <span className="font-semibold text-gray-500">{dailyVisitorCount.toLocaleString()}</span>명
+          </span>
+        </div>
         <h1 className="text-3xl font-extrabold text-blue-600 mb-2 tracking-tight">싹다모아</h1>
         <p className="text-gray-500 text-sm mb-4">자영업자 필수 링크 & 서식 종합 허브</p>
         <button 
@@ -555,7 +603,7 @@ export default function Home() {
               );
             }
 
-            // 일반 링크인 경우 (기존 유지)
+            // 일반 링크인 경우 (기존 유지 + 지역 뱃지 지원)
             return (
               <a 
                 key={link.id} 
@@ -564,9 +612,16 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="w-full bg-white hover:bg-gray-50 text-gray-800 py-3.5 px-5 rounded-xl border border-gray-200 font-medium transition-all text-left flex justify-between items-center group shadow-sm hover:shadow"
               >
-                <div className="flex flex-col gap-1">
-                  <span className="text-[15px] leading-tight">{link.title}</span>
-                  <span className="text-xs text-blue-500 font-medium">{link.desc}</span>
+                <div className="flex items-center gap-3.5 min-w-0">
+                  {(link as any).region && (
+                    <span className="inline-flex items-center justify-center min-w-[84px] px-2.5 py-1.5 rounded-lg bg-blue-50 border border-blue-200 text-blue-700 text-xs font-extrabold shrink-0 shadow-xs">
+                      📍 {(link as any).region}
+                    </span>
+                  )}
+                  <div className="flex flex-col gap-1 min-w-0">
+                    <span className="text-[15px] leading-tight">{link.title}</span>
+                    <span className="text-xs text-blue-500 font-medium">{link.desc}</span>
+                  </div>
                 </div>
                 <span className="text-gray-300 group-hover:text-blue-500 transition-colors text-xl ml-3 shrink-0">
                   {link.category === '실무 서식·양식' ? '↓' : '→'}
