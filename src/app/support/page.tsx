@@ -166,7 +166,6 @@ export default function SupportPage() {
                       }`}>
                         {selectedNotice.type === 'notice' ? '공지' : '소식'}
                       </span>
-                      <span className="text-xs text-gray-400">{formatDate(selectedNotice.created_at)}</span>
                     </div>
                     <h3 className="text-xl font-bold text-gray-900 pb-5 mb-6 border-b border-gray-100">
                       {selectedNotice.title}
@@ -189,7 +188,6 @@ export default function SupportPage() {
                 <>
                   <div className="bg-gray-50/80 border-b border-gray-200 px-6 py-3 flex justify-between items-center text-xs font-bold text-gray-500">
                     <span>제목</span>
-                    <span>작성일</span>
                   </div>
 
                   <div className="flex flex-col min-h-[340px] divide-y divide-gray-100">
@@ -215,7 +213,6 @@ export default function SupportPage() {
                             </h3>
                           </div>
                           <div className="flex items-center gap-3 shrink-0">
-                            <span className="text-xs text-gray-400">{formatDate(item.created_at)}</span>
                             <span className="text-gray-300 group-hover:text-blue-500 text-xs transition-colors">
                               ❯
                             </span>
