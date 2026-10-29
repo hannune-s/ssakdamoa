@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { changePin } from '../actions';
+import { changePin, resetPinToDefault } from '../actions';
 
 export default function AdminSettings() {
   const [currentPin, setCurrentPin] = useState('');
@@ -9,6 +9,26 @@ export default function AdminSettings() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  const handleResetTo1234 = async () => {
+    setErrorMsg('');
+    setSuccessMsg('');
+    setLoading(true);
+    try {
+      const res = await resetPinToDefault();
+      if (res.success) {
+        localStorage.setItem('admin_pin', '1234');
+        setSuccessMsg('비밀번호가 1234로 초기화되었습니다!');
+        setCurrentPin('1234');
+      } else {
+        setErrorMsg(res.error || '초기화에 실패했습니다.');
+      }
+    } catch {
+      setErrorMsg('초기화 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,10 +41,6 @@ export default function AdminSettings() {
     }
     if (newPin.length !== 4) {
       setErrorMsg('새 비밀번호는 4자리 숫자로 입력해주세요.');
-      return;
-    }
-    if (currentPin === newPin) {
-      setErrorMsg('기존 비밀번호와 동일합니다.');
       return;
     }
 
@@ -54,7 +70,17 @@ export default function AdminSettings() {
       <p className="text-gray-500 mb-8">관리자 접속용 비밀번호(PIN)를 변경합니다.</p>
 
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-        <h2 className="text-lg font-bold text-gray-800 mb-6">비밀번호 변경</h2>
+        <div className="flex items-center justify-between gap-2 mb-6">
+          <h2 className="text-lg font-bold text-gray-800">비밀번호 변경</h2>
+          <button
+            type="button"
+            onClick={handleResetTo1234}
+            disabled={loading}
+            className="text-xs font-bold px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 transition-colors"
+          >
+            🔄 1234로 초기화
+          </button>
+        </div>
 
         {errorMsg && (
           <div className="mb-6 bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium border border-red-100">

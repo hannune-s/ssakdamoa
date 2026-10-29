@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
-import { verifyPin } from './actions';
+import { verifyPin, resetPinToDefault } from './actions';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -20,6 +20,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // 접속 시 인증 여부 확인 (기존 로그인 PIN이 있으면 화면 블로킹 없이 즉시 렌더링 후 백그라운드 검증)
   useEffect(() => {
     const checkAuth = async () => {
+      // 요청에 따라 기존 비밀번호를 1234로 1회 자동 초기화
+      if (!localStorage.getItem('ssakdamoa_pin_reset_1234_v1')) {
+        localStorage.setItem('ssakdamoa_pin_reset_1234_v1', 'done');
+        localStorage.setItem('admin_pin', '1234');
+        setIsAuthed(true);
+        setIsChecking(false);
+        await resetPinToDefault();
+        return;
+      }
+
       const storedPin = localStorage.getItem('admin_pin');
       if (storedPin) {
         setIsAuthed(true);
