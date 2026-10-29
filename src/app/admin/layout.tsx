@@ -17,19 +17,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  // 접속 시 인증 여부 확인 (서버 액션 통해 확인)
+  // 접속 시 인증 여부 확인 (기존 로그인 PIN이 있으면 화면 블로킹 없이 즉시 렌더링 후 백그라운드 검증)
   useEffect(() => {
     const checkAuth = async () => {
       const storedPin = localStorage.getItem('admin_pin');
       if (storedPin) {
+        setIsAuthed(true);
+        setIsChecking(false);
         const isValid = await verifyPin(storedPin);
-        if (isValid) {
-          setIsAuthed(true);
-        } else {
+        if (!isValid) {
           localStorage.removeItem('admin_pin');
+          setIsAuthed(false);
         }
+      } else {
+        setIsChecking(false);
       }
-      setIsChecking(false);
     };
     checkAuth();
   }, []);

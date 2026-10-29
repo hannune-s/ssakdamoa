@@ -10,41 +10,86 @@ interface VisitorStat {
   path: string;
 }
 
+const ANALYTICS_CACHE_KEY = 'ssakdamoa_admin_analytics_cache';
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<VisitorStat[]>([]);
   const [todayTotal, setTodayTotal] = useState<number>(0);
   const [instagramCount, setInstagramCount] = useState<number>(0);
   const [installCount, setInstallCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     const pin = localStorage.getItem('admin_pin') || '';
-    if (pin) {
-      fetchAnalytics(pin);
-    } else {
+    if (!pin) {
       setLoading(false);
       setErrorMsg('관리자 인증이 필요합니다.');
+      return;
     }
+
+    // 1. 로컬 캐시가 있으면 0초 만에 화면에 먼저 즉시 표시 (체감 로딩 지연 제거)
+    let hasCached = false;
+    try {
+      const cachedRaw = localStorage.getItem(ANALYTICS_CACHE_KEY);
+      if (cachedRaw) {
+        const cached = JSON.parse(cachedRaw);
+        if (cached && typeof cached.totalCount === 'number') {
+          setTodayTotal(cached.totalCount);
+          setInstagramCount(cached.instaCount || 0);
+          setInstallCount(cached.installCount || 0);
+          setStats(Array.isArray(cached.recentVisits) ? cached.recentVisits : []);
+          setLoading(false);
+          hasCached = true;
+        }
+      }
+    } catch {
+      // 캐시 파싱 실패 시 무시
+    }
+
+    // 2. 백그라운드에서 최신 DB 통계 병렬 조회 및 갱신
+    fetchAnalytics(pin, hasCached);
   }, []);
 
-  const fetchAnalytics = async (pin: string) => {
-    setLoading(true);
+  const fetchAnalytics = async (pin: string, silent = false) => {
+    if (!silent) setLoading(true);
+    setIsRefreshing(true);
     try {
       const result = await fetchAdminAnalytics(pin);
       if (result.error) {
         setErrorMsg(result.message || '권한이 없습니다.');
         return;
       }
-      setTodayTotal(result.totalCount!);
-      setInstagramCount(result.instaCount!);
-      setInstallCount(result.installCount!);
-      setStats(result.recentVisits!);
+      const nextTotal = result.totalCount ?? 0;
+      const nextInsta = result.instaCount ?? 0;
+      const nextInstall = result.installCount ?? 0;
+      const nextVisits = result.recentVisits ?? [];
+
+      setTodayTotal(nextTotal);
+      setInstagramCount(nextInsta);
+      setInstallCount(nextInstall);
+      setStats(nextVisits);
+
+      try {
+        localStorage.setItem(
+          ANALYTICS_CACHE_KEY,
+          JSON.stringify({
+            totalCount: nextTotal,
+            instaCount: nextInsta,
+            installCount: nextInstall,
+            recentVisits: nextVisits,
+          })
+        );
+      } catch {
+        // localStorage 용량 초과 등 무시
+      }
     } catch (err) {
       console.error('Error fetching analytics:', err);
-      setErrorMsg('통계 데이터를 불러오는 중 오류가 발생했습니다.');
+      if (!silent) setErrorMsg('통계 데이터를 불러오는 중 오류가 발생했습니다.');
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -56,17 +101,18 @@ export default function AdminDashboard() {
       alert('초기화 실패: ' + res.error);
       return;
     }
-    fetchAnalytics(pin);
+    fetchAnalytics(pin, true);
   };
 
   const handleDeleteRow = async (id: string) => {
     const pin = localStorage.getItem('admin_pin') || '';
+    // 즉시 화면에서 먼저 제거 (체감 속도 향상)
+    setStats(prev => prev.filter(item => item.id !== id));
     const res = await deleteVisitRecord(pin, id);
     if (res.error) {
       alert('삭제 실패: ' + res.error);
-      return;
     }
-    fetchAnalytics(pin);
+    fetchAnalytics(pin, true);
   };
 
   if (errorMsg) {
@@ -102,10 +148,11 @@ export default function AdminDashboard() {
 
         <div className="flex items-center gap-2 shrink-0">
           <button
-            onClick={() => fetchAnalytics(localStorage.getItem('admin_pin') || '')}
-            className="px-3.5 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-xl shadow-sm transition-colors"
+            onClick={() => fetchAnalytics(localStorage.getItem('admin_pin') || '', true)}
+            disabled={isRefreshing}
+            className="px-3.5 py-2 bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-60 text-gray-700 text-xs font-bold rounded-xl shadow-sm transition-colors"
           >
-            🔄 새로고침
+            {isRefreshing ? '⏳ 갱신 중...' : '🔄 새로고침'}
           </button>
           <button
             onClick={handleResetToday}

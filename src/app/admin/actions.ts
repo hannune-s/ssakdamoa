@@ -6,31 +6,57 @@ import bcrypt from 'bcryptjs';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''; 
 
+let cachedAdminClient: ReturnType<typeof createClient> | null = null;
+let verifiedPinCache: { pin: string; expiresAt: number } | null = null;
+const PIN_CACHE_TTL_MS = 5 * 60 * 1000; // 5분간 메모리 캐시 유지 (중복 DB 조회 및 bcrypt 연산 방지)
+
 // Next.js의 강력한 fetch 캐시를 무력화하고 무조건 실시간 DB를 조회하도록 설정
 function getAdminClient() {
-  return createClient(supabaseUrl, supabaseServiceKey, {
-    global: {
-      fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
-    },
-  });
+  if (!cachedAdminClient) {
+    cachedAdminClient = createClient(supabaseUrl, supabaseServiceKey, {
+      global: {
+        fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
+      },
+    });
+  }
+  return cachedAdminClient;
 }
 
 export async function verifyPin(pin: string) {
+  if (!pin) return false;
+
   // 아직 환경변수 셋업이 안 되었을 때 관리자가 아예 튕기는 걸 방지하는 안전장치
   if (!supabaseServiceKey) {
     return pin === '1234';
   }
 
-  const supabaseAdmin = getAdminClient();
-  const { data, error } = await supabaseAdmin.from('ssakdamoa_admin_config').select('admin_pin').eq('id', 1).single();
-  
-  if (error || !data || !data.admin_pin) return pin === '1234'; // 테이블 생성 전 기본값
-  
-  if (data.admin_pin.length === 4) {
-    return pin === data.admin_pin;
+  // 최근 검증된 동일 PIN이면 DB 조회 및 무거운 bcrypt 연산 즉시 생략
+  if (verifiedPinCache && verifiedPinCache.pin === pin && Date.now() < verifiedPinCache.expiresAt) {
+    return true;
   }
 
-  return bcrypt.compareSync(pin, data.admin_pin);
+  const supabaseAdmin = getAdminClient();
+  const { data, error } = await supabaseAdmin
+    .from('ssakdamoa_admin_config')
+    .select('admin_pin')
+    .eq('id', 1)
+    .single<{ admin_pin: string }>();
+  
+  if (error || !data || !data.admin_pin) {
+    const isDefault = pin === '1234';
+    if (isDefault) verifiedPinCache = { pin, expiresAt: Date.now() + PIN_CACHE_TTL_MS };
+    return isDefault; // 테이블 생성 전 기본값
+  }
+  
+  const isMatched =
+    data.admin_pin.length === 4
+      ? pin === data.admin_pin
+      : await bcrypt.compare(pin, data.admin_pin);
+
+  if (isMatched) {
+    verifiedPinCache = { pin, expiresAt: Date.now() + PIN_CACHE_TTL_MS };
+  }
+  return isMatched;
 }
 
 export async function changePin(currentPin: string, newPin: string) {
@@ -41,14 +67,13 @@ export async function changePin(currentPin: string, newPin: string) {
   const isValid = await verifyPin(currentPin);
   if (!isValid) return { success: false, error: '현재 비밀번호가 일치하지 않습니다.' };
 
-  const salt = bcrypt.genSaltSync(10);
-  const hashedPin = bcrypt.hashSync(newPin, salt);
+  const salt = await bcrypt.genSalt(10);
+  const hashedPin = await bcrypt.hash(newPin, salt);
 
   const supabaseAdmin = getAdminClient();
   
   // UPDATE 대신 UPSERT를 사용하여 DB에 1번 행이 없더라도 무조건 강제로 생성하며 저장하도록 수정
-  const { error } = await supabaseAdmin
-    .from('ssakdamoa_admin_config')
+  const { error } = await (supabaseAdmin.from('ssakdamoa_admin_config') as any)
     .upsert({ id: 1, admin_pin: hashedPin });
 
   if (error) {
@@ -56,6 +81,8 @@ export async function changePin(currentPin: string, newPin: string) {
     return { success: false, error: 'DB 오류: 먼저 안내해 드린 SQL 스크립트를 실행했는지 확인해주세요.' };
   }
   
+  verifiedPinCache = { pin: newPin, expiresAt: Date.now() + PIN_CACHE_TTL_MS };
+
   // 성공 시 모든 어드민 페이지 캐시 즉각 삭제
   revalidatePath('/admin', 'layout');
   return { success: true };
@@ -83,36 +110,41 @@ export async function fetchAdminAnalytics(pin: string) {
   kstNow.setUTCHours(0, 0, 0, 0);
   const startOfTodayIso = new Date(kstNow.getTime() - kstOffset).toISOString();
 
-  const { count: totalCount } = await supabaseAdmin
-    .from('ssakdamoa_analytics')
-    .select('*', { count: 'exact', head: true })
-    .gte('visited_at', startOfTodayIso)
-    .neq('path', 'APP_INSTALL');
-
-  const { count: instaCount } = await supabaseAdmin
-    .from('ssakdamoa_analytics')
-    .select('*', { count: 'exact', head: true })
-    .gte('visited_at', startOfTodayIso)
-    .eq('is_instagram', true)
-    .neq('path', 'APP_INSTALL');
-
-  const { count: installCount } = await supabaseAdmin
-    .from('ssakdamoa_analytics')
-    .select('*', { count: 'exact', head: true })
-    .gte('visited_at', startOfTodayIso)
-    .eq('path', 'APP_INSTALL');
-
-  const { data } = await supabaseAdmin
-    .from('ssakdamoa_analytics')
-    .select('*')
-    .order('visited_at', { ascending: false })
-    .limit(10);
+  // 4개의 DB 쿼리를 직렬 대기 없이 동시에(병렬로) 실행
+  const [
+    { count: totalCount },
+    { count: instaCount },
+    { count: installCount },
+    { data }
+  ] = await Promise.all([
+    supabaseAdmin
+      .from('ssakdamoa_analytics')
+      .select('*', { count: 'exact', head: true })
+      .gte('visited_at', startOfTodayIso)
+      .neq('path', 'APP_INSTALL'),
+    supabaseAdmin
+      .from('ssakdamoa_analytics')
+      .select('*', { count: 'exact', head: true })
+      .gte('visited_at', startOfTodayIso)
+      .eq('is_instagram', true)
+      .neq('path', 'APP_INSTALL'),
+    supabaseAdmin
+      .from('ssakdamoa_analytics')
+      .select('*', { count: 'exact', head: true })
+      .gte('visited_at', startOfTodayIso)
+      .eq('path', 'APP_INSTALL'),
+    supabaseAdmin
+      .from('ssakdamoa_analytics')
+      .select('*')
+      .order('visited_at', { ascending: false })
+      .limit(10)
+  ]);
 
   return {
     totalCount: totalCount || 0,
     instaCount: instaCount || 0,
     installCount: installCount || 0,
-    recentVisits: data || []
+    recentVisits: (data as any[]) || []
   };
 }
 
