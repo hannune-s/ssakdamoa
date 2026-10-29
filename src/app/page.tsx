@@ -141,19 +141,26 @@ export default function Home() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
   const [bannerIndex, setBannerIndex] = useState(0);
-  const [dailyVisitorCount, setDailyVisitorCount] = useState<number>(2480);
-
-  // 한국 시간(KST) 날짜를 기준으로 매일 2,120 ~ 2,920명 사이의 고유 기본값을 계산하는 함수
+  // 한국 시간(KST) 날짜를 기준으로 매일 500 ~ 3,000명 사이에서 큰 폭으로 변동하는 고유 기본값 계산 함수
   const getDailyBaseCount = () => {
     const now = new Date();
     const kst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
     const dateStr = kst.toISOString().split('T')[0]; // YYYY-MM-DD
-    let hash = 0;
+    let h = 2166136261;
     for (let i = 0; i < dateStr.length; i++) {
-      hash = (hash * 31 + dateStr.charCodeAt(i)) % 100000;
+      h ^= dateStr.charCodeAt(i);
+      h = Math.imul(h, 16777619);
     }
-    return 2120 + (hash % 801); // 매일 2,120 ~ 2,920 사이로 고유하게 설정
+    // 날짜 끝자리 1일 차이에도 숫자가 완전히 불규칙하게(예: 653 -> 1520 -> 2740) 바뀌도록 비트 믹싱
+    h ^= h >>> 16;
+    h = Math.imul(h, 0x85ebca6b);
+    h ^= h >>> 13;
+    h = Math.imul(h, 0xc2b2ae35);
+    h ^= h >>> 16;
+    return 500 + (Math.abs(h) % 2501); // 매일 500 ~ 3,000명 사이로 설정
   };
+
+  const [dailyVisitorCount, setDailyVisitorCount] = useState<number>(() => getDailyBaseCount());
 
   useEffect(() => {
     const timer = setInterval(() => {
