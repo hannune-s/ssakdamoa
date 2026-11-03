@@ -50,6 +50,8 @@ const STATIC_LINKS = [
 
   // 필수 실무 링크 (안내/접수용 사이트 연결)
   { id: 'static-44', title: '국세청 홈택스 (세금신고/전자세금계산서)', desc: '부가가치세·종합소득세 신고 및 사업자등록·세금계산서 발행', category: '필수 실무 링크', keywords: ['홈택스', '국세청', '세금', '부가세', '종합소득세', '전자세금계산서', '사업자등록', '현금영수증'], url: 'https://www.hometax.go.kr/' },
+  { id: 'static-78', title: '위택스 (지방세 신고/납부)', desc: '지방소득세·주민세·재산세·취득세 등 전국 지방세 통합 신고 및 납부', category: '필수 실무 링크', keywords: ['위택스', 'wetax', '지방세', '지방소득세', '주민세', '재산세', '취득세', '자동차세', '세금', '세금납부'], url: 'https://www.wetax.go.kr/main.do' },
+  { id: 'static-79', title: '인터넷지로 (국세·지방세·공과금 통합납부)', desc: '국세·4대보험료·전기요금·통신비·지로요금 등 각종 세금 및 공과금 통합 조회·납부', category: '필수 실무 링크', keywords: ['인터넷지로', '지로', 'giro', '공과금', '세금', '세금납부', '국세납부', '4대보험납부', '전기요금', '도시가스', '통합납부'], url: 'https://www.giro.or.kr/index.giro' },
   { id: 'static-24', title: '정부24 (각종 민원/증명서 발급)', desc: '사업자등록증명·민원 서류 발급', category: '필수 실무 링크', keywords: ['정부24', '민원24', '민원', '증명서', '등본', '행정'], url: 'https://www.gov.kr/' },
   { id: 'static-25', title: '식품안전나라 (식품/위생 관련)', desc: '위생교육 및 식품 안전 허가', category: '필수 실무 링크', keywords: ['식품안전나라', '식품', '위생', '식약처', '영업신고'], url: 'https://www.foodsafetykorea.go.kr/' },
   { id: 'static-26', title: '세움터 (건축물대장/용도변경 등)', desc: '건축물대장 열람 및 용도변경 신청', category: '필수 실무 링크', keywords: ['세움터', '건축물대장', '건축', '용도변경', '건축행정'], url: 'https://cloud.eais.go.kr/' },
