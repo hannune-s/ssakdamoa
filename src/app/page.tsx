@@ -102,7 +102,7 @@ const STATIC_LINKS = [
   { id: 'static-65', region: '경남', title: '전진광고 (창원·경남 간판·현수막·사인물 제작)', desc: 'LED·채널·플렉스 간판, 현수막, 옥외광고물 등 매장 맞춤 제작·시공', category: '간판·현수막 제작', keywords: ['경남', '경상남도', '창원', '창원간판', '전진광고', '전진종합광고사', '간판', '현수막', 'LED간판', '채널간판', '사인물', '간판제작', '현수막제작'], url: 'https://blog.naver.com/jeonjinsign' },
 
   // 매장관리 추천앱
-  { id: 'static-33', title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '매장관리 추천앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱', '매장관리 추천앱'], url: 'https://hangose-me.vercel.app/landing.html' },
+  { id: 'static-33', title: '나오삼 (매출 폭발 1초 스마트 전단지)', desc: '문자비 평생 0원! 1초 세일 등록과 실시간 품절 알림으로 동네 손님을 부르는 스마트 전단지', category: '매장관리 추천앱', keywords: ['나오삼', 'NAO3', 'nao3', '전단지', '스마트전단지', '모바일전단지', '세일', '타임세일', '단골', '홍보', '마케팅', '관리앱', '추천앱', '매장관리 추천앱'], url: 'https://www.nao3.kr/' },
   { id: 'static-34', title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '매장관리 추천앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱', '매장관리 추천앱'], url: 'https://business.daangn.com/' },
   { id: 'static-35', title: '노션 (매장 관리/업무 협업)', desc: '매장 매뉴얼, 직원 교대 일지 등 체계적인 업무 관리', category: '매장관리 추천앱', keywords: ['노션', 'notion', '매장관리', '매뉴얼', '협업', '업무', '추천앱'], url: 'https://www.notion.so/ko-kr' },
 ];
@@ -127,7 +127,7 @@ const PROMO_BANNERS = [
     title: '라이브 홈쇼핑을 내 매장으로! 매출 폭발 1초 전단지 🚀',
     subtitle: '비싼 문자비 평생 0원! 3초 세일 등록과 실시간 품절 푸시 알림으로 단골 지갑을 여세요.',
     buttonText: '1초 모바일 전단지 무료 체험 →',
-    url: 'https://nao3.vercel.app/',
+    url: 'https://www.nao3.kr/',
     bgClass: 'bg-gradient-to-r from-[#5F0080] via-purple-800 to-fuchsia-800 hover:from-[#4a0063] hover:to-fuchsia-900 border-purple-500/30',
     subTextClass: 'text-purple-100',
     btnClass: 'bg-yellow-400 text-purple-950 group-hover:bg-yellow-300',
@@ -137,7 +137,6 @@ const PROMO_BANNERS = [
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('전체');
-  const [hangoseUrl, setHangoseUrl] = useState('https://hangose-me.vercel.app/landing.html');
   const [dbForms, setDbForms] = useState<any[]>([]);
   const [visibleCount, setVisibleCount] = useState(10);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -287,11 +286,6 @@ export default function Home() {
 
   // 방문자 통계 기록 및 디바이스 체크
   useEffect(() => {
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 768;
-    if (isMobile) {
-      setHangoseUrl('https://hangose-me.vercel.app/m_landing.html');
-    }
-
     // 통계 기록 (로컬호스트, 자동화 봇, 관리자 기기 및 중복 카운트 완벽 차단)
     const trackVisit = async () => {
       try {
@@ -593,7 +587,7 @@ export default function Home() {
           <ParcelTracker />
         ) : displayedLinks.length > 0 ? (
           displayedLinks.map(link => {
-            const currentUrl = link.id === 'static-33' ? hangoseUrl : link.url;
+            const currentUrl = link.url;
             
             // DB 서식인 경우: 미리보기(좌측)와 다운로드(우측 버튼)를 분리
             if (link.isDbForm) {
@@ -665,17 +659,24 @@ export default function Home() {
         </button>
       )}
 
-      {/* Cross Promotion Banner */}
+      {/* Cross Promotion Banner (나오삼 NAO3) */}
       <a 
-        href={hangoseUrl} 
+        href="https://www.nao3.kr/" 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="block w-full max-w-2xl mt-10 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl p-6 text-white shadow-lg text-center transform hover:scale-[1.02] transition-transform cursor-pointer"
+        className="block w-full max-w-2xl mt-10 bg-gradient-to-r from-[#5F0080] via-purple-800 to-fuchsia-800 rounded-2xl p-6 text-white shadow-lg text-center transform hover:scale-[1.02] transition-transform cursor-pointer border border-purple-500/30"
       >
-        <h3 className="text-lg font-extrabold mb-1.5">복잡한 일상 기록, 한곳에 쏙! 🚀</h3>
-        <p className="text-green-50 text-sm mb-4">계좌, 구독, 돈거래 장부, 아이디까지 흩어진 내 정보를 직관적으로 관리하세요.</p>
-        <div className="inline-block bg-white text-green-700 font-bold py-2.5 px-6 rounded-full hover:bg-green-50 transition-colors shadow-sm text-sm">
-          한고세쏙 무료로 시작하기
+        <div className="inline-flex items-center gap-1.5 bg-yellow-300 text-[#5F0080] text-[11px] font-extrabold px-3 py-0.5 rounded-full mb-2">
+          문자 발송비 평생 0원 · 사장님 필수앱
+        </div>
+        <h3 className="text-lg sm:text-xl font-extrabold mb-1.5 break-keep">
+          “어머님들~ 지금 당장 나오삼!” 매출 폭발 1초 전단지 🚀
+        </h3>
+        <p className="text-purple-100 text-xs sm:text-sm mb-4 break-keep">
+          1초 세일 등록과 실시간 품절 푸시 알림으로 집에 계신 동네 손님들을 우리 가게로 부르세요.
+        </p>
+        <div className="inline-block bg-yellow-400 text-purple-950 font-extrabold py-2.5 px-6 rounded-full hover:bg-yellow-300 transition-colors shadow-sm text-sm">
+          나오삼(NAO3) 무료로 시작하기 →
         </div>
       </a>
       
