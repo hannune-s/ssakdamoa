@@ -109,18 +109,6 @@ const STATIC_LINKS = [
 
 const PROMO_BANNERS = [
   {
-    id: 'ssakdaform',
-    badge: '추천',
-    badgeClass: 'bg-amber-300 text-indigo-950',
-    title: '복잡한 주문·예약·알바 이력서는 그만! ✨',
-    subtitle: '링크 하나로 스마트하게 접수받고, 노쇼와 악성 알바 리스크까지 싹 다 방어하세요.',
-    buttonText: '내 매장 전용 폼 만들기 →',
-    url: 'https://ssakdaform-9cqv.vercel.app',
-    bgClass: 'bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 border-indigo-500/30',
-    subTextClass: 'text-indigo-100',
-    btnClass: 'bg-white text-indigo-700 group-hover:bg-indigo-50',
-  },
-  {
     id: 'nao3',
     badge: '문자비 0원',
     badgeClass: 'bg-yellow-300 text-[#5F0080]',
@@ -475,8 +463,7 @@ export default function Home() {
         </button>
       </div>
 
-      {/* 상단 프로모션 슬라이드 배너 (나중에 어플 완성 후 공개 시 false를 true로 변경) */}
-      {false && (
+      {/* 상단 프로모션 배너 */}
       <div className="w-full max-w-2xl mb-5 relative">
         <div className="overflow-hidden rounded-2xl shadow-md">
           <div 
@@ -512,21 +499,22 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 슬라이드 인디케이터 (점 버튼) */}
-        <div className="flex justify-center gap-1.5 mt-2.5">
-          {PROMO_BANNERS.map((banner, idx) => (
-            <button
-              key={banner.id}
-              onClick={() => setBannerIndex(idx)}
-              aria-label={`배너 ${idx + 1} 보기`}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                bannerIndex === idx ? 'w-5 bg-blue-600' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
-              }`}
-            />
-          ))}
-        </div>
+        {/* 슬라이드 인디케이터 (배너가 2개 이상일 때만 표시) */}
+        {PROMO_BANNERS.length > 1 && (
+          <div className="flex justify-center gap-1.5 mt-2.5">
+            {PROMO_BANNERS.map((banner, idx) => (
+              <button
+                key={banner.id}
+                onClick={() => setBannerIndex(idx)}
+                aria-label={`배너 ${idx + 1} 보기`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  bannerIndex === idx ? 'w-5 bg-blue-600' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
+                }`}
+              />
+            ))}
+          </div>
+        )}
       </div>
-      )}
 
       {/* Search & Filter Area */}
       <div className="w-full max-w-2xl bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mb-6">
@@ -659,7 +647,8 @@ export default function Home() {
         </button>
       )}
 
-      {/* Cross Promotion Banner (나오삼 NAO3) */}
+      {/* 하단 배너 광고 (숨김 처리) */}
+      {false && (
       <a 
         href="https://www.nao3.kr/" 
         target="_blank" 
@@ -679,6 +668,7 @@ export default function Home() {
           나오삼(NAO3) 무료로 시작하기 →
         </div>
       </a>
+      )}
       
     </main>
   );
