@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import Calculator from '@/components/Calculator';
 import WageCalculator from '@/components/WageCalculator';
@@ -150,6 +150,11 @@ export default function Home() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
   const [bannerIndex, setBannerIndex] = useState(0);
+  const [dragOffsetPx, setDragOffsetPx] = useState(0);
+  const [isDraggingBanner, setIsDraggingBanner] = useState(false);
+  const swipeStartXRef = useRef<number | null>(null);
+  const swipeStartYRef = useRef<number | null>(null);
+  const didSwipeBannerRef = useRef(false);
   // 한국 시간(KST) 날짜를 기준으로 매일 500 ~ 3,000명 사이에서 큰 폭으로 변동하는 고유 기본값 계산 함수
   const getDailyBaseCount = () => {
     const now = new Date();
@@ -172,11 +177,48 @@ export default function Home() {
   const [dailyVisitorCount, setDailyVisitorCount] = useState<number>(() => getDailyBaseCount());
 
   useEffect(() => {
+    if (isDraggingBanner) return;
     const timer = setInterval(() => {
       setBannerIndex((prev) => (prev + 1) % PROMO_BANNERS.length);
     }, 4500);
     return () => clearInterval(timer);
-  }, []);
+  }, [bannerIndex, isDraggingBanner]);
+
+  const handleBannerSwipeStart = (clientX: number, clientY: number) => {
+    swipeStartXRef.current = clientX;
+    swipeStartYRef.current = clientY;
+    didSwipeBannerRef.current = false;
+    setIsDraggingBanner(true);
+    setDragOffsetPx(0);
+  };
+
+  const handleBannerSwipeMove = (clientX: number, clientY: number) => {
+    if (swipeStartXRef.current === null || swipeStartYRef.current === null) return;
+    const dx = clientX - swipeStartXRef.current;
+    const dy = clientY - swipeStartYRef.current;
+    if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)) {
+      didSwipeBannerRef.current = true;
+    }
+    setDragOffsetPx(dx);
+  };
+
+  const handleBannerSwipeEnd = () => {
+    if (swipeStartXRef.current === null) return;
+    const dx = dragOffsetPx;
+    const SWIPE_THRESHOLD = 35;
+    if (dx <= -SWIPE_THRESHOLD) {
+      setBannerIndex((prev) => (prev + 1) % PROMO_BANNERS.length);
+    } else if (dx >= SWIPE_THRESHOLD) {
+      setBannerIndex((prev) => (prev - 1 + PROMO_BANNERS.length) % PROMO_BANNERS.length);
+    }
+    swipeStartXRef.current = null;
+    swipeStartYRef.current = null;
+    setIsDraggingBanner(false);
+    setDragOffsetPx(0);
+    setTimeout(() => {
+      didSwipeBannerRef.current = false;
+    }, 80);
+  };
 
   const urlB64ToUint8Array = (base64String: string) => {
     const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
@@ -488,12 +530,36 @@ export default function Home() {
         </button>
       </div>
 
-      {/* 상단 프로모션 배너 */}
-      <div className="w-full max-w-2xl mb-5 relative">
-        <div className="overflow-hidden rounded-2xl shadow-md">
+      {/* 상단 프로모션 배너 (터치 스와이프 및 마우스 드래그 지원) */}
+      <div className="w-full max-w-2xl mb-5 relative select-none">
+        <div
+          className="overflow-hidden rounded-2xl shadow-md touch-pan-y"
+          onTouchStart={(e) => {
+            if (e.touches.length === 1) {
+              handleBannerSwipeStart(e.touches[0].clientX, e.touches[0].clientY);
+            }
+          }}
+          onTouchMove={(e) => {
+            if (e.touches.length === 1) {
+              handleBannerSwipeMove(e.touches[0].clientX, e.touches[0].clientY);
+            }
+          }}
+          onTouchEnd={handleBannerSwipeEnd}
+          onTouchCancel={handleBannerSwipeEnd}
+          onMouseDown={(e) => handleBannerSwipeStart(e.clientX, e.clientY)}
+          onMouseMove={(e) => {
+            if (isDraggingBanner) handleBannerSwipeMove(e.clientX, e.clientY);
+          }}
+          onMouseUp={handleBannerSwipeEnd}
+          onMouseLeave={() => {
+            if (isDraggingBanner) handleBannerSwipeEnd();
+          }}
+        >
           <div 
-            className="flex transition-transform duration-500 ease-in-out"
-            style={{ transform: `translateX(-${bannerIndex * 100}%)` }}
+            className={`flex ${isDraggingBanner ? '' : 'transition-transform duration-500 ease-in-out'}`}
+            style={{
+              transform: `translate3d(calc(-${bannerIndex * 100}% + ${dragOffsetPx}px), 0, 0)`,
+            }}
           >
             {PROMO_BANNERS.map((banner) => (
               <a 
@@ -501,6 +567,12 @@ export default function Home() {
                 href={banner.id === 'hangose' ? hangoseUrl : banner.url} 
                 target="_blank" 
                 rel="noopener noreferrer"
+                draggable={false}
+                onClick={(e) => {
+                  if (didSwipeBannerRef.current) {
+                    e.preventDefault();
+                  }
+                }}
                 className={`w-full shrink-0 ${banner.bgClass} px-3.5 py-3 sm:px-5 sm:py-4 text-white flex flex-row items-center justify-between gap-2.5 sm:gap-3 transition-colors group border`}
               >
                 <div className="text-left min-w-0 flex-1">
