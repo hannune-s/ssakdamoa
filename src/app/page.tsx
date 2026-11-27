@@ -103,6 +103,7 @@ const STATIC_LINKS = [
 
   // 매장관리 추천앱
   { id: 'static-33', title: '나오삼 (매출 폭발 1초 스마트 전단지)', desc: '문자비 평생 0원! 1초 세일 등록과 실시간 품절 알림으로 동네 손님을 부르는 스마트 전단지', category: '매장관리 추천앱', keywords: ['나오삼', 'NAO3', 'nao3', '전단지', '스마트전단지', '모바일전단지', '세일', '타임세일', '단골', '홍보', '마케팅', '관리앱', '추천앱', '매장관리 추천앱'], url: 'https://www.nao3.kr/' },
+  { id: 'static-36', title: '한고세쏙 (일상 기록/정산 관리)', desc: '계좌, 구독, 돈거래 등 흩어진 내 정보를 한곳에', category: '매장관리 추천앱', keywords: ['한고세쏙', '기록', '메모', '장부', '정산', '일정', '관리앱', '추천앱', '매장관리 추천앱'], url: 'https://hangose-me.vercel.app/landing.html' },
   { id: 'static-34', title: '당근비즈니스 (동네 홍보)', desc: '우리 동네 단골 만들기 및 매장 지역 광고', category: '매장관리 추천앱', keywords: ['당근', '당근마켓', '비즈니스', '광고', '홍보', '추천앱', '매장관리 추천앱'], url: 'https://business.daangn.com/' },
   { id: 'static-35', title: '노션 (매장 관리/업무 협업)', desc: '매장 매뉴얼, 직원 교대 일지 등 체계적인 업무 관리', category: '매장관리 추천앱', keywords: ['노션', 'notion', '매장관리', '매뉴얼', '협업', '업무', '추천앱'], url: 'https://www.notion.so/ko-kr' },
 ];
@@ -120,11 +121,24 @@ const PROMO_BANNERS = [
     subTextClass: 'text-purple-100',
     btnClass: 'bg-yellow-400 text-purple-950 group-hover:bg-yellow-300',
   },
+  {
+    id: 'hangose',
+    badge: '한고세쏙',
+    badgeClass: 'bg-emerald-200 text-emerald-950',
+    title: '복잡한 일상 기록, 한곳에 쏙! 🚀',
+    subtitle: '계좌, 구독, 돈거래 장부, 아이디까지 흩어진 내 정보를 직관적으로 관리하세요.',
+    buttonText: '한고세쏙 무료로 시작하기 →',
+    url: 'https://hangose-me.vercel.app/landing.html',
+    bgClass: 'bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 border-emerald-500/30',
+    subTextClass: 'text-emerald-50',
+    btnClass: 'bg-white text-emerald-800 group-hover:bg-emerald-50',
+  },
 ];
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('전체');
+  const [hangoseUrl, setHangoseUrl] = useState('https://hangose-me.vercel.app/landing.html');
   const [dbForms, setDbForms] = useState<any[]>([]);
   const [visibleCount, setVisibleCount] = useState(10);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -274,6 +288,11 @@ export default function Home() {
 
   // 방문자 통계 기록 및 디바이스 체크
   useEffect(() => {
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth <= 768;
+    if (isMobile) {
+      setHangoseUrl('https://hangose-me.vercel.app/m_landing.html');
+    }
+
     // 통계 기록 (로컬호스트, 자동화 봇, 관리자 기기 및 중복 카운트 완벽 차단)
     const trackVisit = async () => {
       try {
@@ -473,7 +492,7 @@ export default function Home() {
             {PROMO_BANNERS.map((banner) => (
               <a 
                 key={banner.id}
-                href={banner.url} 
+                href={banner.id === 'hangose' ? hangoseUrl : banner.url} 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className={`w-full shrink-0 ${banner.bgClass} p-4 sm:px-5 sm:py-4 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors group border`}
@@ -575,7 +594,7 @@ export default function Home() {
           <ParcelTracker />
         ) : displayedLinks.length > 0 ? (
           displayedLinks.map(link => {
-            const currentUrl = link.url;
+            const currentUrl = link.id === 'static-36' ? hangoseUrl : link.url;
             
             // DB 서식인 경우: 미리보기(좌측)와 다운로드(우측 버튼)를 분리
             if (link.isDbForm) {
