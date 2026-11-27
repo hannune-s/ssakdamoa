@@ -114,8 +114,11 @@ const PROMO_BANNERS = [
     badge: '문자비 0원',
     badgeClass: 'bg-yellow-300 text-[#5F0080]',
     title: '라이브 홈쇼핑을 내 매장으로! 매출 폭발 1초 전단지 🚀',
+    mobileTitle: '매출 폭발! 1초 스마트 전단지 🚀',
     subtitle: '비싼 문자비 평생 0원! 3초 세일 등록과 실시간 품절 푸시 알림으로 단골 지갑을 여세요.',
+    mobileSubtitle: '문자비 평생 0원! 3초 세일 등록 & 실시간 품절 푸시 알림',
     buttonText: '1초 모바일 전단지 무료 체험 →',
+    mobileButtonText: '무료 체험 →',
     url: 'https://www.nao3.kr/',
     bgClass: 'bg-gradient-to-r from-[#5F0080] via-purple-800 to-fuchsia-800 hover:from-[#4a0063] hover:to-fuchsia-900 border-purple-500/30',
     subTextClass: 'text-purple-100',
@@ -125,9 +128,12 @@ const PROMO_BANNERS = [
     id: 'hangose',
     badge: '한고세쏙',
     badgeClass: 'bg-emerald-200 text-emerald-950',
-    title: '복잡한 일상 기록, 한곳에 쏙! 🚀',
+    title: '복잡한 일상·매장 기록, 한곳에 쏙! 🚀',
+    mobileTitle: '복잡한 일상 기록, 한곳에 쏙! 🚀',
     subtitle: '계좌, 구독, 돈거래 장부, 아이디까지 흩어진 내 정보를 직관적으로 관리하세요.',
+    mobileSubtitle: '계좌·구독·돈거래 장부·아이디까지 한곳에서 간편 관리',
     buttonText: '한고세쏙 무료로 시작하기 →',
+    mobileButtonText: '무료 시작 →',
     url: 'https://hangose-me.vercel.app/landing.html',
     bgClass: 'bg-gradient-to-r from-emerald-600 via-green-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 border-emerald-500/30',
     subTextClass: 'text-emerald-50',
@@ -495,23 +501,26 @@ export default function Home() {
                 href={banner.id === 'hangose' ? hangoseUrl : banner.url} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className={`w-full shrink-0 ${banner.bgClass} p-4 sm:px-5 sm:py-4 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors group border`}
+                className={`w-full shrink-0 ${banner.bgClass} px-3.5 py-3 sm:px-5 sm:py-4 text-white flex flex-row items-center justify-between gap-2.5 sm:gap-3 transition-colors group border`}
               >
-                <div className="text-left">
-                  <div className="flex items-center gap-2 mb-1">
+                <div className="text-left min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
                     <span className={`${banner.badgeClass} text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0`}>
                       {banner.badge}
                     </span>
-                    <h3 className="text-sm sm:text-[15px] font-extrabold tracking-tight text-white">
-                      {banner.title}
+                    <h3 className="text-[13px] sm:text-[15px] font-extrabold tracking-tight text-white truncate">
+                      <span className="sm:hidden">{banner.mobileTitle}</span>
+                      <span className="hidden sm:inline">{banner.title}</span>
                     </h3>
                   </div>
-                  <p className={`${banner.subTextClass} text-xs leading-relaxed break-keep`}>
-                    {banner.subtitle}
+                  <p className={`${banner.subTextClass} text-[11px] sm:text-xs leading-snug sm:leading-relaxed truncate sm:whitespace-normal sm:break-keep`}>
+                    <span className="sm:hidden">{banner.mobileSubtitle}</span>
+                    <span className="hidden sm:inline">{banner.subtitle}</span>
                   </p>
                 </div>
-                <div className={`shrink-0 ${banner.btnClass} font-extrabold text-xs py-2.5 px-4 rounded-xl shadow-sm transition-colors text-center whitespace-nowrap`}>
-                  {banner.buttonText}
+                <div className={`shrink-0 ${banner.btnClass} font-extrabold text-[11px] sm:text-xs py-2 px-3 sm:py-2.5 sm:px-4 rounded-xl shadow-sm transition-colors text-center whitespace-nowrap`}>
+                  <span className="sm:hidden">{banner.mobileButtonText}</span>
+                  <span className="hidden sm:inline">{banner.buttonText}</span>
                 </div>
               </a>
             ))}
